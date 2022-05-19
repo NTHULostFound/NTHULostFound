@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "842508308206",
+    "project_id": "lostfoundnthu",
+    "storage_bucket": "lostfoundnthu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842508308206:android:52e9338994e339c46fadff",
+        "android_client_info": {
+          "package_name": "ss.team16.nthulostfound"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842508308206-3f7nbnb82qvau468517jn199fbg5p72s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJGistyYFWQtlYMDabprQcVRSmz5myiWM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842508308206-3f7nbnb82qvau468517jn199fbg5p72s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
