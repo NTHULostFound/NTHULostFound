@@ -22,9 +22,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable("home/found") { Greeting(name = "found items") }
                     composable("home/lost") { Greeting(name = "lost items") }
-                    composable("profile") { Greeting(name = "profile") }
+
                     composable("new_item/found") { Greeting(name = "new found") }
                     composable("new_item/lost") { Greeting(name = "new lost") }
+
                     composable("item/{itemId}") {
                         val itemId = it.arguments?.getString("itemId")!!
                         Greeting(name = itemId)
@@ -33,6 +34,10 @@ class MainActivity : ComponentActivity() {
                         val itemId = it.arguments?.getString("itemId")!!
                         Greeting(name = "$itemId's contact")
                     }
+                    composable("item/closed") { Greeting(name = "item closed") }
+
+                    composable("profile") { Greeting(name = "profile") }
+                    composable("notifications") { Greeting(name = "notifications") }
                 }
             }
         }
