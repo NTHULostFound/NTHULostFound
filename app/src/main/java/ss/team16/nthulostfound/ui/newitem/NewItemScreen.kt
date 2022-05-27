@@ -1,0 +1,131 @@
+package ss.team16.nthulostfound.ui.newitem
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun NewItemScreen(
+    type: NewItemType,
+    viewModel: NewItemViewModel = viewModel(factory = NewItemViewModelFactory(type))
+) {
+    Scaffold(
+        bottomBar = {
+            Column(Modifier.fillMaxWidth()) {
+                HorizontalPagerIndicator(
+                    pagerState = viewModel.pagerState,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Row() {
+                    val scope = rememberCoroutineScope()
+                    Button(onClick = { viewModel.goToNextPage(scope) }) {
+                        Text("Next")
+                    }
+                }
+            }
+        }
+    ) { contentPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(contentPadding)) {
+            HorizontalPager(
+                count = 4,
+                state = viewModel.pagerState,
+                // Add 32.dp horizontal padding to 'center' the pages
+                contentPadding = PaddingValues(horizontal = 32.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                userScrollEnabled = false
+            ) { page ->
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(weight = 1f, fill = false)
+                ) {
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                    Text("Page $page")
+                }
+            }
+        }
+    }
+}
+//
+//@Composable
+//fun ViewPagerBar(
+//    currentPage: Int,
+//    backLabel: String,
+//    nextLabel: String
+//)
+
+@Preview(showBackground = true)
+@Composable
+fun NewItemScreenPreview() {
+    NTHULostFoundTheme {
+        NewItemScreen(NewItemType.NEW_FOUND)
+    }
+}
