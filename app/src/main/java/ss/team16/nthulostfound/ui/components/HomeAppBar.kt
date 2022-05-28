@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -36,7 +38,7 @@ fun HomeAppBar(
     title: String = "",
     navigateToRoute: (String) -> Unit,
     onSearch: (String) -> Unit,
-    avatar: Int? = null
+    avatar: Bitmap? = null
 ) {
     var showSearchBar by rememberSaveable { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
@@ -44,17 +46,28 @@ fun HomeAppBar(
     TopAppBar(
         navigationIcon = {
             if (!showSearchBar) {
-                Image(
-                    painter = painterResource(id = avatar ?: R.drawable.ic_appbar_avatar),
-                    contentDescription = "Avatar",
-                    modifier = Modifier
-                        .padding(all = 8.dp)
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            navigateToRoute("profile")
-                        }
-                )
+                val avatarModifier = Modifier
+                    .padding(all = 8.dp)
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        navigateToRoute("profile")
+                    }
+
+                if (avatar != null) {
+                    Image(
+                        bitmap = avatar.asImageBitmap(),
+                        contentDescription = "Avatar",
+                        modifier = avatarModifier
+                    )
+                } else {
+                    // fallback avatar
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_appbar_avatar),
+                        contentDescription = "Avatar",
+                        modifier = avatarModifier
+                    )
+                }
             } else {
                 IconButton(onClick = { showSearchBar = false }) {
                     Icon(
