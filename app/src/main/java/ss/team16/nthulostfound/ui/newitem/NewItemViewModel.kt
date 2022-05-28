@@ -13,11 +13,12 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemData
 import ss.team16.nthulostfound.model.NewItemType
 
-class NewItemViewModel(private val type: NewItemType) : ViewModel() {
+class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel() {
     private val _newItemData by mutableStateOf(NewItemData(type))
     val newItemData: NewItemData
         get() = _newItemData
@@ -27,11 +28,11 @@ class NewItemViewModel(private val type: NewItemType) : ViewModel() {
         private set
 
     @OptIn(ExperimentalPagerApi::class)
-    fun getPagerBackButtonInfo(): PagerButtonInfo? {
+    fun getPagerPrevButtonInfo(): PagerButtonInfo? {
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.ENTER -> null
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("返回編輯", true)
-            NewItemPageInfo.SENDING -> null
+            NewItemPageInfo.SENDING -> PagerButtonInfo("返回", false)
             NewItemPageInfo.DONE -> null
         }
     }
@@ -47,21 +48,46 @@ class NewItemViewModel(private val type: NewItemType) : ViewModel() {
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scope: CoroutineScope) {
-        if (!pagerState.isScrollInProgress && pagerState.currentPage + 1 < pagerState.pageCount)
-            scope.launch {
-                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+    fun goToNextPage(scrollToPage: (Int) -> Unit) {
+        if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
+            popScreen()
+        } else {
+            val pageNext = pagerState.currentPage + 1
+            if (pagerState.isScrollInProgress || pageNext >= pagerState.pageCount)
+                return
+
+            scrollToPage(pageNext)
+
+            when (pageNext) {
+                NewItemPageInfo.SENDING.value -> {
+                    doWork { scrollToPage(NewItemPageInfo.DONE.value) }
+                }
+                else -> {}
             }
+        }
     }
 
-    fun onPrevPage() {
+    @OptIn(ExperimentalPagerApi::class)
+    fun goToPrevPage(scrollToPage: (Int) -> Unit) {
+        val pagePrev = pagerState.currentPage - 1
+        if (pagerState.isScrollInProgress || pagePrev < 0)
+            return
 
+        scrollToPage(pagePrev)
     }
+
+    private fun doWork(doneCallback: () -> Unit) {
+        viewModelScope.launch {
+            delay(1000L)
+            doneCallback()
+        }
+    }
+
 }
 
-class NewItemViewModelFactory(private val type: NewItemType) :
+class NewItemViewModelFactory(private val type: NewItemType, private val popScreen: () -> Unit) :
     ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T = NewItemViewModel(type) as T
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T = NewItemViewModel(type, popScreen) as T
 }
 
 enum class NewItemPageInfo(val value: Int) {
