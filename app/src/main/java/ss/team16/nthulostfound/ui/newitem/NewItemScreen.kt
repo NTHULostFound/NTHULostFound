@@ -66,6 +66,7 @@ fun NewItemScreen(
                     ) {
                         ImageCarousel(
                             images = viewModel.imageBitmaps,
+                            padding = 16.dp,
                             addImage = true,
                             onAddImage = { uri, context ->
                                 viewModel.onAddImage(uri, context)

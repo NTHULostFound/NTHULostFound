@@ -37,6 +37,8 @@ import com.google.accompanist.pager.rememberPagerState
 @Composable
 fun ImageCarousel(
     images: List<Bitmap> = emptyList(),
+    padding: Dp = 0.dp,
+    aspectRatio: Float = 4 / 3f,
     shape: Shape = RoundedCornerShape(16.dp),
     contextScale: ContentScale = ContentScale.FillWidth,
     borderWidth: Dp = 4.dp,
@@ -51,8 +53,8 @@ fun ImageCarousel(
     Box(
         Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .aspectRatio(4 / 3f)
+            .padding(padding)
+            .aspectRatio(aspectRatio)
             .clip(shape)
             .border(
                 width = borderWidth,
