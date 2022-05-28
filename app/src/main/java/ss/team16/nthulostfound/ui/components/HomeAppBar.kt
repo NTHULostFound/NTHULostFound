@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -32,12 +31,11 @@ import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
 @Composable
-fun AppBar(
-    title: String,
-    currentRoute: String,
-    navigateToRoute: (String) -> Unit,
-    search: (String) -> Unit,
+fun HomeAppBar(
     modifier: Modifier = Modifier,
+    title: String = "",
+    navigateToRoute: (String) -> Unit,
+    onSearch: (String) -> Unit,
     avatar: Int? = null
 ) {
     var showSearchBar by rememberSaveable { mutableStateOf(false) }
@@ -46,31 +44,17 @@ fun AppBar(
     TopAppBar(
         navigationIcon = {
             if (!showSearchBar) {
-                when (currentRoute) {
-                    "home/found", "home/lost" -> {
-                        Image(
-                            painter = painterResource(id = avatar ?: R.drawable.ic_appbar_avatar),
-                            contentDescription = "Avatar",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .clickable {
-                                    navigateToRoute("profile")
-                                }
-                        )
-                    }
-                    else -> {
-                        IconButton(onClick = {
-                            // TODO: navigate back
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "back"
-                            )
+                Image(
+                    painter = painterResource(id = avatar ?: R.drawable.ic_appbar_avatar),
+                    contentDescription = "Avatar",
+                    modifier = Modifier
+                        .padding(all = 8.dp)
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            navigateToRoute("profile")
                         }
-                    }
-                }
+                )
             } else {
                 IconButton(onClick = { showSearchBar = false }) {
                     Icon(
@@ -91,45 +75,31 @@ fun AppBar(
             }
         },
         actions = {
-              when  {
-                  listOf("home/lost", "home/found").any { it == currentRoute } -> {
-                      IconButton(onClick = {
-                          if (!showSearchBar) showSearchBar = true
-                          else search(searchQuery)
-                      }) {
-                          Icon(
-                              imageVector = Icons.Filled.Search,
-                              contentDescription = "search"
-                          )
-                      }
-                      if (!showSearchBar) {
-                          IconButton(onClick = {
-                              // TODO: list self items, maybe done with search
-                          }) {
-                              Icon(
-                                  imageVector = Icons.Filled.History,
-                                  contentDescription = "history"
-                              )
-                          }
-                          IconButton(onClick = {
-                              navigateToRoute("notifications")
-                          }) {
-                              Icon(
-                                  imageVector = Icons.Outlined.NotificationsNone,
-                                  contentDescription = "notification"
-                              )
-                          }
-                      }
+              IconButton(onClick = {
+                  if (!showSearchBar) showSearchBar = true
+                  else onSearch(searchQuery)
+              }) {
+                  Icon(
+                      imageVector = Icons.Filled.Search,
+                      contentDescription = "search"
+                  )
+              }
+              if (!showSearchBar) {
+                  IconButton(onClick = {
+                      // TODO: list self items, maybe done with search
+                  }) {
+                      Icon(
+                          imageVector = Icons.Filled.History,
+                          contentDescription = "history"
+                      )
                   }
-                  currentRoute.startsWith("item/") -> {
-                      IconButton(onClick = {
-                        // TODO: share onclick
-                      }) {
-                          Icon(
-                              imageVector = Icons.Filled.Share,
-                              contentDescription = "share"
-                          )
-                      }
+                  IconButton(onClick = {
+                      navigateToRoute("notifications")
+                  }) {
+                      Icon(
+                          imageVector = Icons.Outlined.NotificationsNone,
+                          contentDescription = "notification"
+                      )
                   }
               }
         },
@@ -192,13 +162,12 @@ fun RoundedTextField(
 
 @Preview
 @Composable
-fun AppBarPreview() {
+fun HomeAppBarPreview() {
     NTHULostFoundTheme {
-        AppBar(
-            title = "test",
-            currentRoute = "home/lost",
+        HomeAppBar(
+            title = "Home",
             navigateToRoute = { },
-            search = { }
+            onSearch = { }
         )
     }
 }
