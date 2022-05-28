@@ -59,7 +59,7 @@ fun HomeAppBar(
                 IconButton(onClick = { showSearchBar = false }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "search"
+                        contentDescription = "back"
                     )
                 }
             }
