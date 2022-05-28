@@ -20,6 +20,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
@@ -42,6 +44,7 @@ fun HomeAppBar(
 ) {
     var showSearchBar by rememberSaveable { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
 
     TopAppBar(
         navigationIcon = {
@@ -81,16 +84,26 @@ fun HomeAppBar(
             if (showSearchBar) {
                 RoundedTextField(
                     value = searchQuery,
-                    onValueChange = { searchQuery = it }
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier.focusRequester(focusRequester)
                 )
+
+                // we must request focus after search bar is composed,
+                // so we cannot request focus when search icon is pressed
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
+                }
             } else {
                 Text(text = title)
             }
         },
         actions = {
               IconButton(onClick = {
-                  if (!showSearchBar) showSearchBar = true
-                  else onSearch(searchQuery)
+                  if (!showSearchBar) {
+                      showSearchBar = true
+                  } else {
+                      onSearch(searchQuery)
+                  }
               }) {
                   Icon(
                       imageVector = Icons.Filled.Search,
