@@ -1,18 +1,18 @@
 package ss.team16.nthulostfound.ui.newitem
 
-import android.provider.Settings.Global.getString
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemData
@@ -32,7 +32,7 @@ class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.ENTER -> null
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("返回編輯", true)
-            NewItemPageInfo.SENDING -> PagerButtonInfo("返回", false)
+            NewItemPageInfo.SENDING -> PagerButtonInfo("返回編輯", false)
             NewItemPageInfo.DONE -> null
         }
     }
@@ -83,6 +83,31 @@ class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel
         }
     }
 
+    private val _imageBitmaps = emptyList<Bitmap>().toMutableStateList()
+    val imageBitmaps: List<Bitmap>
+        get() = _imageBitmaps
+
+    fun onAddImage(uri: Uri?, context: Context) {
+        if (uri == null)
+            return
+
+        if (Build.VERSION.SDK_INT < 28) {
+            _imageBitmaps.add(
+                MediaStore.Images.Media.getBitmap(
+                    context.contentResolver,
+                    uri
+                )
+            )
+        } else {
+            val source = ImageDecoder
+                .createSource(context.contentResolver, uri)
+            _imageBitmaps.add(ImageDecoder.decodeBitmap(source))
+        }
+    }
+
+    fun onDeleteImage(index: Int) {
+        _imageBitmaps.removeAt(index)
+    }
 }
 
 class NewItemViewModelFactory(private val type: NewItemType, private val popScreen: () -> Unit) :

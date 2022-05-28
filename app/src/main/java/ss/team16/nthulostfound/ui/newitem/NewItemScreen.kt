@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -15,6 +16,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.ui.components.ImageCarousel
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
 @OptIn(ExperimentalPagerApi::class)
@@ -44,27 +46,38 @@ fun NewItemScreen(
             )
         }
     ) { contentPadding ->
-        Column(
-            Modifier
+        HorizontalPager(
+            count = 4,
+            state = viewModel.pagerState,
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding)) {
-            HorizontalPager(
-                count = 4,
-                state = viewModel.pagerState,
-                // Add 32.dp horizontal padding to 'center' the pages
-                contentPadding = PaddingValues(horizontal = 32.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                userScrollEnabled = false
-            ) { page ->
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .weight(weight = 1f, fill = false)
-                ) {
-                    Text("Page $page")
+                .padding(contentPadding),
+            userScrollEnabled = false
+        ) { page ->
+            when (page) {
+                0 -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(all = 8.dp)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        ImageCarousel(
+                            images = viewModel.imageBitmaps,
+                            addImage = true,
+                            onAddImage = { uri, context ->
+                                viewModel.onAddImage(uri, context)
+                            },
+                            deleteButton = true,
+                            onDeleteImage = { index ->
+                                viewModel.onDeleteImage(index)
+                            }
+                        )
+                    }
                 }
+                else -> {}
             }
         }
     }
