@@ -50,7 +50,7 @@ fun AppBar(
                     "home/found", "home/lost" -> {
                         Image(
                             painter = painterResource(id = avatar ?: R.drawable.ic_appbar_avatar),
-                            contentDescription = null,
+                            contentDescription = "Avatar",
                             modifier = Modifier
                                 .padding(all = 8.dp)
                                 .size(40.dp)
@@ -66,7 +66,7 @@ fun AppBar(
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = null
+                                contentDescription = "back"
                             )
                         }
                     }
@@ -75,7 +75,7 @@ fun AppBar(
                 IconButton(onClick = { showSearchBar = false }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = null
+                        contentDescription = "search"
                     )
                 }
             }
@@ -99,7 +99,7 @@ fun AppBar(
                       }) {
                           Icon(
                               imageVector = Icons.Filled.Search,
-                              contentDescription = null
+                              contentDescription = "search"
                           )
                       }
                       if (!showSearchBar) {
@@ -108,7 +108,7 @@ fun AppBar(
                           }) {
                               Icon(
                                   imageVector = Icons.Filled.History,
-                                  contentDescription = null
+                                  contentDescription = "history"
                               )
                           }
                           IconButton(onClick = {
@@ -116,7 +116,7 @@ fun AppBar(
                           }) {
                               Icon(
                                   imageVector = Icons.Outlined.NotificationsNone,
-                                  contentDescription = null
+                                  contentDescription = "notification"
                               )
                           }
                       }
@@ -127,7 +127,7 @@ fun AppBar(
                       }) {
                           Icon(
                               imageVector = Icons.Filled.Share,
-                              contentDescription = null
+                              contentDescription = "share"
                           )
                       }
                   }

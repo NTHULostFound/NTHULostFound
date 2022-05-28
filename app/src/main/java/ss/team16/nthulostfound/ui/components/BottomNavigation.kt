@@ -45,7 +45,7 @@ fun BottomNav(
                     if (selected) {
                         Icon(
                             imageVector = it.icon,
-                            contentDescription = null,
+                            contentDescription = stringResource(id = it.title),
                             // apply indicator
                             modifier = Modifier
                                 .background(
@@ -57,7 +57,7 @@ fun BottomNav(
                     } else {
                         Icon(
                             imageVector = it.icon,
-                            contentDescription = null
+                            contentDescription = stringResource(id = it.title)
                         )
                     }
 
