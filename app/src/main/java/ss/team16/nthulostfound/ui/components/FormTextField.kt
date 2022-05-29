@@ -1,10 +1,7 @@
 package ss.team16.nthulostfound.ui.components
 
 import android.view.KeyEvent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -65,8 +62,8 @@ fun FormTextField(
                 onValueChange(it)
             },
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(bottom = 16.dp)
+                .fillMaxWidth()
+                .padding(bottom = if (isLastField) 0.dp else 16.dp)
                 .onPreviewKeyEvent {
                     if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
                         focusManager.moveFocus(FocusDirection.Down)
@@ -90,31 +87,40 @@ fun FormTextField(
                 Text(label)
             },
             leadingIcon =
-            if (icon != null) {
-                {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = iconDescription,
-                        tint =
-                        if (errorMessage != null)
-                            MaterialTheme.colors.error
-                        else
-                            MaterialTheme.colors.onSurface
-                    )
-                }
-            } else
-                null,
+                icon?.let {
+                    {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = iconDescription,
+                            tint =
+                            if (errorMessage != null)
+                                MaterialTheme.colors.error
+                            else
+                                MaterialTheme.colors.onSurface
+                        )
+                    }
+                },
             isError = errorMessage != null,
             trailingIcon =
-            if (errorMessage != null) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = errorMessage
-                    )
+                errorMessage?.let {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Error,
+                            contentDescription = errorMessage
+                        )
+                    }
                 }
-            } else
-                null
         )
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage as String,
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .offset(y = (-8).dp)
+                    .fillMaxWidth()
+            )
+        }
     }
 }
