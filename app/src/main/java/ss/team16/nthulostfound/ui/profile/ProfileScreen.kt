@@ -26,6 +26,7 @@ import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.model.UserData
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.FormField
+import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.InfoBox
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
@@ -79,22 +80,22 @@ fun ProfileScreen(
                 )
             }
 
-            FormField(
+            FormTextField(
                 value = viewModel.user.name,
                 onValueChange = {},
-                labelText = "姓名"
+                label = "姓名"
             )
 
-            FormField(
+            FormTextField(
                 value = viewModel.user.studentId,
                 onValueChange = {},
-                labelText = "學號"
+                label = "學號"
             )
 
-            FormField(
+            FormTextField(
                 value = viewModel.user.email,
                 onValueChange = {},
-                labelText = "E-mail"
+                label = "E-mail"
             )
 
             InfoBox(
