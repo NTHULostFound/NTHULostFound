@@ -33,7 +33,7 @@ import ss.team16.nthulostfound.ui.components.ImageCarousel
 import kotlin.math.roundToInt
 
 @Composable
-fun EditPage(
+fun ConfirmPage(
     viewModel: NewItemViewModel
 ) {
     val scope = rememberCoroutineScope()
@@ -49,15 +49,7 @@ fun EditPage(
     ) {
         ImageCarousel(
             images = viewModel.imageBitmaps,
-            padding = 16.dp,
-            addImage = true,
-            onAddImage = { uri, context ->
-                viewModel.onAddImage(uri, context)
-            },
-            deleteButton = true,
-            onDeleteImage = { index ->
-                viewModel.onDeleteImage(index)
-            }
+            padding = 16.dp
         )
 
         NewItemTextField(
@@ -150,7 +142,7 @@ fun EditPage(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NewItemTextField(
+fun NewItemConfirmText(
     value: String,
     label: String = "",
     onValueChange: (String) -> Unit,
@@ -237,22 +229,3 @@ fun NewItemTextField(
     }
 }
 
-@Composable
-fun WhoCheckBox(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(0.9f)
-            .padding(bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text("您知道失主的資訊嗎？")
-        Checkbox(
-            checked = checked,
-            onCheckedChange = { onCheckedChange(it) }
-        )
-    }
-}
