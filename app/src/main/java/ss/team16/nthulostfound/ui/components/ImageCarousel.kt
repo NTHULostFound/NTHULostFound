@@ -16,6 +16,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.NoPhotography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,7 +68,7 @@ fun ImageCarousel(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
         ) { page ->
-            if (page == images.size) { // New image
+            if (page == images.size) { // Add image
                 val context = LocalContext.current
 
                 val launcher = rememberLauncherForActivityResult(
@@ -110,11 +111,27 @@ fun ImageCarousel(
                     }
             }
         }
-        HorizontalPagerIndicator(
-            pagerState = pagerState,
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomCenter)
-        )
+
+        if (addImage || images.isNotEmpty()) {
+            if (pagerState.pageCount > 1)
+                HorizontalPagerIndicator(
+                    pagerState = pagerState,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomCenter)
+                )
+        } else  { // No image
+            Surface(
+                color = MaterialTheme.colors.secondaryVariant,
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.NoPhotography,
+                    contentDescription = "無照片",
+                    modifier = Modifier
+                        .scale(0.4f)
+                )
+            }
+        }
     }
 }
