@@ -5,7 +5,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
@@ -38,7 +40,8 @@ fun ProfileScreen(
         topBar = {
             BackArrowAppBar(
                 onBack = onBack,
-                title = "個人檔案"
+                title = "個人檔案",
+                backEnabled = true
             )
         },
         modifier = Modifier.fillMaxSize()
@@ -46,14 +49,14 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(contentPadding)
-                .padding(horizontal = padding),
+                .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(padding)
         ) {
             val avatarModifier = Modifier
                 .fillMaxWidth(.75F)
-                .padding(padding)
                 .clip(CircleShape)
                 .clickable {
                     Log.i("Profile", "avatar clicked")
