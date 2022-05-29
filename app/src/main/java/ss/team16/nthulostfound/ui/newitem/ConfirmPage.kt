@@ -50,7 +50,7 @@ fun ConfirmPage(
     ) {
         ImageCarousel(
             images = viewModel.imageBitmaps,
-            padding = 16.dp
+            padding = PaddingValues(bottom = 16.dp)
         )
 
         FormTextField(

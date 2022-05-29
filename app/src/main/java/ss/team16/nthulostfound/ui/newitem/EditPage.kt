@@ -18,6 +18,8 @@ import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import kotlin.math.roundToInt
 
+val padding = 24.dp
+
 @Composable
 fun EditPage(
     viewModel: NewItemViewModel
@@ -29,13 +31,14 @@ fun EditPage(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState),
+            .verticalScroll(scrollState)
+            .padding(padding),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ImageCarousel(
             images = viewModel.imageBitmaps,
-            padding = 16.dp,
+            padding = PaddingValues(bottom = 16.dp),
             addImage = true,
             onAddImage = { uri, context ->
                 viewModel.onAddImage(uri, context)
