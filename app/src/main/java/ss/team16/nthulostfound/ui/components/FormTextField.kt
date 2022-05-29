@@ -63,7 +63,7 @@ fun FormTextField(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = if (isLastField) 0.dp else 16.dp)
+                .padding(bottom = 16.dp)
                 .onPreviewKeyEvent {
                     if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
                         focusManager.moveFocus(FocusDirection.Down)
