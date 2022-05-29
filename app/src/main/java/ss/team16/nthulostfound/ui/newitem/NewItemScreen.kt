@@ -9,13 +9,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
+import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
@@ -27,6 +30,22 @@ fun NewItemScreen(
     viewModel: NewItemViewModel = viewModel(factory = NewItemViewModelFactory(type, popScreen))
 ) {
     Scaffold(
+        topBar = {
+            val pageTitle =
+                when (type) {
+                    NewItemType.NEW_FOUND -> stringResource(R.string.title_new_found)
+                    NewItemType.NEW_LOST -> stringResource(R.string.title_new_lost)
+                }
+
+            val backEnabled =
+                viewModel.pagerState.currentPage != NewItemPageInfo.SENDING.value
+
+            BackArrowAppBar(
+                title = pageTitle,
+                onBack = { popScreen() },
+                backEnabled = backEnabled
+            )
+        },
         bottomBar = {
             // pagerState.animateScrollToPage has to be called in an compose coroutine scope
             // So the function has to be declared here and pass into the view model

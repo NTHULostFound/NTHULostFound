@@ -32,7 +32,7 @@ class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.ENTER -> null
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("返回編輯", true)
-            NewItemPageInfo.SENDING -> PagerButtonInfo("返回編輯", false)
+            NewItemPageInfo.SENDING -> null
             NewItemPageInfo.DONE -> null
         }
     }
@@ -42,7 +42,7 @@ class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.ENTER -> PagerButtonInfo("確認資訊", true)
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("確定送出", true)
-            NewItemPageInfo.SENDING -> null
+            NewItemPageInfo.SENDING -> PagerButtonInfo("完成", false)
             NewItemPageInfo.DONE -> PagerButtonInfo("完成", true)
         }
     }
