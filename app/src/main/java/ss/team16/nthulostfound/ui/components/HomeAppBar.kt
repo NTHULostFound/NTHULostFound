@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,15 +14,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.NotificationsNone
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -32,50 +35,47 @@ import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
 @Composable
-fun AppBar(
-    title: String,
-    currentRoute: String,
-    navigateToRoute: (String) -> Unit,
-    search: (String) -> Unit,
+fun HomeAppBar(
     modifier: Modifier = Modifier,
-    avatar: Int? = null
+    title: String = "",
+    navigateToRoute: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    avatar: Bitmap? = null
 ) {
     var showSearchBar by rememberSaveable { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
 
     TopAppBar(
         navigationIcon = {
             if (!showSearchBar) {
-                when (currentRoute) {
-                    "home/found", "home/lost" -> {
-                        Image(
-                            painter = painterResource(id = avatar ?: R.drawable.ic_appbar_avatar),
-                            contentDescription = "Avatar",
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .clickable {
-                                    navigateToRoute("profile")
-                                }
-                        )
+                val avatarModifier = Modifier
+                    .padding(all = 8.dp)
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        navigateToRoute("profile")
                     }
-                    else -> {
-                        IconButton(onClick = {
-                            // TODO: navigate back
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "back"
-                            )
-                        }
-                    }
+
+                if (avatar != null) {
+                    Image(
+                        bitmap = avatar.asImageBitmap(),
+                        contentDescription = "Avatar",
+                        modifier = avatarModifier
+                    )
+                } else {
+                    // fallback avatar
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_appbar_avatar),
+                        contentDescription = "Avatar",
+                        modifier = avatarModifier
+                    )
                 }
             } else {
                 IconButton(onClick = { showSearchBar = false }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "search"
+                        contentDescription = "back"
                     )
                 }
             }
@@ -84,52 +84,48 @@ fun AppBar(
             if (showSearchBar) {
                 RoundedTextField(
                     value = searchQuery,
-                    onValueChange = { searchQuery = it }
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier.focusRequester(focusRequester)
                 )
+
+                // we must request focus after search bar is composed,
+                // so we cannot request focus when search icon is pressed
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
+                }
             } else {
                 Text(text = title)
             }
         },
         actions = {
-              when  {
-                  listOf("home/lost", "home/found").any { it == currentRoute } -> {
-                      IconButton(onClick = {
-                          if (!showSearchBar) showSearchBar = true
-                          else search(searchQuery)
-                      }) {
-                          Icon(
-                              imageVector = Icons.Filled.Search,
-                              contentDescription = "search"
-                          )
-                      }
-                      if (!showSearchBar) {
-                          IconButton(onClick = {
-                              // TODO: list self items, maybe done with search
-                          }) {
-                              Icon(
-                                  imageVector = Icons.Filled.History,
-                                  contentDescription = "history"
-                              )
-                          }
-                          IconButton(onClick = {
-                              navigateToRoute("notifications")
-                          }) {
-                              Icon(
-                                  imageVector = Icons.Outlined.NotificationsNone,
-                                  contentDescription = "notification"
-                              )
-                          }
-                      }
+              IconButton(onClick = {
+                  if (!showSearchBar) {
+                      showSearchBar = true
+                  } else {
+                      onSearch(searchQuery)
                   }
-                  currentRoute.startsWith("item/") -> {
-                      IconButton(onClick = {
-                        // TODO: share onclick
-                      }) {
-                          Icon(
-                              imageVector = Icons.Filled.Share,
-                              contentDescription = "share"
-                          )
-                      }
+              }) {
+                  Icon(
+                      imageVector = Icons.Filled.Search,
+                      contentDescription = "search"
+                  )
+              }
+              if (!showSearchBar) {
+                  IconButton(onClick = {
+                      // TODO: list self items, maybe done with search
+                  }) {
+                      Icon(
+                          imageVector = Icons.Filled.History,
+                          contentDescription = "history"
+                      )
+                  }
+                  IconButton(onClick = {
+                      navigateToRoute("notifications")
+                  }) {
+                      Icon(
+                          imageVector = Icons.Outlined.NotificationsNone,
+                          contentDescription = "notification"
+                      )
                   }
               }
         },
@@ -192,13 +188,12 @@ fun RoundedTextField(
 
 @Preview
 @Composable
-fun AppBarPreview() {
+fun HomeAppBarPreview() {
     NTHULostFoundTheme {
-        AppBar(
-            title = "test",
-            currentRoute = "home/lost",
+        HomeAppBar(
+            title = "Home",
             navigateToRoute = { },
-            search = { }
+            onSearch = { }
         )
     }
 }
