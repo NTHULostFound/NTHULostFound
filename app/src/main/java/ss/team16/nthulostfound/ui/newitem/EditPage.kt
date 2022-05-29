@@ -1,34 +1,20 @@
 package ss.team16.nthulostfound.ui.newitem
 
-import android.view.KeyEvent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onPreviewKeyEvent
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import kotlin.math.roundToInt
 
@@ -60,7 +46,7 @@ fun EditPage(
             }
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.name,
             label = "物品名稱",
             onValueChange = { viewModel.onNameChange(it) },
@@ -69,7 +55,7 @@ fun EditPage(
             required = true
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.place,
             label =
             if (viewModel.type == NewItemType.NEW_FOUND)
@@ -82,7 +68,7 @@ fun EditPage(
             required = true
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.description,
             label = "物品詳細資訊",
             icon = Icons.Outlined.Info,
@@ -91,7 +77,7 @@ fun EditPage(
             required = false
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.how,
             label =
             if (viewModel.type == NewItemType.NEW_FOUND)
@@ -108,7 +94,7 @@ fun EditPage(
             required = true
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.contact,
             label = "聯繫方式",
             onValueChange = { viewModel.onContactChange(it) },
@@ -131,7 +117,7 @@ fun EditPage(
             )
 
             AnimatedVisibility(visible = viewModel.whoEnabled) {
-                NewItemTextField(
+                FormTextField(
                     value = viewModel.who,
                     label = "失主的姓名或學號",
                     onValueChange = { viewModel.onWhoChange(it) },
@@ -145,95 +131,6 @@ fun EditPage(
                 )
             }
         }
-    }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun NewItemTextField(
-    value: String,
-    label: String = "",
-    onValueChange: (String) -> Unit,
-    icon: ImageVector? = null,
-    iconDescription: String? = label,
-    singleLine: Boolean = true,
-    required: Boolean = false,
-    isLastField: Boolean = false,
-    onGloballyPositioned: (LayoutCoordinates) -> Unit = {}
-) {
-    var isFirst by rememberSaveable { mutableStateOf(true) }
-    val errorMessage =
-        if (required && !isFirst && value.isEmpty())
-            "請輸入${label}！"
-        else
-            null
-    val focusManager = LocalFocusManager.current
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned { onGloballyPositioned(it) },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {
-                isFirst = false
-                onValueChange(it)
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(bottom = 16.dp)
-                .onPreviewKeyEvent {
-                    if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
-                        focusManager.moveFocus(FocusDirection.Down)
-                        true
-                    } else
-                        false
-                },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction =
-                if (isLastField)
-                    ImeAction.Done
-                else
-                    ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) },
-                onDone = { focusManager.clearFocus() }
-            ),
-            singleLine = singleLine,
-            label = {
-                Text(label)
-            },
-            leadingIcon =
-            if (icon != null) {
-                {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = iconDescription,
-                        tint =
-                        if (errorMessage != null)
-                            MaterialTheme.colors.error
-                        else
-                            MaterialTheme.colors.onSurface
-                    )
-                }
-            } else
-                null,
-            isError = errorMessage != null,
-            trailingIcon =
-            if (errorMessage != null) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = errorMessage
-                    )
-                }
-            } else
-                null
-        )
     }
 }
 

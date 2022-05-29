@@ -70,6 +70,7 @@ fun NewItemScreen(
         ) { page ->
             when (page) {
                 0 -> { EditPage(viewModel = viewModel) }
+                1 -> { ConfirmPage(viewModel = viewModel) }
                 else -> {}
             }
         }

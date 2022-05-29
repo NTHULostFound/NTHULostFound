@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import kotlin.math.roundToInt
 
@@ -52,7 +53,7 @@ fun ConfirmPage(
             padding = 16.dp
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.name,
             label = "物品名稱",
             onValueChange = { viewModel.onNameChange(it) },
@@ -61,7 +62,7 @@ fun ConfirmPage(
             required = true
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.place,
             label =
             if (viewModel.type == NewItemType.NEW_FOUND)
@@ -74,7 +75,7 @@ fun ConfirmPage(
             required = true
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.description,
             label = "物品詳細資訊",
             icon = Icons.Outlined.Info,
@@ -83,7 +84,7 @@ fun ConfirmPage(
             required = false
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.how,
             label =
             if (viewModel.type == NewItemType.NEW_FOUND)
@@ -100,7 +101,7 @@ fun ConfirmPage(
             required = true
         )
 
-        NewItemTextField(
+        FormTextField(
             value = viewModel.contact,
             label = "聯繫方式",
             onValueChange = { viewModel.onContactChange(it) },
@@ -123,7 +124,7 @@ fun ConfirmPage(
             )
 
             AnimatedVisibility(visible = viewModel.whoEnabled) {
-                NewItemTextField(
+                FormTextField(
                     value = viewModel.who,
                     label = "失主的姓名或學號",
                     onValueChange = { viewModel.onWhoChange(it) },
