@@ -32,7 +32,7 @@ fun ViewPagerBar(
             HorizontalPagerIndicator(
                 pagerState = pagerState,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(top = 16.dp)
                     .align(Alignment.CenterHorizontally)
             )
 

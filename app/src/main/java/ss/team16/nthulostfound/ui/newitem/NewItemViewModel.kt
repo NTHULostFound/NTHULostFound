@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.newitem
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -18,10 +19,7 @@ import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemData
 import ss.team16.nthulostfound.model.NewItemType
 
-class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel() {
-    private val _newItemData by mutableStateOf(NewItemData(type))
-    val newItemData: NewItemData
-        get() = _newItemData
+class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewModel() {
 
     @OptIn(ExperimentalPagerApi::class)
     var pagerState by mutableStateOf(PagerState(0))
@@ -30,9 +28,9 @@ class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel
     @OptIn(ExperimentalPagerApi::class)
     fun getPagerPrevButtonInfo(): PagerButtonInfo? {
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
-            NewItemPageInfo.ENTER -> null
+            NewItemPageInfo.EDIT -> null
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("返回編輯", true)
-            NewItemPageInfo.SENDING -> PagerButtonInfo("返回編輯", false)
+            NewItemPageInfo.SENDING -> null
             NewItemPageInfo.DONE -> null
         }
     }
@@ -40,9 +38,9 @@ class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel
     @OptIn(ExperimentalPagerApi::class)
     fun getPagerNextButtonInfo(): PagerButtonInfo? {
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
-            NewItemPageInfo.ENTER -> PagerButtonInfo("確認資訊", true)
+            NewItemPageInfo.EDIT -> PagerButtonInfo("確認資訊", true)
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("確定送出", true)
-            NewItemPageInfo.SENDING -> null
+            NewItemPageInfo.SENDING -> PagerButtonInfo("完成", false)
             NewItemPageInfo.DONE -> PagerButtonInfo("完成", true)
         }
     }
@@ -108,6 +106,48 @@ class NewItemViewModel(type: NewItemType, val popScreen: () -> Unit) : ViewModel
     fun onDeleteImage(index: Int) {
         _imageBitmaps.removeAt(index)
     }
+
+    var name by mutableStateOf("")
+        private set
+    fun onNameChange(value: String) {
+        name = value
+    }
+
+    var place by mutableStateOf("")
+        private set
+    fun onPlaceChange(value: String) {
+        place = value
+    }
+
+    var description by mutableStateOf("")
+        private set
+    fun onDescriptionChange(value: String) {
+        description = value
+    }
+
+    var how by mutableStateOf("")
+        private set
+    fun onHowChange(value: String) {
+        how = value
+    }
+
+    var contact by mutableStateOf("")
+        private set
+    fun onContactChange(value: String) {
+        contact = value
+    }
+
+    var whoEnabled by mutableStateOf(type == NewItemType.NEW_FOUND)
+        private set
+    fun onWhoEnabledChange(value: Boolean) {
+        whoEnabled = value
+    }
+
+    var who by mutableStateOf("")
+        private set
+    fun onWhoChange(value: String) {
+        who = value
+    }
 }
 
 class NewItemViewModelFactory(private val type: NewItemType, private val popScreen: () -> Unit) :
@@ -116,7 +156,7 @@ class NewItemViewModelFactory(private val type: NewItemType, private val popScre
 }
 
 enum class NewItemPageInfo(val value: Int) {
-    ENTER(0),
+    EDIT(0),
     CONFIRM(1),
     SENDING(2),
     DONE(3);

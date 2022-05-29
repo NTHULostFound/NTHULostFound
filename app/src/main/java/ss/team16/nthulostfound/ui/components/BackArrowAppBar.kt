@@ -16,12 +16,13 @@ import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 fun BackArrowAppBar(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    backEnabled: Boolean = false,
     title: String = "",
     onShare: (() -> Unit)? = null
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = onBack) {
+            IconButton(onClick = onBack, enabled = backEnabled) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "back"
