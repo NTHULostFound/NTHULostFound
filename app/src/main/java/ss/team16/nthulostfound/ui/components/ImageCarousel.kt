@@ -7,10 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -38,7 +35,7 @@ import com.google.accompanist.pager.rememberPagerState
 @Composable
 fun ImageCarousel(
     images: List<Bitmap> = emptyList(),
-    padding: Dp = 0.dp,
+    padding: PaddingValues = PaddingValues(0.dp),
     aspectRatio: Float = 4 / 3f,
     shape: Shape = RoundedCornerShape(16.dp),
     contextScale: ContentScale = ContentScale.FillWidth,
