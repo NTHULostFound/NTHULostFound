@@ -23,19 +23,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewItemViewModel @Inject constructor(
-    private val state: SavedStateHandle,
+    state: SavedStateHandle,
     val uploadImagesUseCase: UploadImagesUseCase
 ) : ViewModel() {
 
-//    private val newItemType = state.get<String>("new_item_type")!!
+    private val newItemType = state.get<String>("new_item_type")!!
 
-//    val type =
-//        if (newItemType == "found")
-//            NewItemType.NEW_FOUND
-//        else
-//            NewItemType.NEW_LOST
-
-    val type = NewItemType.NEW_FOUND
+    val type =
+        if (newItemType == "found")
+            NewItemType.NEW_FOUND
+        else
+            NewItemType.NEW_LOST
 
     @OptIn(ExperimentalPagerApi::class)
     var pagerState by mutableStateOf(PagerState(0))
@@ -98,7 +96,7 @@ class NewItemViewModel @Inject constructor(
 
     private fun doWork(doneCallback: () -> Unit) {
         viewModelScope.launch {
-            delay(1000L)
+            uploadImagesUseCase()
             doneCallback()
         }
     }
