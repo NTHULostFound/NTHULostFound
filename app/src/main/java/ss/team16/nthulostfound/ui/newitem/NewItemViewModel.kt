@@ -51,18 +51,24 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
         if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
             popScreen()
         } else {
-            val pageNext = pagerState.currentPage + 1
-            if (pagerState.isScrollInProgress || pageNext >= pagerState.pageCount)
+            val curPage = pagerState.currentPage
+            val nextPage = curPage + 1
+            if (pagerState.isScrollInProgress || nextPage >= pagerState.pageCount)
                 return
 
-            scrollToPage(pageNext)
-
-            when (pageNext) {
-                NewItemPageInfo.SENDING.value -> {
+            when (curPage) {
+                NewItemPageInfo.EDIT.value -> {
+                    showFieldErrors = true
+                    if (!validateFields())
+                        return
+                }
+                NewItemPageInfo.CONFIRM.value -> {
                     doWork { scrollToPage(NewItemPageInfo.DONE.value) }
                 }
                 else -> {}
             }
+
+            scrollToPage(nextPage)
         }
     }
 
@@ -171,6 +177,17 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
         private set
     fun onWhoChange(value: String) {
         who = value
+    }
+
+    var showFieldErrors by mutableStateOf(false)
+        private set
+
+    private fun validateFields(): Boolean {
+        return name.isNotBlank() &&
+                place.isNotBlank() &&
+                how.isNotBlank() &&
+                contact.isNotBlank() &&
+                !(whoEnabled && who.isBlank())
     }
 }
 

@@ -75,7 +75,8 @@ fun EditPage(
             onValueChange = { viewModel.onNameChange(it) },
             icon = Icons.Outlined.WorkOutline,
             singleLine = true,
-            required = true
+            required = true,
+            initShowError = viewModel.showFieldErrors
         )
 
         Row(
@@ -120,7 +121,8 @@ fun EditPage(
             onValueChange = { viewModel.onPlaceChange(it) },
             icon = Icons.Outlined.Place,
             singleLine = true,
-            required = true
+            required = true,
+            initShowError = viewModel.showFieldErrors
         )
 
         FormTextField(
@@ -129,7 +131,8 @@ fun EditPage(
             icon = Icons.Outlined.Info,
             onValueChange = { viewModel.onDescriptionChange(it) },
             singleLine = false,
-            required = false
+            required = false,
+            initShowError = viewModel.showFieldErrors
         )
 
         FormTextField(
@@ -146,7 +149,8 @@ fun EditPage(
                 Icons.Outlined.HelpOutline,
             onValueChange = { viewModel.onHowChange(it) },
             singleLine = false,
-            required = true
+            required = true,
+            initShowError = viewModel.showFieldErrors
         )
 
         FormTextField(
@@ -156,7 +160,8 @@ fun EditPage(
             icon = Icons.Outlined.ContactPage,
             singleLine = false,
             required = true,
-            isLastField = !viewModel.whoEnabled
+            isLastField = !viewModel.whoEnabled,
+            initShowError = viewModel.showFieldErrors
         )
 
         if (viewModel.type == NewItemType.NEW_FOUND) {
@@ -182,7 +187,8 @@ fun EditPage(
                     isLastField = true,
                     onGloballyPositioned = { coordinates ->
                         whoPosition = coordinates.positionInRoot().y
-                    }
+                    },
+                    initShowError = viewModel.showFieldErrors
                 )
             }
         }
