@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -71,6 +72,7 @@ fun NotificationItem(
                 .align(Alignment.End)
                 .padding(end = 8.dp, bottom = 4.dp)
         )
+        Divider()
     }
 }
 
