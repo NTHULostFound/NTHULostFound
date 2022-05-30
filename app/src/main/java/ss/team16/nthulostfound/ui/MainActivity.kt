@@ -16,6 +16,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
+import ss.team16.nthulostfound.ui.home.HomeScreen
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailScreen
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
 import ss.team16.nthulostfound.ui.itemdetail.ViewMode
@@ -41,16 +42,24 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = "home/found"
+                    startDestination = "home/{show_type}"
                 ) {
-                    composable("home/found") {
-                        LaunchedEffect(Unit) {
-                            navController.navigate("item/C8763")
-//                            navController.navigate("new_item/lost")
-                        }
-                    }
-                    composable("home/lost") { Greeting(name = "lost items") }
+                    composable("home/{show_type}",
+                        arguments = listOf(navArgument("show_type") {
+                            type = NavType.StringType
+                            defaultValue = "found"
+                        })
+                    ) {
+//                        LaunchedEffect(Unit) {
+//                            navController.navigate("new_item/found")
+//                        }
 
+                        HomeScreen(navController, showType = it.arguments?.getString("show_type"))
+                    }
+//                    composable("home/lost") {
+//
+//                        Greeting(name = "lost items")
+//                    }
                     composable("new_item/found") {
                         NewItemScreen(
                             type = NewItemType.NEW_FOUND,
