@@ -73,7 +73,9 @@ fun FormTextField(
                 },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction =
-                if (isLastField)
+                if (!singleLine)
+                    ImeAction.Default
+                else if (isLastField)
                     ImeAction.Done
                 else
                     ImeAction.Next
