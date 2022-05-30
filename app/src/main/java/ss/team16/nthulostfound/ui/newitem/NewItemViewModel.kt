@@ -14,13 +14,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemData
 import ss.team16.nthulostfound.model.NewItemType
 import java.util.*
+import javax.inject.Inject
 
-class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewModel() {
+@HiltViewModel
+class NewItemViewModel @Inject constructor(
+    val type: NewItemType,
+    val popScreen: () -> Unit
+) : ViewModel() {
 
     @OptIn(ExperimentalPagerApi::class)
     var pagerState by mutableStateOf(PagerState(0))
