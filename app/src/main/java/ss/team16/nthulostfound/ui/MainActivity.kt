@@ -9,13 +9,25 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
+import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
+import ss.team16.nthulostfound.utils.assistedViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @EntryPoint
+    @InstallIn(ActivityComponent::class)
+    interface ViewModelFactoryProvider {
+        fun newItemViewModelFactory(): NewItemViewModel.Factory
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -27,20 +39,34 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable("home/found") {
                         LaunchedEffect(Unit) {
-                            navController.navigate("new_item/found")
+                            navController.navigate("new_item/lost")
                         }
                     }
                     composable("home/lost") { Greeting(name = "lost items") }
 
-                    composable("new_item/{new_item_type}") {
-                        val type = it.arguments!!.get("new_item_type")
+                    composable("new_item/found") {
                         NewItemScreen(
-                            type =
-                            if (type == "found")
-                                NewItemType.NEW_FOUND
-                            else
-                                NewItemType.NEW_LOST,
-                            popScreen = { navController.popBackStack() }
+                            type = NewItemType.NEW_FOUND,
+                            popScreen = { navController.popBackStack() },
+                            viewModel = assistedViewModel {
+                                NewItemViewModel.provideFactory(
+                                    newItemViewModelFactory(),
+                                    NewItemType.NEW_FOUND
+                                ) { navController.popBackStack() }
+                            },
+                        )
+                    }
+
+                    composable("new_item/lost") {
+                        NewItemScreen(
+                            type = NewItemType.NEW_LOST,
+                            popScreen = { navController.popBackStack() },
+                            viewModel = assistedViewModel {
+                                NewItemViewModel.provideFactory(
+                                    newItemViewModelFactory(),
+                                    NewItemType.NEW_LOST
+                                ) { navController.popBackStack() }
+                            },
                         )
                     }
 

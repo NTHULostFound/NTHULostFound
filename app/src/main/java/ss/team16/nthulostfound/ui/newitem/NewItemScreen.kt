@@ -60,7 +60,7 @@ fun NewItemScreen(
                 pagerState = viewModel.pagerState,
                 nextButtonInfo = viewModel.getPagerNextButtonInfo(),
                 prevButtonInfo = viewModel.getPagerPrevButtonInfo(),
-                onNextPage = { viewModel.goToNextPage(scrollToPage, popScreen) },
+                onNextPage = { viewModel.goToNextPage(scrollToPage) },
                 onPrevPage = { viewModel.goToPrevPage(scrollToPage) }
             )
         }
