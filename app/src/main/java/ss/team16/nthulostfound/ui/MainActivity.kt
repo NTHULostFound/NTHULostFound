@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
+import dagger.hilt.android.AndroidEntryPoint
 import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

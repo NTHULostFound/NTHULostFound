@@ -66,12 +66,14 @@ dependencies {
     // Hilt
     implementation 'com.google.dagger:hilt-android:2.42'
     kapt 'com.google.dagger:hilt-compiler:2.42'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
     // For instrumentation tests
     androidTestImplementation  'com.google.dagger:hilt-android-testing:2.42'
     androidTestAnnotationProcessor 'com.google.dagger:hilt-compiler:2.42'
     // For local unit tests
     testImplementation 'com.google.dagger:hilt-android-testing:2.42'
     testAnnotationProcessor 'com.google.dagger:hilt-compiler:2.42'
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:30.0.1')
