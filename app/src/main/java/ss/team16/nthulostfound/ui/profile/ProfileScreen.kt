@@ -3,7 +3,6 @@ package ss.team16.nthulostfound.ui.profile
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -12,7 +11,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ss.team16.nthulostfound.R
-import ss.team16.nthulostfound.model.UserData
+import ss.team16.nthulostfound.domain.model.UserData
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
-import ss.team16.nthulostfound.ui.components.FormField
 import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.InfoBox
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme

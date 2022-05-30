@@ -5,13 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
-import ss.team16.nthulostfound.model.NewItemType
+import dagger.hilt.android.AndroidEntryPoint
+import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,20 +23,23 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = "new_item/found"
+                    startDestination = "home/found"
                 ) {
-                    composable("home/found") { Greeting(name = "found items") }
+                    composable("home/found") {
+                        LaunchedEffect(Unit) {
+                            navController.navigate("new_item/found")
+                        }
+                    }
                     composable("home/lost") { Greeting(name = "lost items") }
 
-                    composable("new_item/found") {
+                    composable("new_item/{new_item_type}") {
+                        val type = it.arguments!!.get("new_item_type")
                         NewItemScreen(
-                            type = NewItemType.NEW_FOUND,
-                            popScreen = { navController.popBackStack() }
-                        )
-                    }
-                    composable("new_item/lost") {
-                        NewItemScreen(
-                            type = NewItemType.NEW_LOST,
+                            type =
+                            if (type == "found")
+                                NewItemType.NEW_FOUND
+                            else
+                                NewItemType.NEW_LOST,
                             popScreen = { navController.popBackStack() }
                         )
                     }

@@ -1,26 +1,39 @@
 package ss.team16.nthulostfound.ui.newitem
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.compose.runtime.*
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ss.team16.nthulostfound.model.NewItemData
-import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.domain.model.NewItemType
+import ss.team16.nthulostfound.domain.usecase.UploadImagesUseCase
 import java.util.*
+import javax.inject.Inject
 
-class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewModel() {
+@HiltViewModel
+class NewItemViewModel @Inject constructor(
+    state: SavedStateHandle,
+    val uploadImagesUseCase: UploadImagesUseCase
+) : ViewModel() {
+
+    private val newItemType = state.get<String>("new_item_type")!!
+
+    val type =
+        if (newItemType == "found")
+            NewItemType.NEW_FOUND
+        else
+            NewItemType.NEW_LOST
 
     @OptIn(ExperimentalPagerApi::class)
     var pagerState by mutableStateOf(PagerState(0))
@@ -47,7 +60,7 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scrollToPage: (Int) -> Unit) {
+    fun goToNextPage(scrollToPage: (Int) -> Unit, popScreen: () -> Unit) {
         if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
             popScreen()
         } else {
@@ -83,7 +96,7 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
 
     private fun doWork(doneCallback: () -> Unit) {
         viewModelScope.launch {
-            delay(1000L)
+            uploadImagesUseCase()
             doneCallback()
         }
     }
@@ -189,11 +202,6 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
                 contact.isNotBlank() &&
                 !(whoEnabled && who.isBlank())
     }
-}
-
-class NewItemViewModelFactory(private val type: NewItemType, private val popScreen: () -> Unit) :
-    ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T = NewItemViewModel(type, popScreen) as T
 }
 
 enum class NewItemPageInfo(val value: Int) {
