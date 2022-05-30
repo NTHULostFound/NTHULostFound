@@ -23,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
@@ -224,23 +225,21 @@ fun DateField(
     onDateChange: (Int, Int, Int) -> Unit,
 ) {
     val dateString = "${year}/${month + 1}/${day}"
-
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed: Boolean by interactionSource.collectIsPressedAsState()
-
-    if (isPressed) {
-        val context = LocalContext.current
-        val datePickerDialog = DatePickerDialog(
-            context,
-            { _, y, m, d -> onDateChange(y, m, d) },
-            year, month, day
-        )
-        datePickerDialog.show()
-    }
+    val context = LocalContext.current
 
     OutlinedTextField(
         value = dateString,
-        modifier = modifier,
+        modifier = modifier
+            .onFocusChanged {
+                if (it.isFocused) {
+                    val datePickerDialog = DatePickerDialog(
+                        context,
+                        { _, y, m, d -> onDateChange(y, m, d) },
+                        year, month, day
+                    )
+                    datePickerDialog.show()
+                }
+            },
         onValueChange = {},
         readOnly = true,
         singleLine = true,
@@ -252,8 +251,7 @@ fun DateField(
                 imageVector = Icons.Outlined.CalendarMonth,
                 contentDescription = label,
             )
-        },
-        interactionSource = interactionSource
+        }
     )
 }
 
@@ -271,23 +269,22 @@ fun TimeField(
     val formatter = SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
     val timeString = formatter.format(cal.time)
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed: Boolean by interactionSource.collectIsPressedAsState()
-
-    if (isPressed) {
-        val context = LocalContext.current
-        val datePickerDialog = TimePickerDialog(
-            context,
-            { _, h, m -> onTimeChange(h, m) },
-            hour, minute,
-            false
-        )
-        datePickerDialog.show()
-    }
+    val context = LocalContext.current
 
     OutlinedTextField(
         value = timeString,
-        modifier = modifier,
+        modifier = modifier
+            .onFocusChanged {
+                if (it.isFocused) {
+                    val datePickerDialog = TimePickerDialog(
+                        context,
+                        { _, h, m -> onTimeChange(h, m) },
+                        hour, minute,
+                        false
+                    )
+                    datePickerDialog.show()
+                }
+            },
         onValueChange = {},
         readOnly = true,
         singleLine = true,
@@ -299,7 +296,6 @@ fun TimeField(
                 imageVector = Icons.Outlined.CalendarMonth,
                 contentDescription = label,
             )
-        },
-        interactionSource = interactionSource
+        }
     )
 }
