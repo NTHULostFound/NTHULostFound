@@ -18,6 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemData
 import ss.team16.nthulostfound.model.NewItemType
+import java.util.*
 
 class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewModel() {
 
@@ -105,6 +106,29 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
 
     fun onDeleteImage(index: Int) {
         _imageBitmaps.removeAt(index)
+    }
+
+    private val calendar = Calendar.getInstance()
+
+    var year by mutableStateOf(calendar[Calendar.YEAR])
+        private set
+    var month by mutableStateOf(calendar[Calendar.MONTH])
+        private set
+    var day by mutableStateOf(calendar[Calendar.DAY_OF_MONTH])
+        private set
+    var hour by mutableStateOf(calendar[Calendar.HOUR_OF_DAY])
+        private set
+    var minute by mutableStateOf(calendar[Calendar.MINUTE])
+        private set
+
+    fun onDateChange(year: Int, month: Int, day: Int) {
+        this.year = year
+        this.month = month
+        this.day = day
+    }
+    fun onTimeChange(hour: Int, minute: Int) {
+        this.hour = hour
+        this.minute = minute
     }
 
     var name by mutableStateOf("")
