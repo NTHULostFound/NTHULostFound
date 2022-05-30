@@ -13,6 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,19 +24,11 @@ import ss.team16.nthulostfound.domain.usecase.UploadImagesUseCase
 import java.util.*
 import javax.inject.Inject
 
-@HiltViewModel
-class NewItemViewModel @Inject constructor(
-    state: SavedStateHandle,
-    val uploadImagesUseCase: UploadImagesUseCase
+class NewItemViewModel @AssistedInject constructor(
+    @Assisted val type: NewItemType,
+    @Assisted private val popScreen: () -> Unit,
+    private val uploadImagesUseCase: UploadImagesUseCase
 ) : ViewModel() {
-
-    private val newItemType = state.get<String>("new_item_type")!!
-
-    val type =
-        if (newItemType == "found")
-            NewItemType.NEW_FOUND
-        else
-            NewItemType.NEW_LOST
 
     @OptIn(ExperimentalPagerApi::class)
     var pagerState by mutableStateOf(PagerState(0))
@@ -60,7 +55,7 @@ class NewItemViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scrollToPage: (Int) -> Unit, popScreen: () -> Unit) {
+    fun goToNextPage(scrollToPage: (Int) -> Unit) {
         if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
             popScreen()
         } else {
@@ -201,6 +196,30 @@ class NewItemViewModel @Inject constructor(
                 how.isNotBlank() &&
                 contact.isNotBlank() &&
                 !(whoEnabled && who.isBlank())
+    }
+
+
+
+
+
+
+
+    @AssistedFactory
+    interface Factory {
+        fun create(type: NewItemType, popScreen: () -> Unit): NewItemViewModel
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        fun provideFactory(
+            assistedFactory: Factory,
+            type: NewItemType,
+            popScreen: () -> Unit
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create(type, popScreen) as T
+            }
+        }
     }
 }
 
