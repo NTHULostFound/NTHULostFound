@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -36,14 +37,19 @@ fun FormTextField(
     iconDescription: String? = label,
     singleLine: Boolean = true,
     required: Boolean = false,
-    initEmptyError: Boolean = false, // Show error even if the TextField has not been touched
+    initShowError: Boolean = false, // Show error even if the TextField has not been touched
     isLastField: Boolean = false,
-    onGloballyPositioned: (LayoutCoordinates) -> Unit = {}
+    onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
+    validator: (String) -> String? = { null }
 ) {
-    var isFirst by rememberSaveable { mutableStateOf(true) }
+    var focused by rememberSaveable { mutableStateOf(false) }
+    var touched by rememberSaveable { mutableStateOf(false) }
     val errorMessage =
-        if (required && (initEmptyError || !isFirst) && value.isEmpty())
-            "請輸入${label}！"
+        if (initShowError || touched)
+            if (required && value.isBlank())
+                "請輸入${label}！"
+            else
+                validator(value)
         else
             null
     val focusManager = LocalFocusManager.current
@@ -58,12 +64,18 @@ fun FormTextField(
         OutlinedTextField(
             value = value,
             onValueChange = {
-                isFirst = false
+                touched = true
                 onValueChange(it)
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
+                .onFocusChanged {
+                    if (it.isFocused)
+                        focused = true
+                    else if (focused && !it.isFocused)
+                        touched = true
+                }
                 .onPreviewKeyEvent {
                     if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
                         focusManager.moveFocus(FocusDirection.Down)
@@ -73,7 +85,9 @@ fun FormTextField(
                 },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction =
-                if (isLastField)
+                if (!singleLine)
+                    ImeAction.Default
+                else if (isLastField)
                     ImeAction.Done
                 else
                     ImeAction.Next
@@ -113,7 +127,7 @@ fun FormTextField(
         )
         if (errorMessage != null) {
             Text(
-                text = errorMessage as String,
+                text = errorMessage,
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier

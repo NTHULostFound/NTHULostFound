@@ -18,6 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.model.NewItemData
 import ss.team16.nthulostfound.model.NewItemType
+import java.util.*
 
 class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewModel() {
 
@@ -50,18 +51,24 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
         if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
             popScreen()
         } else {
-            val pageNext = pagerState.currentPage + 1
-            if (pagerState.isScrollInProgress || pageNext >= pagerState.pageCount)
+            val curPage = pagerState.currentPage
+            val nextPage = curPage + 1
+            if (pagerState.isScrollInProgress || nextPage >= pagerState.pageCount)
                 return
 
-            scrollToPage(pageNext)
-
-            when (pageNext) {
-                NewItemPageInfo.SENDING.value -> {
+            when (curPage) {
+                NewItemPageInfo.EDIT.value -> {
+                    showFieldErrors = true
+                    if (!validateFields())
+                        return
+                }
+                NewItemPageInfo.CONFIRM.value -> {
                     doWork { scrollToPage(NewItemPageInfo.DONE.value) }
                 }
                 else -> {}
             }
+
+            scrollToPage(nextPage)
         }
     }
 
@@ -107,6 +114,29 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
         _imageBitmaps.removeAt(index)
     }
 
+    private val calendar = Calendar.getInstance()
+
+    var year by mutableStateOf(calendar[Calendar.YEAR])
+        private set
+    var month by mutableStateOf(calendar[Calendar.MONTH])
+        private set
+    var day by mutableStateOf(calendar[Calendar.DAY_OF_MONTH])
+        private set
+    var hour by mutableStateOf(calendar[Calendar.HOUR_OF_DAY])
+        private set
+    var minute by mutableStateOf(calendar[Calendar.MINUTE])
+        private set
+
+    fun onDateChange(year: Int, month: Int, day: Int) {
+        this.year = year
+        this.month = month
+        this.day = day
+    }
+    fun onTimeChange(hour: Int, minute: Int) {
+        this.hour = hour
+        this.minute = minute
+    }
+
     var name by mutableStateOf("")
         private set
     fun onNameChange(value: String) {
@@ -147,6 +177,17 @@ class NewItemViewModel(val type: NewItemType, val popScreen: () -> Unit) : ViewM
         private set
     fun onWhoChange(value: String) {
         who = value
+    }
+
+    var showFieldErrors by mutableStateOf(false)
+        private set
+
+    private fun validateFields(): Boolean {
+        return name.isNotBlank() &&
+                place.isNotBlank() &&
+                how.isNotBlank() &&
+                contact.isNotBlank() &&
+                !(whoEnabled && who.isBlank())
     }
 }
 
