@@ -37,7 +37,7 @@ fun FormTextField(
     iconDescription: String? = label,
     singleLine: Boolean = true,
     required: Boolean = false,
-    initEmptyError: Boolean = false, // Show error even if the TextField has not been touched
+    initShowError: Boolean = false, // Show error even if the TextField has not been touched
     isLastField: Boolean = false,
     onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
     validator: (String) -> String? = { null }
@@ -45,8 +45,8 @@ fun FormTextField(
     var focused by rememberSaveable { mutableStateOf(false) }
     var touched by rememberSaveable { mutableStateOf(false) }
     val errorMessage =
-        if (initEmptyError || touched)
-            if (required && value.isEmpty())
+        if (initShowError || touched)
+            if (required && value.isBlank())
                 "請輸入${label}！"
             else
                 validator(value)
@@ -63,7 +63,10 @@ fun FormTextField(
     ) {
         OutlinedTextField(
             value = value,
-            onValueChange = { onValueChange(it) },
+            onValueChange = {
+                touched = true
+                onValueChange(it)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
