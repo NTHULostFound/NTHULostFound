@@ -13,7 +13,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.R
-import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 

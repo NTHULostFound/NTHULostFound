@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
-import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 

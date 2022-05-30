@@ -1,13 +1,11 @@
 package ss.team16.nthulostfound.ui.newitem
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,8 +15,7 @@ import com.google.accompanist.pager.PagerState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ss.team16.nthulostfound.model.NewItemData
-import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.domain.model.NewItemType
 import java.util.*
 import javax.inject.Inject
 

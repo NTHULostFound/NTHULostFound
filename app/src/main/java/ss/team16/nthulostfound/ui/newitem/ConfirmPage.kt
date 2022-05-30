@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import ss.team16.nthulostfound.model.NewItemType
+import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import kotlin.math.roundToInt

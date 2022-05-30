@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import ss.team16.nthulostfound.model.UserData
+import ss.team16.nthulostfound.domain.model.UserData
 
 class ProfileViewModel(
     private val savedUser: UserData
