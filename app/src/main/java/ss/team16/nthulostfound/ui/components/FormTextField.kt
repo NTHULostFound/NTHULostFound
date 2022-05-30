@@ -115,7 +115,7 @@ fun FormTextField(
         )
         if (errorMessage != null) {
             Text(
-                text = errorMessage as String,
+                text = errorMessage,
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier
