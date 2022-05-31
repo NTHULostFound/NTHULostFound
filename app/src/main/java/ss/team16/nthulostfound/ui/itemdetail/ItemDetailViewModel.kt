@@ -20,7 +20,7 @@ class ItemDetailViewModel(
     val viewMode: ViewMode
         get() = _viewMode
 
-    private var _showDialog by mutableStateOf(true)
+    private var _showDialog by mutableStateOf(false)
     val showDialog: Boolean
         get() = _showDialog
 
