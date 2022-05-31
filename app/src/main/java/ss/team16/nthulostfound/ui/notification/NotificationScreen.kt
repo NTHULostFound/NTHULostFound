@@ -7,8 +7,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import ss.team16.nthulostfound.model.NotificationData
-import ss.team16.nthulostfound.model.NotificationType
+import ss.team16.nthulostfound.domain.model.NotificationData
+import ss.team16.nthulostfound.domain.model.NotificationType
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.NotificationItem
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
