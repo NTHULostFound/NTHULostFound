@@ -18,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ss.team16.nthulostfound.model.NotificationData
-import ss.team16.nthulostfound.model.NotificationType
+import ss.team16.nthulostfound.domain.model.NotificationData
+import ss.team16.nthulostfound.domain.model.NotificationType
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import java.text.SimpleDateFormat
 import java.util.*

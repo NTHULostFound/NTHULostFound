@@ -1,4 +1,4 @@
-package ss.team16.nthulostfound.model
+package ss.team16.nthulostfound.domain.model
 
 enum class NotificationType {
     INSERTED,
