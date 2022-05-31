@@ -51,6 +51,24 @@ fun ItemDetailScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(contentPadding)
         ) {
+            if (viewModel.showDialog) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.setDialogStatus(false) },
+                    confirmButton = {
+                        TextButton(onClick = { viewModel.setDialogStatus(false) }) {
+                            Text("Ok")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { viewModel.setDialogStatus(false) }) {
+                            Text("Dismiss")
+                        }
+                    },
+                    title = { Text("sad") },
+                    text = { Text("sadder") }
+                )
+            }
+
             ImageCarousel(
                 images = emptyList(),
                 shape = RectangleShape
