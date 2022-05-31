@@ -21,4 +21,12 @@ class ItemDetailViewModel(
     private val _item by mutableStateOf(item)
     val item: ItemData
         get() = _item
+
+    fun shareItem() {
+        // TODO: share use case
+    }
+
+    fun getContact() {
+        // TODO: get contact use case
+    }
 }

@@ -8,12 +8,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.ImageCarousel
@@ -25,14 +27,20 @@ val padding = 24.dp
 
 @Composable
 fun ItemDetailScreen(
+    onBack: () -> Unit = { },
     viewModel: ItemDetailViewModel
 ) {
+    val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             BackArrowAppBar(
                 title = viewModel.item.name,
-                onBack = { },
-                onShare = { },
+                onBack = onBack,
+                onShare = {
+                    scope.launch {
+                        viewModel.shareItem()
+                    }
+                },
                 backEnabled = true,
             )
         }
@@ -126,7 +134,9 @@ fun ItemDetailScreen(
                     )
 
                     Button(
-                        onClick = { },
+                        onClick = {
+                            viewModel.getContact()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
@@ -160,7 +170,8 @@ fun IconLabel(
 fun ItemDetailPreview(){
     NTHULostFoundTheme {
         ItemDetailScreen(
-            ItemDetailViewModel(
+            onBack = {},
+            viewModel = ItemDetailViewModel(
                 ViewMode.Guest,
                 ItemData(
                     "機率課本",
