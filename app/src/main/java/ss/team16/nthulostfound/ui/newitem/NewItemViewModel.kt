@@ -1,11 +1,14 @@
 package ss.team16.nthulostfound.ui.newitem
 
+import android.content.ContentResolver
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -55,7 +58,7 @@ class NewItemViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scrollToPage: (Int) -> Unit) {
+    fun goToNextPage(scrollToPage: (Int) -> Unit, contentResolver: ContentResolver) {
         if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
             popScreen()
         } else {
@@ -71,7 +74,7 @@ class NewItemViewModel @AssistedInject constructor(
                         return
                 }
                 NewItemPageInfo.CONFIRM.value -> {
-                    doWork { scrollToPage(NewItemPageInfo.DONE.value) }
+                    doWork(contentResolver) { scrollToPage(NewItemPageInfo.DONE.value) }
                 }
                 else -> {}
             }
@@ -89,9 +92,16 @@ class NewItemViewModel @AssistedInject constructor(
         scrollToPage(pagePrev)
     }
 
-    private fun doWork(doneCallback: () -> Unit) {
+    private fun doWork(contentResolver: ContentResolver, doneCallback: () -> Unit) {
         viewModelScope.launch {
-            uploadImagesUseCase()
+            uploadImagesUseCase(imageUris, contentResolver,
+                onImageUploaded = { index, imageUrl ->
+                    Log.d(TAG, "Image uploaded ($index): $imageUrl")
+                },
+                onError = { index, message ->
+                    Log.d(TAG, "Image uploaded error ($index): ${message ?: "Unknown error"}")
+                }
+            )
             doneCallback()
         }
     }
@@ -100,9 +110,15 @@ class NewItemViewModel @AssistedInject constructor(
     val imageBitmaps: List<Bitmap>
         get() = _imageBitmaps
 
+    private val _imageUris = emptyList<Uri>().toMutableStateList()
+    val imageUris: List<Uri>
+        get() = _imageUris
+
     fun onAddImage(uri: Uri?, context: Context) {
         if (uri == null)
             return
+
+        _imageUris.add(uri)
 
         if (Build.VERSION.SDK_INT < 28) {
             _imageBitmaps.add(

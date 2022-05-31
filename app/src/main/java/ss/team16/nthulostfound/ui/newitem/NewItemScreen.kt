@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,11 +57,13 @@ fun NewItemScreen(
                 }
             }
 
+            val contentResolver = LocalContext.current.contentResolver
+
             ViewPagerBar(
                 pagerState = viewModel.pagerState,
                 nextButtonInfo = viewModel.getPagerNextButtonInfo(),
                 prevButtonInfo = viewModel.getPagerPrevButtonInfo(),
-                onNextPage = { viewModel.goToNextPage(scrollToPage) },
+                onNextPage = { viewModel.goToNextPage(scrollToPage, contentResolver) },
                 onPrevPage = { viewModel.goToPrevPage(scrollToPage) }
             )
         }
