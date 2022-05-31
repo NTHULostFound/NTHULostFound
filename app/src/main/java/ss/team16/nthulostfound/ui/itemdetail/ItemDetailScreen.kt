@@ -80,6 +80,7 @@ fun ItemDetailScreen(
                     .padding(padding)
             ) {
                 Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
@@ -87,7 +88,6 @@ fun ItemDetailScreen(
                         icon = Icons.Filled.Place,
                         labelText = viewModel.item.place
                     )
-                    Spacer(modifier = Modifier.weight(1F))
                     IconLabel(
                         icon = Icons.Outlined.AccessTime,
                         labelText = "${viewModel.item.date.year}/${viewModel.item.date.month}/${viewModel.item.date.date}"
