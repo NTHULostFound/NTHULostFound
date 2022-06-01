@@ -1,17 +1,26 @@
 package ss.team16.nthulostfound.ui.home
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ss.team16.nthulostfound.ui.Greeting
+import ss.team16.nthulostfound.domain.model.ItemData
+import ss.team16.nthulostfound.domain.model.UploadedImage
 import ss.team16.nthulostfound.ui.components.BottomNav
 import ss.team16.nthulostfound.ui.components.HomeAppBar
+import ss.team16.nthulostfound.ui.components.ItemCard
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
+import java.util.*
 
 @Composable
 fun HomeScreen(
@@ -27,6 +36,17 @@ fun HomeScreen(
 
             })
         },
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "add"
+                )
+            }
+
+        },
         bottomBar = {
             BottomNav(
                 currentRoute = "home/${showType}",
@@ -37,13 +57,55 @@ fun HomeScreen(
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = modifier.padding(paddingValues = paddingValues)
+        val itemList = listOf(
+            ItemData(
+                "書",
+                "好像是機率的書",
+                Date(),
+                "台達 105",
+                "請聯繫我取回 啾咪"
+            ),
+            ItemData(
+                "書",
+                "好像是機率的書",
+                Date(),
+                "台達 105",
+                "請聯繫我取回 啾咪"
+            ),
+            ItemData(
+                "書",
+                "好像是機率的書",
+                Date(),
+                "台達 105",
+                "請聯繫我取回 啾咪",
+                listOf(UploadedImage("https://example.com"))
+            ),
+            ItemData(
+                "書",
+                "好像是機率的書",
+                Date(),
+                "台達 105",
+                "請聯繫我取回 啾咪",
+                listOf(UploadedImage("https://example.com"))
+            ),
+            ItemData(
+                "書",
+                "好像是機率的書",
+                Date(),
+                "台達 105",
+                "請聯繫我取回 啾咪",
+                listOf(UploadedImage("https://example.com"))
+            )
+        )
+        LazyColumn(
+            modifier = modifier
+                .padding(paddingValues)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            if(showType != null)
-                Greeting(name = showType)
-            else
-                Greeting(name = "null")
+            items(itemList) { item ->
+                ItemCard(item = item)
+            }
         }
     }
 }
