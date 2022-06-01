@@ -29,7 +29,6 @@ import javax.inject.Inject
 
 class NewItemViewModel @AssistedInject constructor(
     @Assisted val type: NewItemType,
-    @Assisted private val popScreen: () -> Unit,
     private val uploadImagesUseCase: UploadImagesUseCase
 ) : ViewModel() {
 
@@ -37,13 +36,18 @@ class NewItemViewModel @AssistedInject constructor(
     var pagerState by mutableStateOf(PagerState(0))
         private set
 
+    var sendingStatus by mutableStateOf<String?>(null)
+        private set
+
+    var sendingError by mutableStateOf(false)
+        private set
+
     @OptIn(ExperimentalPagerApi::class)
     fun getPagerPrevButtonInfo(): PagerButtonInfo? {
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.EDIT -> null
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("返回編輯", true)
-            NewItemPageInfo.SENDING -> null
-            NewItemPageInfo.DONE -> null
+            NewItemPageInfo.RESULT -> null
         }
     }
 
@@ -52,35 +56,33 @@ class NewItemViewModel @AssistedInject constructor(
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.EDIT -> PagerButtonInfo("確認資訊", true)
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("確定送出", true)
-            NewItemPageInfo.SENDING -> PagerButtonInfo("完成", false)
-            NewItemPageInfo.DONE -> PagerButtonInfo("完成", true)
+            NewItemPageInfo.RESULT -> PagerButtonInfo("完成", sendingStatus == null)
         }
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scrollToPage: (Int) -> Unit, contentResolver: ContentResolver) {
-        if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
-            popScreen()
-        } else {
-            val curPage = pagerState.currentPage
-            val nextPage = curPage + 1
-            if (pagerState.isScrollInProgress || nextPage >= pagerState.pageCount)
-                return
+    fun goToNextPage(scrollToPage: (Int) -> Unit, popScreen: () -> Unit, contentResolver: ContentResolver) {
+        val curPage = pagerState.currentPage
+        val nextPage = curPage + 1
+        if (pagerState.isScrollInProgress)
+            return
 
-            when (curPage) {
-                NewItemPageInfo.EDIT.value -> {
-                    showFieldErrors = true
-                    if (!validateFields())
-                        return
-                }
-                NewItemPageInfo.CONFIRM.value -> {
-                    doWork(contentResolver) { scrollToPage(NewItemPageInfo.DONE.value) }
-                }
-                else -> {}
+        when (NewItemPageInfo.fromInt(curPage)) {
+            NewItemPageInfo.EDIT -> {
+                showFieldErrors = true
+                if (!validateFields())
+                    return
             }
-
-            scrollToPage(nextPage)
+            NewItemPageInfo.CONFIRM -> {
+                submitForm(contentResolver)
+            }
+            NewItemPageInfo.RESULT -> {
+                popScreen()
+                return
+            }
         }
+
+        scrollToPage(nextPage)
     }
 
     @OptIn(ExperimentalPagerApi::class)
@@ -92,17 +94,19 @@ class NewItemViewModel @AssistedInject constructor(
         scrollToPage(pagePrev)
     }
 
-    private fun doWork(contentResolver: ContentResolver, doneCallback: () -> Unit) {
+    private fun submitForm(contentResolver: ContentResolver) {
         viewModelScope.launch {
             uploadImagesUseCase(imageUris, contentResolver,
                 onImageUploaded = { index, imageUrl ->
                     Log.d(TAG, "Image uploaded ($index): $imageUrl")
+                    sendingStatus = null
                 },
                 onError = { index, message ->
                     Log.d(TAG, "Image uploaded error ($index): ${message ?: "Unknown error"}")
+                    sendingStatus = "圖片上傳失敗！\n${message ?: "未知錯誤"}"
+                    sendingError = true
                 }
             )
-            doneCallback()
         }
     }
 
@@ -110,15 +114,13 @@ class NewItemViewModel @AssistedInject constructor(
     val imageBitmaps: List<Bitmap>
         get() = _imageBitmaps
 
-    private val _imageUris = emptyList<Uri>().toMutableStateList()
-    val imageUris: List<Uri>
-        get() = _imageUris
+    private val imageUris = mutableListOf<Uri>()
 
     fun onAddImage(uri: Uri?, context: Context) {
         if (uri == null)
             return
 
-        _imageUris.add(uri)
+        imageUris.add(uri)
 
         if (Build.VERSION.SDK_INT < 28) {
             _imageBitmaps.add(
@@ -222,7 +224,7 @@ class NewItemViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(type: NewItemType, popScreen: () -> Unit): NewItemViewModel
+        fun create(type: NewItemType): NewItemViewModel
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -230,10 +232,9 @@ class NewItemViewModel @AssistedInject constructor(
         fun provideFactory(
             assistedFactory: Factory,
             type: NewItemType,
-            popScreen: () -> Unit
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(type, popScreen) as T
+                return assistedFactory.create(type) as T
             }
         }
     }
@@ -242,8 +243,7 @@ class NewItemViewModel @AssistedInject constructor(
 enum class NewItemPageInfo(val value: Int) {
     EDIT(0),
     CONFIRM(1),
-    SENDING(2),
-    DONE(3);
+    RESULT(2);
 
     companion object {
         fun fromInt(value: Int) = values().first { it.value == value }

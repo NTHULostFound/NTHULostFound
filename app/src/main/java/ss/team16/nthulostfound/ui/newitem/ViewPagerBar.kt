@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -32,6 +33,7 @@ fun ViewPagerBar(
             HorizontalPagerIndicator(
                 pagerState = pagerState,
                 modifier = Modifier
+                    .scale(1.5f)
                     .padding(top = 16.dp)
                     .align(Alignment.CenterHorizontally)
             )

@@ -25,7 +25,7 @@ import java.util.*
 import kotlin.math.roundToInt
 
 @Composable
-fun EditPage(
+fun ResultPage(
     viewModel: NewItemViewModel
 ) {
     val scope = rememberCoroutineScope()
@@ -177,108 +177,4 @@ fun EditPage(
             }
         }
     }
-}
-
-@Composable
-fun WhoCheckBox(
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(0.9f),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text("您知道失主的資訊嗎？")
-        Checkbox(
-            checked = checked,
-            onCheckedChange = { onCheckedChange(it) }
-        )
-    }
-}
-
-@Composable
-fun DateField(
-    label: String,
-    modifier: Modifier,
-    year: Int,
-    month: Int,
-    day: Int,
-    onDateChange: (Int, Int, Int) -> Unit,
-) {
-    val dateString = "${year}/${month + 1}/${day}"
-    val context = LocalContext.current
-
-    OutlinedTextField(
-        value = dateString,
-        modifier = modifier
-            .onFocusChanged {
-                if (it.isFocused) {
-                    val datePickerDialog = DatePickerDialog(
-                        context,
-                        { _, y, m, d -> onDateChange(y, m, d) },
-                        year, month, day
-                    )
-                    datePickerDialog.show()
-                }
-            },
-        onValueChange = {},
-        readOnly = true,
-        singleLine = true,
-        label = {
-            Text(label)
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.CalendarMonth,
-                contentDescription = label,
-            )
-        }
-    )
-}
-
-@Composable
-fun TimeField(
-    label: String,
-    modifier: Modifier,
-    hour: Int,
-    minute: Int,
-    onTimeChange: (Int, Int) -> Unit,
-) {
-    val cal = Calendar.getInstance()
-    cal.set(Calendar.HOUR_OF_DAY, hour)
-    cal.set(Calendar.MINUTE, minute)
-    val formatter = SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
-    val timeString = formatter.format(cal.time)
-
-    val context = LocalContext.current
-
-    OutlinedTextField(
-        value = timeString,
-        modifier = modifier
-            .onFocusChanged {
-                if (it.isFocused) {
-                    val datePickerDialog = TimePickerDialog(
-                        context,
-                        { _, h, m -> onTimeChange(h, m) },
-                        hour, minute,
-                        false
-                    )
-                    datePickerDialog.show()
-                }
-            },
-        onValueChange = {},
-        readOnly = true,
-        singleLine = true,
-        label = {
-            Text(label)
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.CalendarMonth,
-                contentDescription = label,
-            )
-        }
-    )
 }

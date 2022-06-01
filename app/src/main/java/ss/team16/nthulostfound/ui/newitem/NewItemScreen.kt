@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -22,13 +23,21 @@ import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.Greeting
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
+import ss.team16.nthulostfound.utils.assistedViewModel
+
+val padding = 24.dp
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NewItemScreen(
     type: NewItemType,
     popScreen: () -> Unit,
-    viewModel: NewItemViewModel = hiltViewModel()
+    viewModel: NewItemViewModel = assistedViewModel {
+        NewItemViewModel.provideFactory(
+            newItemViewModelFactory(),
+            NewItemType.NEW_FOUND
+        )
+    }
 ) {
     Scaffold(
         topBar = {
@@ -38,13 +47,10 @@ fun NewItemScreen(
                     NewItemType.NEW_LOST -> stringResource(R.string.title_new_lost)
                 }
 
-            val backEnabled =
-                viewModel.pagerState.currentPage != NewItemPageInfo.SENDING.value
-
             BackArrowAppBar(
                 title = pageTitle,
                 onBack = { popScreen() },
-                backEnabled = backEnabled
+                backEnabled = viewModel.sendingStatus == null
             )
         },
         bottomBar = {
@@ -63,13 +69,13 @@ fun NewItemScreen(
                 pagerState = viewModel.pagerState,
                 nextButtonInfo = viewModel.getPagerNextButtonInfo(),
                 prevButtonInfo = viewModel.getPagerPrevButtonInfo(),
-                onNextPage = { viewModel.goToNextPage(scrollToPage, contentResolver) },
+                onNextPage = { viewModel.goToNextPage(scrollToPage, popScreen, contentResolver) },
                 onPrevPage = { viewModel.goToPrevPage(scrollToPage) }
             )
         }
     ) { innerPadding ->
         HorizontalPager(
-            count = 4,
+            count = 3,
             state = viewModel.pagerState,
             modifier = Modifier
                 .fillMaxSize()
@@ -77,8 +83,9 @@ fun NewItemScreen(
             userScrollEnabled = false
         ) { page ->
             when (page) {
-                0 -> { EditPage(viewModel = viewModel) }
-                1 -> { ConfirmPage(viewModel = viewModel) }
+                NewItemPageInfo.EDIT.value -> { EditPage(viewModel = viewModel) }
+                NewItemPageInfo.CONFIRM.value -> { ConfirmPage(viewModel = viewModel) }
+                NewItemPageInfo.RESULT.value -> {}
                 else -> {}
             }
         }
