@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -37,15 +35,20 @@ fun HomeScreen(
             })
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
+            ExtendedFloatingActionButton(
+                text = {
+                       Text("新增")
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "add"
+                    )
+               },
+                onClick = {
 
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "add"
-                )
-            }
-
+                }
+            )
         },
         bottomBar = {
             BottomNav(
