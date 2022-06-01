@@ -13,7 +13,7 @@ class UploadImagesUseCase(
         uris: List<Uri>,
         contentResolver: ContentResolver,
         onImageUploaded: (Int, String) -> Unit,
-        onError: (Int, String?) -> Unit
+        onError: (Int, Throwable) -> Unit
     ): List<UploadedImage> {
         val uploadedImages = mutableListOf<UploadedImage>()
 
@@ -24,8 +24,8 @@ class UploadImagesUseCase(
                     onImageUploaded(index, it.imageUrl)
                 },
                 onFailure = {
-                    onError(index, it.message)
-                    return@forEachIndexed
+                    onError(index, it)
+                    throw Exception(it)
                 }
             )
         }

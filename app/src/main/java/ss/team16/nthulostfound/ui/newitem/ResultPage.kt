@@ -1,180 +1,168 @@
 package ss.team16.nthulostfound.ui.newitem
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.icu.text.SimpleDateFormat
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
+
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.NewItemType
-import ss.team16.nthulostfound.ui.components.FormTextField
-import ss.team16.nthulostfound.ui.components.ImageCarousel
-import java.util.*
-import kotlin.math.roundToInt
 
 @Composable
 fun ResultPage(
     viewModel: NewItemViewModel
 ) {
-    val scope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
-    var whoPosition  by remember { mutableStateOf(0f) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(padding),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        ImageCarousel(
-            images = viewModel.imageBitmaps,
-            padding = PaddingValues(bottom = 16.dp),
-            addImage = true,
-            onAddImage = { uri, context ->
-                viewModel.onAddImage(uri, context)
-            },
-            deleteButton = true,
-            onDeleteImage = { index ->
-                viewModel.onDeleteImage(index)
-            }
-        )
-
-        FormTextField(
-            value = viewModel.name,
-            label = "物品名稱",
-            onValueChange = { viewModel.onNameChange(it) },
-            icon = Icons.Outlined.WorkOutline,
-            singleLine = true,
-            required = true,
-            initShowError = viewModel.showFieldErrors
-        )
-
-        Row(
+    Crossfade(targetState = viewModel.uploadStatus) { status ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .padding(padding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            DateField(
-                label =
-                    if (viewModel.type == NewItemType.NEW_FOUND)
-                        "拾獲日期"
+            Text(
+                text =
+                when (status) {
+                    NewItemUploadStatus.IDLE,
+                    NewItemUploadStatus.UPLOADING_IMAGE,
+                    NewItemUploadStatus.UPLOADING_DATA
+                    -> "上傳中..."
+                    NewItemUploadStatus.DONE -> "新增完成"
+                    NewItemUploadStatus.ERROR -> "發生錯誤"
+                },
+                style = MaterialTheme.typography.h3
+            )
+
+            StatusIcon(status = status)
+
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text =
+                    if (status == NewItemUploadStatus.DONE)
+                        if (viewModel.type == NewItemType.NEW_FOUND)
+                            "感謝您的熱心協助\n您好棒!"
+                        else
+                            "已經成功送出\n祝您順利尋回物品!"
                     else
-                        "估略遺失日期",
-                modifier = Modifier.weight(1f),
-                year = viewModel.year,
-                month = viewModel.month,
-                day = viewModel.day,
-                onDateChange = {y, m, d -> viewModel.onDateChange(y, m, d)}
-            )
-            TimeField(
-                label =
-                    if (viewModel.type == NewItemType.NEW_FOUND)
-                        "拾獲時間"
-                    else
-                        "估略遺失時間",
-                modifier = Modifier.weight(1f),
-                hour = viewModel.hour,
-                minute = viewModel.minute,
-                onTimeChange = {h, m -> viewModel.onTimeChange(h, m)}
-            )
-        }
-
-        FormTextField(
-            value = viewModel.place,
-            label =
-            if (viewModel.type == NewItemType.NEW_FOUND)
-                "拾獲地點"
-            else
-                "估略遺失地點",
-            onValueChange = { viewModel.onPlaceChange(it) },
-            icon = Icons.Outlined.Place,
-            singleLine = true,
-            required = true,
-            initShowError = viewModel.showFieldErrors
-        )
-
-        FormTextField(
-            value = viewModel.description,
-            label = "物品詳細資訊",
-            icon = Icons.Outlined.Info,
-            onValueChange = { viewModel.onDescriptionChange(it) },
-            singleLine = false,
-            required = false,
-            initShowError = viewModel.showFieldErrors
-        )
-
-        FormTextField(
-            value = viewModel.how,
-            label =
-            if (viewModel.type == NewItemType.NEW_FOUND)
-                "物品取回方式"
-            else
-                "物品處理方式",
-            icon =
-            if (viewModel.type == NewItemType.NEW_FOUND)
-                Icons.Outlined.Undo
-            else
-                Icons.Outlined.HelpOutline,
-            onValueChange = { viewModel.onHowChange(it) },
-            singleLine = false,
-            required = true,
-            initShowError = viewModel.showFieldErrors
-        )
-
-        FormTextField(
-            value = viewModel.contact,
-            label = "聯繫方式",
-            onValueChange = { viewModel.onContactChange(it) },
-            icon = Icons.Outlined.ContactPage,
-            singleLine = false,
-            required = true,
-            isLastField = !viewModel.whoEnabled,
-            initShowError = viewModel.showFieldErrors
-        )
-
-        if (viewModel.type == NewItemType.NEW_FOUND) {
-            WhoCheckBox(
-                checked = viewModel.whoEnabled,
-                onCheckedChange = { checked ->
-                    viewModel.onWhoEnabledChange(checked)
-                    if (checked)
-                        scope.launch {
-                            scrollState.animateScrollTo(whoPosition.roundToInt())
-                        }
-                }
-            )
-
-            AnimatedVisibility(visible = viewModel.whoEnabled) {
-                FormTextField(
-                    value = viewModel.who,
-                    label = "失主的姓名或學號",
-                    onValueChange = { viewModel.onWhoChange(it) },
-                    icon = Icons.Outlined.Badge,
-                    singleLine = true,
-                    required = true,
-                    isLastField = true,
-                    onGloballyPositioned = { coordinates ->
-                        whoPosition = coordinates.positionInRoot().y
-                    },
-                    initShowError = viewModel.showFieldErrors
+                        viewModel.statusInfo,
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Center
                 )
+
+                if (status == NewItemUploadStatus.ERROR) {
+                    val contentResolver = LocalContext.current.contentResolver
+
+                    TextButton(
+                        onClick = { viewModel.submitForm(contentResolver) }
+                    ) {
+                        Icon(
+                            Icons.Filled.RestartAlt,
+                            contentDescription = "重新嘗試"
+                        )
+                        Text("重新嘗試")
+                    }
+                }
+
             }
         }
+    }
+}
+
+
+
+@Composable
+fun StatusIcon(
+    status: NewItemUploadStatus
+) {
+    Box(
+        Modifier
+            .size(300.dp)
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (status == NewItemUploadStatus.UPLOADING_IMAGE || status == NewItemUploadStatus.UPLOADING_DATA) {
+            // Loading Animation Src:
+            // https://github.com/mutualmobile/compose-animation-examples
+
+            val infiniteTransition = rememberInfiniteTransition()
+            val angle by infiniteTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1600, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart
+                )
+            )
+
+            Canvas(modifier = Modifier
+                .size(150.dp), onDraw = {
+                drawCircle(color = Color.DarkGray, style = Stroke(width = 20f))
+            })
+
+            Canvas(modifier = Modifier
+                .size(150.dp), onDraw = {
+                drawArc(
+                    color =
+                    Color(0xfff9d71c),
+                    style = Stroke(
+                        width = 20f,
+                        cap = StrokeCap.Round,
+                        join =
+                        StrokeJoin.Round,
+                    ),
+                    startAngle = angle,
+                    sweepAngle = 360 / 4f,
+                    useCenter = false
+                )
+            })
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(150.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (status == NewItemUploadStatus.DONE)
+                            Color.Green
+                        else
+                            Color.Red
+                    )
+            )
+        }
+
+        Icon(
+            imageVector =
+            when (status) {
+                NewItemUploadStatus.IDLE -> Icons.Filled.Image
+                NewItemUploadStatus.UPLOADING_IMAGE -> Icons.Filled.Image
+                NewItemUploadStatus.UPLOADING_DATA -> Icons.Filled.CloudUpload
+                NewItemUploadStatus.DONE -> Icons.Filled.Done
+                NewItemUploadStatus.ERROR -> Icons.Filled.PriorityHigh
+            },
+            contentDescription = null,
+            modifier = Modifier.scale(3f)
+        )
     }
 }

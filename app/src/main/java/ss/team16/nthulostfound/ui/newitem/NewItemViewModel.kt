@@ -10,7 +10,6 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.compose.runtime.*
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -19,27 +18,25 @@ import com.google.accompanist.pager.PagerState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ss.team16.nthulostfound.domain.model.NewItemData
 import ss.team16.nthulostfound.domain.model.NewItemType
-import ss.team16.nthulostfound.domain.usecase.UploadImagesUseCase
+import ss.team16.nthulostfound.domain.usecase.NewItemUseCase
 import java.util.*
-import javax.inject.Inject
 
 class NewItemViewModel @AssistedInject constructor(
     @Assisted val type: NewItemType,
-    private val uploadImagesUseCase: UploadImagesUseCase
+    private val newItemUseCase: NewItemUseCase
 ) : ViewModel() {
 
     @OptIn(ExperimentalPagerApi::class)
     var pagerState by mutableStateOf(PagerState(0))
         private set
 
-    var sendingStatus by mutableStateOf<String?>(null)
+    var uploadStatus by mutableStateOf(NewItemUploadStatus.IDLE)
         private set
 
-    var sendingError by mutableStateOf(false)
+    var statusInfo by mutableStateOf("")
         private set
 
     @OptIn(ExperimentalPagerApi::class)
@@ -52,11 +49,12 @@ class NewItemViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun getPagerNextButtonInfo(): PagerButtonInfo? {
+    fun getPagerNextButtonInfo(): PagerButtonInfo {
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.EDIT -> PagerButtonInfo("確認資訊", true)
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("確定送出", true)
-            NewItemPageInfo.RESULT -> PagerButtonInfo("完成", sendingStatus == null)
+            NewItemPageInfo.RESULT -> PagerButtonInfo("完成",
+                uploadStatus == NewItemUploadStatus.DONE)
         }
     }
 
@@ -94,17 +92,50 @@ class NewItemViewModel @AssistedInject constructor(
         scrollToPage(pagePrev)
     }
 
-    private fun submitForm(contentResolver: ContentResolver) {
+    fun submitForm(contentResolver: ContentResolver) {
+
+        val cal = Calendar.getInstance()
+        cal.set(year, month, day, hour, minute)
+        val date = cal.time
+
+        val newItemData = NewItemData(
+            type = type,
+            name = name,
+            description = description.ifBlank { null },
+            date = date,
+            place = place,
+            how = how,
+            contact = contact,
+            who =
+                if (whoEnabled)
+                    who
+                else
+                    null
+        )
+
+        uploadStatus = NewItemUploadStatus.UPLOADING_IMAGE
+        statusInfo = "圖片上傳中... (0/${imageUris.size})"
         viewModelScope.launch {
-            uploadImagesUseCase(imageUris, contentResolver,
+            newItemUseCase(newItemData, imageUris, contentResolver,
                 onImageUploaded = { index, imageUrl ->
                     Log.d(TAG, "Image uploaded ($index): $imageUrl")
-                    sendingStatus = null
+                    statusInfo = "圖片上傳中... (${index + 1}/${imageUris.size})"
                 },
-                onError = { index, message ->
-                    Log.d(TAG, "Image uploaded error ($index): ${message ?: "Unknown error"}")
-                    sendingStatus = "圖片上傳失敗！\n${message ?: "未知錯誤"}"
-                    sendingError = true
+                onImageUploadError = { index, exception ->
+                    Log.w(TAG, "Image uploaded error ($index): ${exception.message ?: "Unknown error"}")
+                    uploadStatus = NewItemUploadStatus.ERROR
+                    statusInfo = "圖片上傳失敗！\n${exception.message ?: "未知錯誤"}"
+                },
+                onImageUploadFinished = {
+                    uploadStatus = NewItemUploadStatus.UPLOADING_DATA
+                    statusInfo = "資料上傳中..."
+                },
+                onDataUploaded = {
+                    uploadStatus = NewItemUploadStatus.DONE
+                },
+                onDataUploadError = {
+                    uploadStatus = NewItemUploadStatus.ERROR
+                    statusInfo = "資料上傳失敗！\n${it.message ?: "未知錯誤"}"
                 }
             )
         }
@@ -254,3 +285,11 @@ data class PagerButtonInfo(
     val label: String,
     val enabled: Boolean
 )
+
+enum class NewItemUploadStatus {
+    IDLE,
+    UPLOADING_IMAGE,
+    UPLOADING_DATA,
+    DONE,
+    ERROR;
+}
