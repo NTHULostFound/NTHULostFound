@@ -1,16 +1,22 @@
 package ss.team16.nthulostfound.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.UploadedImage
@@ -22,91 +28,116 @@ import java.util.*
 
 @Composable
 fun HomeScreen(
-    navController: NavController?,
+    navController: NavController,
     modifier: Modifier = Modifier,
-    showType: String? = "found"
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
+
+    val items = viewModel.items
+    val showTypeStr = if(viewModel.showType == ShowType.FOUND) "found" else "lost"
     Scaffold(
         topBar = {
             HomeAppBar(navigateToRoute = {
-                navController!!.navigate(it)
+                navController.navigate(it)
             }, onSearch = {
 
             })
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = {
-                       Text("新增")
-                },
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "add"
-                    )
-               },
-                onClick = {
-
+            Column(
+                horizontalAlignment = Alignment.End
+            ) {
+                when (viewModel.fabState) {
+                    FabState.WITH_TEXT -> {
+                        ExtendedFloatingActionButton(
+                            text = {
+                                Text("新增")
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector =
+                                    if(viewModel.fabState != FabState.EXTENDED) {
+                                        Icons.Filled.Add
+                                    } else {
+                                        Icons.Filled.Close
+                                    },
+                                    contentDescription = "add"
+                                )
+                            },
+                            onClick = {
+                                viewModel.onFabClicked()
+                            }
+                        )
+                    }
+                    FabState.EXTENDED -> {
+                        ExtendedFloatingActionButton(
+                            onClick = { navController.navigate("new_item/lost") },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Help,
+                                    contentDescription = "add_lost"
+                                )
+                            },
+                            text = {
+                                Text(
+                                    text = "我東西掉了",
+                                    modifier = modifier.width(96.dp)
+                                )
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        ExtendedFloatingActionButton(
+                            onClick = { navController.navigate("new_item/found") },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Filled.Search,
+                                    contentDescription = "add_found"
+                                )
+                            },
+                            text = {
+                                Text(
+                                    text = "我撿到東西了",
+                                    modifier = modifier.width(96.dp)
+                                )
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        FloatingActionButton(onClick = { viewModel.onFabClicked() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "close"
+                            )
+                        }
+                    }
+                    FabState.COLLAPSED -> {
+                        FloatingActionButton(onClick = { viewModel.onFabClicked() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "add"
+                            )
+                        }
+                    }
                 }
-            )
+
+            }
         },
         bottomBar = {
             BottomNav(
-                currentRoute = "home/${showType}",
+                currentRoute = "home/$showTypeStr",
                 modifier = modifier,
                 navigateToRoute = {
-                    navController!!.navigate(it)
+                    navController.navigate(it)
                 }
             )
         }
     ) { paddingValues ->
-        val itemList = listOf(
-            ItemData(
-                "書",
-                "好像是機率的書",
-                Date(),
-                "台達 105",
-                "請聯繫我取回 啾咪"
-            ),
-            ItemData(
-                "書",
-                "好像是機率的書",
-                Date(),
-                "台達 105",
-                "請聯繫我取回 啾咪"
-            ),
-            ItemData(
-                "書",
-                "好像是機率的書",
-                Date(),
-                "台達 105",
-                "請聯繫我取回 啾咪",
-                listOf(UploadedImage("https://example.com"))
-            ),
-            ItemData(
-                "書",
-                "好像是機率的書",
-                Date(),
-                "台達 105",
-                "請聯繫我取回 啾咪",
-                listOf(UploadedImage("https://example.com"))
-            ),
-            ItemData(
-                "書",
-                "好像是機率的書",
-                Date(),
-                "台達 105",
-                "請聯繫我取回 啾咪",
-                listOf(UploadedImage("https://example.com"))
-            )
-        )
         LazyColumn(
             modifier = modifier
                 .padding(paddingValues)
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(itemList) { item ->
+            items(items) { item ->
                 ItemCard(item = item)
             }
         }
@@ -114,10 +145,10 @@ fun HomeScreen(
 }
 
 
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    NTHULostFoundTheme {
-        HomeScreen(null)
-    }
-}
+//@Preview
+//@Composable
+//fun HomeScreenPreview() {
+//    NTHULostFoundTheme {
+//        HomeScreen(null)
+//    }
+//}

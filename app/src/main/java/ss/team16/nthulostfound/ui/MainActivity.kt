@@ -13,10 +13,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.home.HomeScreen
+import ss.team16.nthulostfound.ui.home.HomeViewModel
+import ss.team16.nthulostfound.ui.home.ShowType
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailScreen
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
 import ss.team16.nthulostfound.ui.itemdetail.ViewMode
@@ -33,6 +36,7 @@ class MainActivity : ComponentActivity() {
     interface ViewModelFactoryProvider {
         fun newItemViewModelFactory(): NewItemViewModel.Factory
         fun itemDetailViewModelFactory(): ItemDetailViewModel.Factory
+        fun homeViewModelFactory(): HomeViewModel.Factory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +57,21 @@ class MainActivity : ComponentActivity() {
 //                        LaunchedEffect(Unit) {
 //                            navController.navigate("new_item/found")
 //                        }
-
-                        HomeScreen(navController, showType = it.arguments?.getString("show_type"))
+                        val showType =
+                            if(it.arguments?.getString("show_type") == "found") {
+                                ShowType.FOUND
+                            } else {
+                                ShowType.LOST
+                            }
+                        HomeScreen(
+                            navController = navController,
+                            viewModel = assistedViewModel {
+                                HomeViewModel.provideFactory(
+                                    homeViewModelFactory(),
+                                    showType
+                                )
+                            }
+                        )
                     }
 //                    composable("home/lost") {
 //
