@@ -6,14 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
+import ss.team16.nthulostfound.ui.itemdetail.ItemDetailScreen
+import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
+import ss.team16.nthulostfound.ui.itemdetail.ViewMode
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
@@ -26,6 +31,7 @@ class MainActivity : ComponentActivity() {
     @InstallIn(ActivityComponent::class)
     interface ViewModelFactoryProvider {
         fun newItemViewModelFactory(): NewItemViewModel.Factory
+        fun itemDetailViewModelFactory(): ItemDetailViewModel.Factory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +45,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable("home/found") {
                         LaunchedEffect(Unit) {
-                            navController.navigate("new_item/lost")
+                            navController.navigate("item/C8763")
+//                            navController.navigate("new_item/lost")
                         }
                     }
                     composable("home/lost") { Greeting(name = "lost items") }
@@ -58,9 +65,15 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    composable("item/{itemId}") {
+                    composable(
+                        "item/{itemId}",
+                        arguments = listOf(navArgument("itemId") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        })
+                    ) {
                         val itemId = it.arguments?.getString("itemId")!!
-                        Greeting(name = itemId)
+                        ItemDetailScreen(viewMode = ViewMode.Guest, uuid = itemId)
                     }
                     composable("item/{itemId}/contact") {
                         val itemId = it.arguments?.getString("itemId")!!
