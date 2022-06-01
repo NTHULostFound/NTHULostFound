@@ -3,10 +3,11 @@ package ss.team16.nthulostfound.domain.model
 import android.graphics.Bitmap
 
 data class UserData(
-    var avatar: Bitmap? = null,
-    var uuid: String = "",
-    var fcmToken: String = "",
-    var name: String = "",
-    var studentId: String = "",
-    var email: String = ""
+    val avatar: Bitmap? = null,
+    val uuid: String = "",
+    val fcmToken: String = "",
+    val name: String = "",
+    val studentId: String = "",
+    val email: String = "",
+    val isNotificationEnable: Boolean = false
 )
