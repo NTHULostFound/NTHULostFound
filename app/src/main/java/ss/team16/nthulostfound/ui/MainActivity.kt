@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -13,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
-import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
@@ -110,7 +108,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("item/closed") { Greeting(name = "item closed") }
 
-                    composable("profile") { Greeting(name = "profile") }
+                    composable("profile") { 
+                        ProfileScreen(onBack = { navController.popBackStack() })
+                    }
                     composable("notifications") { Greeting(name = "notifications") }
                 }
             }
