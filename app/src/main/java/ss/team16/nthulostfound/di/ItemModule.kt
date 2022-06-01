@@ -17,4 +17,10 @@ object ItemModule {
     fun provideGetItemUseCase(itemRepository: ItemRepository): GetItemUseCase {
         return GetItemUseCase(itemRepository)
     }
+
+    @Provides
+    @Singleton
+    fun provideShareItemUseCase(): ShareItemUseCase {
+        return ShareItemUseCase()
+    }
 }

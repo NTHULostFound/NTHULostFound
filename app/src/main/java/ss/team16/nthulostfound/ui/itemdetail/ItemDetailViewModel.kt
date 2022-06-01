@@ -12,6 +12,8 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
+import ss.team16.nthulostfound.domain.usecase.GetItemUseCase
+import ss.team16.nthulostfound.domain.usecase.ShareItemUseCase
 
 enum class ViewMode {
     Owner,
@@ -22,6 +24,7 @@ class ItemDetailViewModel @AssistedInject constructor(
     @Assisted viewMode: ViewMode,
     @Assisted uuid: String,
     private val getItemUseCase: GetItemUseCase,
+    private val shareItemUseCase: ShareItemUseCase
 ): ViewModel() {
     private val _viewMode by mutableStateOf(viewMode)
     val viewMode: ViewMode
@@ -41,6 +44,10 @@ class ItemDetailViewModel @AssistedInject constructor(
         }
     }
 
+    fun shareItem(context: Context) {
+        viewModelScope.launch {
+            shareItemUseCase(context, item)
+        }
     }
 
     fun deleteItem() {
