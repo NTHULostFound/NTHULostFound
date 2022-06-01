@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -20,16 +21,27 @@ import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import ss.team16.nthulostfound.ui.components.InfoBox
+import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
+import ss.team16.nthulostfound.utils.assistedViewModel
 import java.util.*
 
 val padding = 24.dp
 
 @Composable
 fun ItemDetailScreen(
+    viewMode: ViewMode,
+    uuid: String,
     onBack: () -> Unit = { },
-    viewModel: ItemDetailViewModel
+    viewModel: ItemDetailViewModel = assistedViewModel {
+        ItemDetailViewModel.provideFactory(
+            itemDetailViewModelFactory(),
+            viewMode,
+            uuid
+        )
+    }
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
@@ -37,9 +49,7 @@ fun ItemDetailScreen(
                 title = viewModel.item.name,
                 onBack = onBack,
                 onShare = {
-                    scope.launch {
-                        viewModel.shareItem()
-                    }
+                    viewModel.shareItem(context)
                 },
                 backEnabled = true,
             )
@@ -183,22 +193,22 @@ fun IconLabel(
     }
 }
 
-@Preview
-@Composable
-fun ItemDetailPreview(){
-    NTHULostFoundTheme {
-        ItemDetailScreen(
-            onBack = {},
-            viewModel = ItemDetailViewModel(
-                ViewMode.Guest,
-                ItemData(
-                    "機率課本",
-                "我的機率課本不見了，可能是上完課忘記帶走了，但我回去找之後就找不到了",
-                    Date(),
-                    "台達 105",
-                    "請連絡我取回"
-                )
-            )
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun ItemDetailPreview(){
+//    NTHULostFoundTheme {
+//        ItemDetailScreen(
+//            onBack = {},
+//            viewModel = ItemDetailViewModel(
+//                ViewMode.Guest,
+//                ItemData(
+//                    "機率課本",
+//                "我的機率課本不見了，可能是上完課忘記帶走了，但我回去找之後就找不到了",
+//                    Date(),
+//                    "台達 105",
+//                    "請連絡我取回"
+//                )
+//            )
+//        )
+//    }
+//}

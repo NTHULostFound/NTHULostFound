@@ -1,10 +1,16 @@
 package ss.team16.nthulostfound.ui.itemdetail
 
-import androidx.compose.runtime.State
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
 
 enum class ViewMode {
@@ -12,6 +18,9 @@ enum class ViewMode {
     Guest
 }
 
+class ItemDetailViewModel @AssistedInject constructor(
+    @Assisted viewMode: ViewMode,
+    @Assisted uuid: String,
 class ItemDetailViewModel(
     viewMode: ViewMode,
     item: ItemData
@@ -24,7 +33,7 @@ class ItemDetailViewModel(
     val showDialog: Boolean
         get() = _showDialog
 
-    private val _item by mutableStateOf(item)
+    private var _item by mutableStateOf(ItemData())
     val item: ItemData
         get() = _item
 
@@ -48,4 +57,21 @@ class ItemDetailViewModel(
         _showDialog = status
     }
 
+    @AssistedFactory
+    interface Factory {
+        fun create(viewMode: ViewMode, uuid: String): ItemDetailViewModel
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    companion object {
+        fun provideFactory(
+            assistedFactory: Factory,
+            viewMode: ViewMode,
+            uuid: String
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create(viewMode, uuid) as T
+            }
+        }
+    }
 }
