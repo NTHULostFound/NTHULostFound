@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.itemdetail
 
+import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -81,7 +82,8 @@ fun ItemDetailScreen(
 
             ImageCarousel(
                 images = emptyList(),
-                shape = RectangleShape
+                shape = RectangleShape,
+                borderWidth = 0.dp
             )
 
             Column(
@@ -98,9 +100,13 @@ fun ItemDetailScreen(
                         icon = Icons.Filled.Place,
                         labelText = viewModel.item.place
                     )
+
+                    val formatter = SimpleDateFormat("yyyy/M/d   h:mm a", Locale.getDefault())
+                    val timeString = formatter.format(viewModel.item.date)
+
                     IconLabel(
                         icon = Icons.Outlined.AccessTime,
-                        labelText = "${viewModel.item.date.year}/${viewModel.item.date.month}/${viewModel.item.date.date}"
+                        labelText = timeString
                     )
                 }
 
