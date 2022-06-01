@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
+import ss.team16.nthulostfound.ui.components.IconLabel
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import ss.team16.nthulostfound.ui.components.InfoBox
 import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
@@ -184,28 +185,12 @@ fun ItemDetailScreen(
     }
 }
 
-@Composable
-fun IconLabel(
-    icon: ImageVector,
-    labelText: String = "",
-    modifier: Modifier = Modifier
-){
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = modifier
-    ) {
-        Icon(imageVector = icon, contentDescription = labelText)
-        Text(text = labelText)
-    }
-}
-
 //@Preview
 //@Composable
 //fun ItemDetailPreview(){
 //    NTHULostFoundTheme {
 //        ItemDetailScreen(
-//            onBack = {},
-//            viewModel = ItemDetailViewModel(
+//            ItemDetailViewModel(
 //                ViewMode.Guest,
 //                ItemData(
 //                    "機率課本",
