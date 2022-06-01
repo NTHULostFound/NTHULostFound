@@ -26,13 +26,18 @@ import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.InfoBox
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
+import ss.team16.nthulostfound.utils.assistedViewModel
 
 val padding = 24.dp
 
 @Composable
 fun ProfileScreen(
     onBack: () -> Unit,
-    viewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory())
+    viewModel: ProfileViewModel = assistedViewModel {
+        ProfileViewModel.provideFactory(
+            profileViewModelFactory()
+        )
+    }
 ) {
     Scaffold(
         topBar = {
@@ -124,22 +129,22 @@ fun ProfileScreen(
     }
 }
 
-@Preview
-@Composable
-fun ProfilePreview() {
-    NTHULostFoundTheme {
-        ProfileScreen(
-            onBack = {},
-            viewModel = viewModel(factory = ProfileViewModelFactory(
-                UserData(
-                    null,
-                    "",
-                    "",
-                    "なまえ",
-                    "109000000",
-                    "nthu@example.com"
-                )
-            ))
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun ProfilePreview() {
+//    NTHULostFoundTheme {
+//        ProfileScreen(
+//            onBack = {},
+//            viewModel = viewModel(factory = ProfileViewModel.Factory(
+//                UserData(
+//                    null,
+//                    "",
+//                    "",
+//                    "なまえ",
+//                    "109000000",
+//                    "nthu@example.com"
+//                )
+//            ))
+//        )
+//    }
+//}

@@ -25,6 +25,8 @@ import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
 import ss.team16.nthulostfound.ui.itemdetail.ViewMode
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
+import ss.team16.nthulostfound.ui.profile.ProfileScreen
+import ss.team16.nthulostfound.ui.profile.ProfileViewModel
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import ss.team16.nthulostfound.utils.assistedViewModel
 
@@ -37,6 +39,7 @@ class MainActivity : ComponentActivity() {
         fun newItemViewModelFactory(): NewItemViewModel.Factory
         fun itemDetailViewModelFactory(): ItemDetailViewModel.Factory
         fun homeViewModelFactory(): HomeViewModel.Factory
+        fun profileViewModelFactory(): ProfileViewModel.Factory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
