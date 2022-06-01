@@ -21,20 +21,39 @@ class ProfileViewModel @AssistedInject constructor(
     val user: UserData
         get() = _user
 
-    private var _notificationEnabled by mutableStateOf(false)
-    val notificationEnabled: Boolean
-        get() = _notificationEnabled
+    private var _hasChangedTextFieldValue by mutableStateOf(false)
+    val hasChangedTextFieldValue: Boolean
+        get() = _hasChangedTextFieldValue
+
     init {
         viewModelScope.launch {
             _user = getUserUseCase()
         }
     }
 
+    fun onTextFieldChange(field: String, value: String) {
+        _hasChangedTextFieldValue = true
+
+        _user = when (field) {
+            "name" -> user.copy(name = value)
+            "studentId" -> user.copy(studentId = value)
+            "email" -> user.copy(email = value)
+            else -> user.copy()
+        }
+    }
 
     fun setEnableNotification(status: Boolean) {
         _user = user.copy(
             isNotificationEnable = status
         )
+
+        viewModelScope.launch {
+            saveUserUseCase(_user.copy())
+        }
+    }
+
+    fun saveUser() {
+        _hasChangedTextFieldValue = false
 
         viewModelScope.launch {
             saveUserUseCase(_user.copy())
