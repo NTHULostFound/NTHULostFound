@@ -21,9 +21,7 @@ enum class ViewMode {
 class ItemDetailViewModel @AssistedInject constructor(
     @Assisted viewMode: ViewMode,
     @Assisted uuid: String,
-class ItemDetailViewModel(
-    viewMode: ViewMode,
-    item: ItemData
+    private val getItemUseCase: GetItemUseCase,
 ): ViewModel() {
     private val _viewMode by mutableStateOf(viewMode)
     val viewMode: ViewMode
@@ -37,8 +35,12 @@ class ItemDetailViewModel(
     val item: ItemData
         get() = _item
 
-    fun shareItem() {
-        // TODO: share use case
+    init {
+        viewModelScope.launch {
+            _item = getItemUseCase(uuid)!!
+        }
+    }
+
     }
 
     fun deleteItem() {
