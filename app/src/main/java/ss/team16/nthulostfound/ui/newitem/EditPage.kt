@@ -24,8 +24,6 @@ import ss.team16.nthulostfound.ui.components.ImageCarousel
 import java.util.*
 import kotlin.math.roundToInt
 
-val padding = 24.dp
-
 @Composable
 fun EditPage(
     viewModel: NewItemViewModel
@@ -251,7 +249,7 @@ fun TimeField(
     val cal = Calendar.getInstance()
     cal.set(Calendar.HOUR_OF_DAY, hour)
     cal.set(Calendar.MINUTE, minute)
-    val formatter = SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
+    val formatter = SimpleDateFormat("h:mm a", Locale.getDefault())
     val timeString = formatter.format(cal.time)
 
     val context = LocalContext.current

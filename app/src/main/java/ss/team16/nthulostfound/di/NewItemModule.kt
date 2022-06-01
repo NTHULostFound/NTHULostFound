@@ -1,4 +1,4 @@
-package ss.team16.nthulostfound
+package ss.team16.nthulostfound.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -11,11 +11,18 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ss.team16.nthulostfound.data.repository.UploadImagesRepositoryImgurImpl
 import ss.team16.nthulostfound.data.source.ImgurApi
 import ss.team16.nthulostfound.domain.repository.UploadImagesRepository
+import ss.team16.nthulostfound.domain.usecase.NewItemUseCase
 import ss.team16.nthulostfound.domain.usecase.UploadImagesUseCase
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object NewItemModule {
+
+    @Provides
+    @Singleton
+    fun provideNewItemUseCase(uploadImagesUseCase: UploadImagesUseCase) : NewItemUseCase {
+        return NewItemUseCase(uploadImagesUseCase)
+    }
 
 }

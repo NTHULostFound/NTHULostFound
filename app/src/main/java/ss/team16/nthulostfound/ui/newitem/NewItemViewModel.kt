@@ -1,13 +1,15 @@
 package ss.team16.nthulostfound.ui.newitem
 
+import android.content.ContentResolver
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.runtime.*
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -16,22 +18,25 @@ import com.google.accompanist.pager.PagerState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ss.team16.nthulostfound.domain.model.NewItemData
 import ss.team16.nthulostfound.domain.model.NewItemType
-import ss.team16.nthulostfound.domain.usecase.UploadImagesUseCase
+import ss.team16.nthulostfound.domain.usecase.NewItemUseCase
 import java.util.*
-import javax.inject.Inject
 
 class NewItemViewModel @AssistedInject constructor(
     @Assisted val type: NewItemType,
-    @Assisted private val popScreen: () -> Unit,
-    private val uploadImagesUseCase: UploadImagesUseCase
+    private val newItemUseCase: NewItemUseCase
 ) : ViewModel() {
 
     @OptIn(ExperimentalPagerApi::class)
     var pagerState by mutableStateOf(PagerState(0))
+        private set
+
+    var uploadStatus by mutableStateOf(NewItemUploadStatus.IDLE)
+        private set
+
+    var statusInfo by mutableStateOf("")
         private set
 
     @OptIn(ExperimentalPagerApi::class)
@@ -39,45 +44,43 @@ class NewItemViewModel @AssistedInject constructor(
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.EDIT -> null
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("返回編輯", true)
-            NewItemPageInfo.SENDING -> null
-            NewItemPageInfo.DONE -> null
+            NewItemPageInfo.RESULT -> null
         }
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun getPagerNextButtonInfo(): PagerButtonInfo? {
+    fun getPagerNextButtonInfo(): PagerButtonInfo {
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
             NewItemPageInfo.EDIT -> PagerButtonInfo("確認資訊", true)
             NewItemPageInfo.CONFIRM -> PagerButtonInfo("確定送出", true)
-            NewItemPageInfo.SENDING -> PagerButtonInfo("完成", false)
-            NewItemPageInfo.DONE -> PagerButtonInfo("完成", true)
+            NewItemPageInfo.RESULT -> PagerButtonInfo("完成",
+                uploadStatus == NewItemUploadStatus.DONE)
         }
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scrollToPage: (Int) -> Unit) {
-        if (pagerState.currentPage == NewItemPageInfo.DONE.value) {
-            popScreen()
-        } else {
-            val curPage = pagerState.currentPage
-            val nextPage = curPage + 1
-            if (pagerState.isScrollInProgress || nextPage >= pagerState.pageCount)
-                return
+    fun goToNextPage(scrollToPage: (Int) -> Unit, popScreen: () -> Unit, contentResolver: ContentResolver) {
+        val curPage = pagerState.currentPage
+        val nextPage = curPage + 1
+        if (pagerState.isScrollInProgress)
+            return
 
-            when (curPage) {
-                NewItemPageInfo.EDIT.value -> {
-                    showFieldErrors = true
-                    if (!validateFields())
-                        return
-                }
-                NewItemPageInfo.CONFIRM.value -> {
-                    doWork { scrollToPage(NewItemPageInfo.DONE.value) }
-                }
-                else -> {}
+        when (NewItemPageInfo.fromInt(curPage)) {
+            NewItemPageInfo.EDIT -> {
+                showFieldErrors = true
+                if (!validateFields())
+                    return
             }
-
-            scrollToPage(nextPage)
+            NewItemPageInfo.CONFIRM -> {
+                submitForm(contentResolver)
+            }
+            NewItemPageInfo.RESULT -> {
+                popScreen()
+                return
+            }
         }
+
+        scrollToPage(nextPage)
     }
 
     @OptIn(ExperimentalPagerApi::class)
@@ -89,10 +92,52 @@ class NewItemViewModel @AssistedInject constructor(
         scrollToPage(pagePrev)
     }
 
-    private fun doWork(doneCallback: () -> Unit) {
+    fun submitForm(contentResolver: ContentResolver) {
+
+        val cal = Calendar.getInstance()
+        cal.set(year, month, day, hour, minute)
+        val date = cal.time
+
+        val newItemData = NewItemData(
+            type = type,
+            name = name,
+            description = description.ifBlank { null },
+            date = date,
+            place = place,
+            how = how,
+            contact = contact,
+            who =
+                if (whoEnabled)
+                    who
+                else
+                    null
+        )
+
+        uploadStatus = NewItemUploadStatus.UPLOADING_IMAGE
+        statusInfo = "圖片上傳中... (0/${imageUris.size})"
         viewModelScope.launch {
-            uploadImagesUseCase()
-            doneCallback()
+            newItemUseCase(newItemData, imageUris, contentResolver,
+                onImageUploaded = { index, imageUrl ->
+                    Log.d(TAG, "Image uploaded ($index): $imageUrl")
+                    statusInfo = "圖片上傳中... (${index + 1}/${imageUris.size})"
+                },
+                onImageUploadError = { index, exception ->
+                    Log.w(TAG, "Image uploaded error ($index): ${exception.message ?: "Unknown error"}")
+                    uploadStatus = NewItemUploadStatus.ERROR
+                    statusInfo = "圖片上傳失敗！\n${exception.message ?: "未知錯誤"}"
+                },
+                onImageUploadFinished = {
+                    uploadStatus = NewItemUploadStatus.UPLOADING_DATA
+                    statusInfo = "資料上傳中..."
+                },
+                onDataUploaded = {
+                    uploadStatus = NewItemUploadStatus.DONE
+                },
+                onDataUploadError = {
+                    uploadStatus = NewItemUploadStatus.ERROR
+                    statusInfo = "資料上傳失敗！\n${it.message ?: "未知錯誤"}"
+                }
+            )
         }
     }
 
@@ -100,9 +145,13 @@ class NewItemViewModel @AssistedInject constructor(
     val imageBitmaps: List<Bitmap>
         get() = _imageBitmaps
 
+    private val imageUris = mutableListOf<Uri>()
+
     fun onAddImage(uri: Uri?, context: Context) {
         if (uri == null)
             return
+
+        imageUris.add(uri)
 
         if (Build.VERSION.SDK_INT < 28) {
             _imageBitmaps.add(
@@ -206,7 +255,7 @@ class NewItemViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(type: NewItemType, popScreen: () -> Unit): NewItemViewModel
+        fun create(type: NewItemType): NewItemViewModel
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -214,10 +263,9 @@ class NewItemViewModel @AssistedInject constructor(
         fun provideFactory(
             assistedFactory: Factory,
             type: NewItemType,
-            popScreen: () -> Unit
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(type, popScreen) as T
+                return assistedFactory.create(type) as T
             }
         }
     }
@@ -226,8 +274,7 @@ class NewItemViewModel @AssistedInject constructor(
 enum class NewItemPageInfo(val value: Int) {
     EDIT(0),
     CONFIRM(1),
-    SENDING(2),
-    DONE(3);
+    RESULT(2);
 
     companion object {
         fun fromInt(value: Int) = values().first { it.value == value }
@@ -238,3 +285,11 @@ data class PagerButtonInfo(
     val label: String,
     val enabled: Boolean
 )
+
+enum class NewItemUploadStatus {
+    IDLE,
+    UPLOADING_IMAGE,
+    UPLOADING_DATA,
+    DONE,
+    ERROR;
+}

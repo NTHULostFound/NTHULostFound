@@ -8,13 +8,13 @@ enum class NewItemType {
 }
 
 data class NewItemData(
-    var type: NewItemType,
-    var name: String = "",
-    var description: String = "",
-    var date: Date = Date(),
-    var place: String = "",
-    var how: String = "",
-    var images: List<String> = emptyList(),
-    var contact: String = "",
-    var who: String = ""
+    val type: NewItemType,
+    val name: String,
+    val description: String?,
+    val date: Date,
+    val place: String,
+    val how: String,
+    val contact: String,
+    val who: String?,
+    val images: List<String> = emptyList(),
 )

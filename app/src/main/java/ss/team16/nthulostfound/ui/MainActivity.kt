@@ -47,26 +47,14 @@ class MainActivity : ComponentActivity() {
                     composable("new_item/found") {
                         NewItemScreen(
                             type = NewItemType.NEW_FOUND,
-                            popScreen = { navController.popBackStack() },
-                            viewModel = assistedViewModel {
-                                NewItemViewModel.provideFactory(
-                                    newItemViewModelFactory(),
-                                    NewItemType.NEW_FOUND
-                                ) { navController.popBackStack() }
-                            },
+                            popScreen = { navController.popBackStack() }
                         )
                     }
 
                     composable("new_item/lost") {
                         NewItemScreen(
                             type = NewItemType.NEW_LOST,
-                            popScreen = { navController.popBackStack() },
-                            viewModel = assistedViewModel {
-                                NewItemViewModel.provideFactory(
-                                    newItemViewModelFactory(),
-                                    NewItemType.NEW_LOST
-                                ) { navController.popBackStack() }
-                            },
+                            popScreen = { navController.popBackStack() }
                         )
                     }
 
