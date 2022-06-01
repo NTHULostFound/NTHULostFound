@@ -31,10 +31,15 @@ class ProfileViewModel @AssistedInject constructor(
     }
 
 
-    fun enableNotification(status: Boolean) {
-        _notificationEnabled = status
+    fun setEnableNotification(status: Boolean) {
+        _user = user.copy(
+            isNotificationEnable = status
+        )
+
+        viewModelScope.launch {
+            saveUserUseCase(_user.copy())
+        }
     }
-}
 
     @AssistedFactory
     interface Factory {

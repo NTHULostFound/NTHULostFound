@@ -121,8 +121,8 @@ fun ProfileScreen(
                 // fill space so the switch would be and the end of the row
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
-                    checked = viewModel.notificationEnabled,
-                    onCheckedChange = { status -> viewModel.enableNotification(status) },
+                    checked = viewModel.user.isNotificationEnable,
+                    onCheckedChange = { status -> viewModel.setEnableNotification(status) },
                 )
             }
         }
