@@ -25,6 +25,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -43,8 +44,9 @@ fun HomeAppBar(
     avatar: Bitmap? = null
 ) {
     var showSearchBar by rememberSaveable { mutableStateOf(false) }
-    var searchQuery by remember { mutableStateOf("") }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     TopAppBar(
         navigationIcon = {
@@ -102,6 +104,8 @@ fun HomeAppBar(
                   if (!showSearchBar) {
                       showSearchBar = true
                   } else {
+                      focusRequester.freeFocus()
+                      focusManager.clearFocus(true)
                       onSearch(searchQuery)
                   }
               }) {
