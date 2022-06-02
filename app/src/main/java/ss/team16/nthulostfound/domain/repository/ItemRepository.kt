@@ -12,4 +12,6 @@ interface ItemRepository {
     suspend fun deleteItem(item: ItemData)
 
     suspend fun endItem(item: ItemData)
+
+    suspend fun getContact(uuid: String): String
 }

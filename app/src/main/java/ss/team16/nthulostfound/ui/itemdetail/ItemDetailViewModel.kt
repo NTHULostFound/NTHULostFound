@@ -12,6 +12,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
+import ss.team16.nthulostfound.domain.usecase.GetContactUseCase
 import ss.team16.nthulostfound.domain.usecase.GetItemUseCase
 import ss.team16.nthulostfound.domain.usecase.ShareItemUseCase
 
@@ -32,7 +33,8 @@ sealed class DialogState(
 class ItemDetailViewModel @AssistedInject constructor(
     @Assisted uuid: String,
     private val getItemUseCase: GetItemUseCase,
-    private val shareItemUseCase: ShareItemUseCase
+    private val shareItemUseCase: ShareItemUseCase,
+    private val getContactUseCase: GetContactUseCase
 ): ViewModel() {
     private var _viewMode by mutableStateOf(ViewMode.Guest)
     val viewMode: ViewMode
@@ -69,7 +71,10 @@ class ItemDetailViewModel @AssistedInject constructor(
     }
 
     fun getContact() {
-        // TODO: get contact use case
+        viewModelScope.launch {
+            val contactInfo = getContactUseCase(item.uuid)
+            _dialogState = DialogState.ShowContact(text = contactInfo)
+        }
     }
 
     fun onDialogDismiss() {
