@@ -20,6 +20,15 @@ enum class ViewMode {
     Guest
 }
 
+sealed class DialogState(
+    open val title: String = "",
+    open val text: String = ""
+) {
+    object Disabled: DialogState()
+    object AskEnd: DialogState(title = "您確定要結案嗎？", text = "結案後將無法復原！")
+    data class ShowContact(override val text: String): DialogState(title = "聯絡資訊")
+}
+
 class ItemDetailViewModel @AssistedInject constructor(
     @Assisted uuid: String,
     private val getItemUseCase: GetItemUseCase,
@@ -29,9 +38,10 @@ class ItemDetailViewModel @AssistedInject constructor(
     val viewMode: ViewMode
         get() = _viewMode
 
-    private var _showDialog by mutableStateOf(false)
-    val showDialog: Boolean
-        get() = _showDialog
+    // we need to specify the type here, or the type would be "DialogState.Disabled"
+    private var _dialogState by mutableStateOf<DialogState>(DialogState.Disabled)
+    val dialogState: DialogState
+        get() = _dialogState
 
     private var _item by mutableStateOf(ItemData())
     val item: ItemData
@@ -62,8 +72,13 @@ class ItemDetailViewModel @AssistedInject constructor(
         // TODO: get contact use case
     }
 
-    fun setDialogStatus(status: Boolean) {
-        _showDialog = status
+    fun onDialogDismiss() {
+        _dialogState = DialogState.Disabled
+    }
+
+    fun onDialogConfirm() {
+        if (dialogState is DialogState.AskEnd) endItem()
+        _dialogState = DialogState.Disabled
     }
 
     @AssistedFactory

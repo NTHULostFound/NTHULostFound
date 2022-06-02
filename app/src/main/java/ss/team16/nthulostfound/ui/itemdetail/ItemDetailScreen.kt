@@ -61,21 +61,29 @@ fun ItemDetailScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(contentPadding)
         ) {
-            if (viewModel.showDialog) {
+            if (viewModel.dialogState !is DialogState.Disabled) {
                 AlertDialog(
-                    onDismissRequest = { viewModel.setDialogStatus(false) },
+                    onDismissRequest = { viewModel.onDialogDismiss() },
                     confirmButton = {
-                        TextButton(onClick = { viewModel.setDialogStatus(false) }) {
-                            Text("Ok")
+                        TextButton(onClick = { viewModel.onDialogConfirm() }) {
+                            Text(text = when(viewModel.dialogState) {
+                                is DialogState.AskEnd -> "是"
+                                else -> "確認"
+                            })
                         }
                     },
                     dismissButton = {
-                        TextButton(onClick = { viewModel.setDialogStatus(false) }) {
-                            Text("Dismiss")
+                        if (viewModel.dialogState is DialogState.AskEnd) {
+                            TextButton(onClick = { viewModel.onDialogDismiss() }) {
+                                Text(text = when(viewModel.dialogState) {
+                                    is DialogState.AskEnd -> "否"
+                                    else -> "取消"
+                                })
+                            }
                         }
                     },
-                    title = { Text("sad") },
-                    text = { Text("sadder") }
+                    title = { Text(viewModel.dialogState.title) },
+                    text = { Text(viewModel.dialogState.text) }
                 )
             }
 
