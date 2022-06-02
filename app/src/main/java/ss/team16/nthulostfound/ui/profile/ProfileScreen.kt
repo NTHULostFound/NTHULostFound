@@ -161,23 +161,3 @@ fun ProfileScreen(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun ProfilePreview() {
-//    NTHULostFoundTheme {
-//        ProfileScreen(
-//            onBack = {},
-//            viewModel = viewModel(factory = ProfileViewModel.Factory(
-//                UserData(
-//                    null,
-//                    "",
-//                    "",
-//                    "なまえ",
-//                    "109000000",
-//                    "nthu@example.com"
-//                )
-//            ))
-//        )
-//    }
-//}
