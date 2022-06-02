@@ -12,7 +12,9 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -34,6 +36,7 @@ fun ResultPage(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
@@ -118,12 +121,12 @@ fun StatusIcon(
             )
 
             Canvas(modifier = Modifier
-                .size(150.dp), onDraw = {
+                .size((150+20).dp), onDraw = {
                 drawCircle(color = Color.DarkGray, style = Stroke(width = 20f))
             })
 
             Canvas(modifier = Modifier
-                .size(150.dp), onDraw = {
+                .size((150+20).dp), onDraw = {
                 drawArc(
                     color =
                     Color(0xfff9d71c),
@@ -145,7 +148,7 @@ fun StatusIcon(
                     .clip(CircleShape)
                     .background(
                         if (status == NewItemUploadStatus.DONE)
-                            Color.Green
+                            Color(0xFF2E7D32)
                         else
                             Color.Red
                     )
@@ -162,7 +165,13 @@ fun StatusIcon(
                 NewItemUploadStatus.ERROR -> Icons.Filled.PriorityHigh
             },
             contentDescription = null,
-            modifier = Modifier.scale(3f)
+            tint =
+            when (status) {
+              NewItemUploadStatus.UPLOADING_DATA,
+                NewItemUploadStatus.UPLOADING_IMAGE -> MaterialTheme.colors.onBackground
+              else -> MaterialTheme.colors.onPrimary
+            },
+            modifier = Modifier.fillMaxSize(0.35F)
         )
     }
 }
