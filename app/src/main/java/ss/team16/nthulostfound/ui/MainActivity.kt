@@ -24,7 +24,6 @@ import ss.team16.nthulostfound.ui.itemdetail.ViewMode
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
 import ss.team16.nthulostfound.ui.profile.ProfileScreen
-import ss.team16.nthulostfound.ui.profile.ProfileViewModel
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import ss.team16.nthulostfound.utils.assistedViewModel
 
