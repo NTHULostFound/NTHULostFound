@@ -133,9 +133,11 @@ fun ItemDetailScreen(
                         style = MaterialTheme.typography.h5
                     )
 
-                    Text(
-                        text = viewModel.item.how
-                    )
+                    if (viewModel.item.how.isNotBlank()) {
+                        Text(
+                            text = viewModel.item.how
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.weight(1F))
