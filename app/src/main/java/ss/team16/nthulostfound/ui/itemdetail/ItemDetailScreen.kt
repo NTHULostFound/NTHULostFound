@@ -32,13 +32,11 @@ val padding = 24.dp
 
 @Composable
 fun ItemDetailScreen(
-    viewMode: ViewMode,
     uuid: String,
     onBack: () -> Unit = { },
     viewModel: ItemDetailViewModel = assistedViewModel {
         ItemDetailViewModel.provideFactory(
             itemDetailViewModelFactory(),
-            viewMode,
             uuid
         )
     }
@@ -184,22 +182,3 @@ fun ItemDetailScreen(
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun ItemDetailPreview(){
-//    NTHULostFoundTheme {
-//        ItemDetailScreen(
-//            ItemDetailViewModel(
-//                ViewMode.Guest,
-//                ItemData(
-//                    "機率課本",
-//                "我的機率課本不見了，可能是上完課忘記帶走了，但我回去找之後就找不到了",
-//                    Date(),
-//                    "台達 105",
-//                    "請連絡我取回"
-//                )
-//            )
-//        )
-//    }
-//}

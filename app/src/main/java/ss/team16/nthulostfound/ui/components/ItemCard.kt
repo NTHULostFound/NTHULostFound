@@ -90,11 +90,11 @@ fun ItemCard(
 @Composable
 fun ItemCardPreview() {
     val item: ItemData = ItemData(
-        "機率課本",
-        "我的機率課本不見了，可能是上完課忘記帶走了，但我回去找之後就找不到了",
-        Date(),
-        "台達 105",
-        "請連絡我取回"
+        name = "機率課本",
+        description = "我的機率課本不見了，可能是上完課忘記帶走了，但我回去找之後就找不到了",
+        date = Date(),
+        place = "台達 105",
+        how = "請連絡我取回"
     )
     NTHULostFoundTheme {
         ItemCard(item = item)

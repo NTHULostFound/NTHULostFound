@@ -7,6 +7,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import ss.team16.nthulostfound.domain.model.ItemData
+import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.model.UploadedImage
 import java.util.*
 
@@ -34,23 +35,25 @@ class HomeViewModel @AssistedInject constructor(
             ShowType.LOST -> {
                 return listOf(
                     ItemData(
-                        "書",
-                        "好像是機率的書",
-                        Date(),
-                        "台達 105",
-                        "請聯繫我取回 啾咪",
-                        listOf(UploadedImage("https://example.com"))
+                        type = ItemType.LOST,
+                        name = "書",
+                        description = "好像是機率的書",
+                        date = Date(),
+                        place = "台達 105",
+                        how = "請聯繫我取回 啾咪",
+                        images = listOf(UploadedImage("https://example.com"))
                     )
                 )
             }
             ShowType.FOUND -> {
                 return listOf(
                     ItemData(
-                        "錢包",
-                        "我的錢包不見了QAQ",
-                        Date(),
-                        "仁齋",
-                        ""
+                        type = ItemType.FOUND,
+                        name = "錢包",
+                        description = "我的錢包不見了QAQ",
+                        date = Date(),
+                        place = "仁齋",
+                        how = ""
                     ),
                 )
             }

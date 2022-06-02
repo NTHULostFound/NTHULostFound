@@ -98,7 +98,10 @@ class MainActivity : ComponentActivity() {
                         })
                     ) {
                         val itemId = it.arguments?.getString("itemId")!!
+                        ItemDetailScreen(
+                            uuid = itemId,
                         ItemDetailScreen(viewMode = ViewMode.Guest, uuid = itemId)
+                        )
                     }
                     composable("item/{itemId}/contact") {
                         val itemId = it.arguments?.getString("itemId")!!
