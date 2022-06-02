@@ -160,7 +160,9 @@ fun ItemDetailScreen(
                         // }
 
                         Button(
-                            onClick = { },
+                            onClick = {
+                                viewModel.askEndItem()
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {

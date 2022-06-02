@@ -28,6 +28,13 @@ object ItemModule {
         return GetItemUseCase(itemRepository)
     }
 
+
+    @Provides
+    @Singleton
+    fun provideEndItemUseCase(itemRepository: ItemRepository): EndItemUseCase {
+        return EndItemUseCase(itemRepository)
+    }
+
     @Provides
     @Singleton
     fun provideNewItemUseCase(uploadImagesUseCase: UploadImagesUseCase) : NewItemUseCase {
