@@ -6,10 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ss.team16.nthulostfound.data.repository.ItemRepositoryMockImpl
 import ss.team16.nthulostfound.domain.repository.ItemRepository
-import ss.team16.nthulostfound.domain.usecase.GetItemUseCase
-import ss.team16.nthulostfound.domain.usecase.NewItemUseCase
-import ss.team16.nthulostfound.domain.usecase.ShareItemUseCase
-import ss.team16.nthulostfound.domain.usecase.UploadImagesUseCase
+import ss.team16.nthulostfound.domain.usecase.*
 import javax.inject.Singleton
 
 @Module
@@ -28,6 +25,11 @@ object ItemModule {
         return GetItemUseCase(itemRepository)
     }
 
+    @Provides
+    @Singleton
+    fun provideGetItemsUseCase(itemRepository: ItemRepository): GetItemsUseCase {
+        return GetItemsUseCase(itemRepository)
+    }
 
     @Provides
     @Singleton
