@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NTHU Lost &amp; Found</string>
-    <string name="index_lost_tab">拾獲</string>
-    <string name="index_found_tab">協尋</string>
+    <string name="index_found_tab">拾獲</string>
+    <string name="index_lost_tab">協尋</string>
     <string name="title_new_found">新增拾獲物品</string>
     <string name="title_new_lost">新增協尋物品</string>
 </resources>
