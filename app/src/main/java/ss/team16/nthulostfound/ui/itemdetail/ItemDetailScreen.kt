@@ -68,7 +68,7 @@ fun ItemDetailScreen(
                         TextButton(onClick = { viewModel.onDialogConfirm() }) {
                             Text(text = when(viewModel.dialogState) {
                                 is DialogState.AskEnd -> "是"
-                                else -> "確認"
+                                else -> "確定"
                             })
                         }
                     },
