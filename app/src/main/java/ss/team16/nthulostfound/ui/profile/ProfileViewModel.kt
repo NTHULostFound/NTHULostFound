@@ -60,4 +60,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun resetUser() {
+        _hasChangedTextFieldValue = false
+
+        viewModelScope.launch {
+            _user = getUserUseCase()
+        }
+    }
+
 }

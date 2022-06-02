@@ -111,11 +111,24 @@ fun ProfileScreen(
                 )
 
                 if (viewModel.hasChangedTextFieldValue) {
-                    OutlinedButton(onClick = {
-                        focusManager.clearFocus(true)
-                        viewModel.saveUser()
-                    }) {
-                        Text("儲存")
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(padding / 2, Alignment.End),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        OutlinedButton(onClick = {
+                            focusManager.clearFocus(true)
+                            viewModel.resetUser()
+                        }) {
+                            Text("取消變更")
+                        }
+                        Button(onClick = {
+                            focusManager.clearFocus(true)
+                            viewModel.saveUser()
+                        }) {
+                            Text("儲存")
+                        }
                     }
                 }
             }
