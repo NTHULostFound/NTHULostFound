@@ -21,12 +21,11 @@ enum class ViewMode {
 }
 
 class ItemDetailViewModel @AssistedInject constructor(
-    @Assisted viewMode: ViewMode,
     @Assisted uuid: String,
     private val getItemUseCase: GetItemUseCase,
     private val shareItemUseCase: ShareItemUseCase
 ): ViewModel() {
-    private val _viewMode by mutableStateOf(viewMode)
+    private var _viewMode by mutableStateOf(ViewMode.Guest)
     val viewMode: ViewMode
         get() = _viewMode
 
@@ -41,6 +40,7 @@ class ItemDetailViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch {
             _item = getItemUseCase(uuid)!!
+            _viewMode = if (item.isOwner) ViewMode.Owner else ViewMode.Guest
         }
     }
 
@@ -68,18 +68,17 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(viewMode: ViewMode, uuid: String): ItemDetailViewModel
+        fun create(uuid: String): ItemDetailViewModel
     }
 
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
-            viewMode: ViewMode,
             uuid: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(viewMode, uuid) as T
+                return assistedFactory.create(uuid) as T
             }
         }
     }

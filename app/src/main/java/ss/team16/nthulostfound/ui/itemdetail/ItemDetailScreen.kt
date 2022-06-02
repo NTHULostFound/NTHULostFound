@@ -32,13 +32,11 @@ val padding = 24.dp
 
 @Composable
 fun ItemDetailScreen(
-    viewMode: ViewMode,
     uuid: String,
     onBack: () -> Unit = { },
     viewModel: ItemDetailViewModel = assistedViewModel {
         ItemDetailViewModel.provideFactory(
             itemDetailViewModelFactory(),
-            viewMode,
             uuid
         )
     }
