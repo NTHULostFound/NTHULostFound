@@ -37,7 +37,6 @@ class MainActivity : ComponentActivity() {
         fun newItemViewModelFactory(): NewItemViewModel.Factory
         fun itemDetailViewModelFactory(): ItemDetailViewModel.Factory
         fun homeViewModelFactory(): HomeViewModel.Factory
-        fun profileViewModelFactory(): ProfileViewModel.Factory
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

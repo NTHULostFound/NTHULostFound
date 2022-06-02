@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.domain.model.UserData
@@ -34,11 +35,7 @@ val padding = 24.dp
 @Composable
 fun ProfileScreen(
     onBack: () -> Unit,
-    viewModel: ProfileViewModel = assistedViewModel {
-        ProfileViewModel.provideFactory(
-            profileViewModelFactory()
-        )
-    }
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
 

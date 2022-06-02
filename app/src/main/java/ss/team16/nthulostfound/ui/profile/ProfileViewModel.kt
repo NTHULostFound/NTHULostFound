@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.UserData
 import ss.team16.nthulostfound.domain.usecase.GetUserUseCase
 import ss.team16.nthulostfound.domain.usecase.SaveUserUseCase
+import javax.inject.Inject
 
-class ProfileViewModel @AssistedInject constructor(
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
     val getUserUseCase: GetUserUseCase,
     val saveUserUseCase: SaveUserUseCase
 ): ViewModel() {
@@ -60,19 +63,4 @@ class ProfileViewModel @AssistedInject constructor(
         }
     }
 
-    @AssistedFactory
-    interface Factory {
-        fun create(): ProfileViewModel
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    companion object {
-        fun provideFactory(
-            assistedFactory: ProfileViewModel.Factory,
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create() as T
-            }
-        }
-    }
 }
