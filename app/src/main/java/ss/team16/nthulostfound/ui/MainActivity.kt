@@ -20,7 +20,6 @@ import ss.team16.nthulostfound.ui.home.HomeViewModel
 import ss.team16.nthulostfound.ui.home.ShowType
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailScreen
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
-import ss.team16.nthulostfound.ui.itemdetail.ViewMode
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
 import ss.team16.nthulostfound.ui.profile.ProfileScreen
