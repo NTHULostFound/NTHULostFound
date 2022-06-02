@@ -92,7 +92,7 @@ fun HomeAppBar(
 
                 // we must request focus after search bar is composed,
                 // so we cannot request focus when search icon is pressed
-                LaunchedEffect(Unit) {
+                LaunchedEffect(true) {
                     focusRequester.requestFocus()
                 }
             } else {
