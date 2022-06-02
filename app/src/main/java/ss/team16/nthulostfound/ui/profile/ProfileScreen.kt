@@ -16,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.domain.model.UserData
@@ -26,14 +28,17 @@ import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.InfoBox
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
+import ss.team16.nthulostfound.utils.assistedViewModel
 
 val padding = 24.dp
 
 @Composable
 fun ProfileScreen(
     onBack: () -> Unit,
-    viewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory())
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val focusManager = LocalFocusManager.current
+
     Scaffold(
         topBar = {
             BackArrowAppBar(
@@ -77,23 +82,56 @@ fun ProfileScreen(
                 )
             }
 
-            FormTextField(
-                value = viewModel.user.name,
-                onValueChange = {},
-                label = "姓名"
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(padding / 2),
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                FormTextField(
+                    value = viewModel.user.name,
+                    onValueChange = {
+                        viewModel.onTextFieldChange("name", it)
+                    },
+                    label = "姓名"
+                )
+                FormTextField(
+                    value = viewModel.user.studentId,
+                    onValueChange = {
+                        viewModel.onTextFieldChange("studentId", it)
+                    },
+                    label = "學號"
+                )
+                FormTextField(
+                    value = viewModel.user.email,
+                    onValueChange = {
+                        viewModel.onTextFieldChange("email", it)
+                    },
+                    label = "E-mail"
+                )
 
-            FormTextField(
-                value = viewModel.user.studentId,
-                onValueChange = {},
-                label = "學號"
-            )
-
-            FormTextField(
-                value = viewModel.user.email,
-                onValueChange = {},
-                label = "E-mail"
-            )
+                if (viewModel.hasChangedTextFieldValue) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(padding / 2, Alignment.End),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        OutlinedButton(onClick = {
+                            focusManager.clearFocus(true)
+                            viewModel.resetUser()
+                        }) {
+                            Text("取消變更")
+                        }
+                        Button(onClick = {
+                            focusManager.clearFocus(true)
+                            viewModel.saveUser()
+                        }) {
+                            Text("儲存")
+                        }
+                    }
+                }
+            }
 
             InfoBox(
                 info = "如果有人撿到與您資訊相符的物品，APP 將會傳送推播通知及 E-mail 給您！",
@@ -116,30 +154,30 @@ fun ProfileScreen(
                 // fill space so the switch would be and the end of the row
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
-                    checked = viewModel.notificationEnabled,
-                    onCheckedChange = { status -> viewModel.enableNotification(status) },
+                    checked = viewModel.user.isNotificationEnable,
+                    onCheckedChange = { status -> viewModel.setEnableNotification(status) },
                 )
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun ProfilePreview() {
-    NTHULostFoundTheme {
-        ProfileScreen(
-            onBack = {},
-            viewModel = viewModel(factory = ProfileViewModelFactory(
-                UserData(
-                    null,
-                    "",
-                    "",
-                    "なまえ",
-                    "109000000",
-                    "nthu@example.com"
-                )
-            ))
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun ProfilePreview() {
+//    NTHULostFoundTheme {
+//        ProfileScreen(
+//            onBack = {},
+//            viewModel = viewModel(factory = ProfileViewModel.Factory(
+//                UserData(
+//                    null,
+//                    "",
+//                    "",
+//                    "なまえ",
+//                    "109000000",
+//                    "nthu@example.com"
+//                )
+//            ))
+//        )
+//    }
+//}

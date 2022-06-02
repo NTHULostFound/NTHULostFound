@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -13,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
-import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
@@ -25,6 +23,7 @@ import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
 import ss.team16.nthulostfound.ui.itemdetail.ViewMode
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
+import ss.team16.nthulostfound.ui.profile.ProfileScreen
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import ss.team16.nthulostfound.utils.assistedViewModel
 
@@ -107,7 +106,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("item/closed") { Greeting(name = "item closed") }
 
-                    composable("profile") { Greeting(name = "profile") }
+                    composable("profile") { 
+                        ProfileScreen(onBack = { navController.popBackStack() })
+                    }
                     composable("notifications") { Greeting(name = "notifications") }
                 }
             }
