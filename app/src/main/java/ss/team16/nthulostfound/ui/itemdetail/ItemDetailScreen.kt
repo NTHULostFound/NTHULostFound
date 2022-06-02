@@ -145,19 +145,19 @@ fun ItemDetailScreen(
                         verticalArrangement = Arrangement.spacedBy(padding / 2),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Button(
-                            onClick = { },
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                backgroundColor = Color.Black
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = "刪除")
-                        }
+                        // Button(
+                        //     onClick = { },
+                        //     colors = ButtonDefaults.buttonColors(
+                        //         contentColor = Color.White,
+                        //         backgroundColor = Color.Black
+                        //     ),
+                        //     modifier = Modifier
+                        //         .fillMaxWidth()
+                        // ) {
+                        //     Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
+                        //     Spacer(modifier = Modifier.width(4.dp))
+                        //     Text(text = "刪除")
+                        // }
 
                         Button(
                             onClick = { },
