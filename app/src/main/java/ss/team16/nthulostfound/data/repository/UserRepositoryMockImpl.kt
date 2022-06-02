@@ -5,12 +5,9 @@ import ss.team16.nthulostfound.domain.repository.UserRepository
 
 class UserRepositoryMockImpl: UserRepository {
     private var mockUser = UserData(
-        null,
-        "",
-        "",
-        "なまえ",
-        "109000000",
-        "nthu@example.com"
+        name = "なまえ",
+        studentId = "109000000",
+        email = "nthu@example.com"
     )
 
     override suspend fun getUser(): UserData {
