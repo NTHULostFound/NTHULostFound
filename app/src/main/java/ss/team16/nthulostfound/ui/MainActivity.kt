@@ -114,7 +114,12 @@ class MainActivity : ComponentActivity() {
                         ProfileScreen(onBack = { navController.popBackStack() })
                     }
                     composable("notifications") {
-                        NotificationScreen(onBack = { navController.popBackStack() })
+                        NotificationScreen(
+                            onBack = { navController.popBackStack() },
+                            onItemClicked = { uuid ->
+                                navController.navigate("item/$uuid")
+                            }
+                        )
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.notification
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.NotificationData
 import ss.team16.nthulostfound.domain.model.NotificationType
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
@@ -19,7 +22,8 @@ import java.util.Locale
 @Composable
 fun NotificationScreen(
     modifier: Modifier = Modifier,
-    onBack: ()->Unit,
+    onBack: () -> Unit,
+    onItemClicked: (String) -> Unit,
     viewModel: NotificationViewModel = hiltViewModel(),
 ) {
     val notifs = viewModel.notifs
@@ -35,8 +39,15 @@ fun NotificationScreen(
         LazyColumn(
             modifier = modifier.padding(paddingValues = paddingValues)
         ) {
-            items(items = notifs, key = {notif -> notif.id}) { item ->
-                NotificationItem(data = item)
+            items(items = notifs, key = {notif -> notif.id}) { notif ->
+                NotificationItem(
+                    data = notif,
+                    onClick = {
+                        onItemClicked(notif.itemUUID)
+                        notif.read = true
+                        viewModel.updateNotification(notif)
+                    }
+                )
             }
         }
     }

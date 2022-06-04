@@ -31,4 +31,10 @@ class NotificationViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateNotification(notif: NotificationData) {
+        viewModelScope.launch {
+            updateNotificationUseCase(notif)
+        }
+    }
 }
