@@ -7,25 +7,19 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ContactPage
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.IconLabel
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import ss.team16.nthulostfound.ui.components.InfoBox
-import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
-import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import ss.team16.nthulostfound.utils.assistedViewModel
 import java.util.*
 
@@ -45,7 +39,7 @@ fun ItemDetailScreen(
     }
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             BackArrowAppBar(
