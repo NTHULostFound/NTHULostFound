@@ -12,6 +12,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
+import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.usecase.EndItemUseCase
 import ss.team16.nthulostfound.domain.usecase.GetContactUseCase
 import ss.team16.nthulostfound.domain.usecase.GetItemUseCase
@@ -32,7 +33,8 @@ sealed class DialogState(
 }
 
 class ItemDetailViewModel @AssistedInject constructor(
-    @Assisted uuid: String,
+    @Assisted val uuid: String,
+    @Assisted val navigateToRoute: (String) -> Unit,
     private val getItemUseCase: GetItemUseCase,
     private val endItemUseCase: EndItemUseCase,
     private val shareItemUseCase: ShareItemUseCase,
@@ -68,10 +70,14 @@ class ItemDetailViewModel @AssistedInject constructor(
         _dialogState = DialogState.AskEnd
     }
 
-    fun endItem() {
+    private fun endItem() {
         viewModelScope.launch {
+            val itemTypeString = when (item.type) {
+                ItemType.FOUND -> "found"
+                ItemType.LOST -> "lost"
+            }
             endItemUseCase(item)
-
+            navigateToRoute("closed_item?itemType=$itemTypeString&itemName=${item.name}")
         }
     }
 
@@ -93,17 +99,18 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(uuid: String): ItemDetailViewModel
+        fun create(uuid: String, navigateToRoute: (String) -> Unit): ItemDetailViewModel
     }
 
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
-            uuid: String
+            uuid: String,
+            navigateToRoute: (String) -> Unit
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(uuid) as T
+                return assistedFactory.create(uuid, navigateToRoute) as T
             }
         }
     }

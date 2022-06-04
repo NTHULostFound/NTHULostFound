@@ -3,6 +3,7 @@ package ss.team16.nthulostfound.ui.itemdetail
 import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -34,10 +35,12 @@ val padding = 24.dp
 fun ItemDetailScreen(
     uuid: String,
     onBack: () -> Unit = { },
+    navigateToRoute: (String) -> Unit = { },
     viewModel: ItemDetailViewModel = assistedViewModel {
         ItemDetailViewModel.provideFactory(
             itemDetailViewModelFactory(),
-            uuid
+            uuid,
+            navigateToRoute
         )
     }
 ) {
