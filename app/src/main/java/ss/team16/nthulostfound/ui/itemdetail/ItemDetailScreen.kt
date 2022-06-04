@@ -86,7 +86,15 @@ fun ItemDetailScreen(
                         }
                     },
                     title = { Text(viewModel.dialogState.title) },
-                    text = { Text(viewModel.dialogState.text) }
+                    text = {
+                        if (viewModel.dialogState is DialogState.ShowContact) {
+                            SelectionContainer() {
+                                Text(viewModel.dialogState.text)
+                            }
+                        } else {
+                                Text(viewModel.dialogState.text)
+                        }
+                    }
                 )
             }
 
