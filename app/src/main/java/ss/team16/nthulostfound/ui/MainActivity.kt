@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
                         ProfileScreen(onBack = { navController.popBackStack() })
                     }
                     composable("notifications") {
-                        NotificationScreen()
+                        NotificationScreen(onBack = { navController.popBackStack() })
                     }
                 }
             }

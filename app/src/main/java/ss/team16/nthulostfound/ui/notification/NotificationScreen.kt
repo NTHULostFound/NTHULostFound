@@ -18,15 +18,15 @@ import java.util.Locale
 
 @Composable
 fun NotificationScreen(
-//    notifs: List<NotificationData>,
+    modifier: Modifier = Modifier,
+    onBack: ()->Unit,
     viewModel: NotificationViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
 ) {
     val notifs = viewModel.notifs
     Scaffold(
         topBar = {
             BackArrowAppBar(
-                onBack = { /*TODO*/ },
+                onBack = onBack,
                 title = "通知",
                 backEnabled = true,
             )
