@@ -15,6 +15,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
+import ss.team16.nthulostfound.ui.closeditem.ClosedItemScreen
 import ss.team16.nthulostfound.ui.home.HomeScreen
 import ss.team16.nthulostfound.ui.home.HomeViewModel
 import ss.team16.nthulostfound.ui.home.ShowType
@@ -107,7 +108,24 @@ class MainActivity : ComponentActivity() {
                         val itemId = it.arguments?.getString("itemId")!!
                         Greeting(name = "$itemId's contact")
                     }
-                    composable("item/closed") { Greeting(name = "item closed") }
+                    composable(
+                        "closed_item?itemType={itemType}&itemName={itemName}",
+                        arguments = listOf(
+                            navArgument("itemType") {
+                                type = NavType.StringType
+                                defaultValue = "found"
+                            },
+                            navArgument("itemName") {
+                                type = NavType.StringType
+                                defaultValue = ""
+                            }
+                        )
+                    ) {
+                        ClosedItemScreen(
+                            onBack = { navController.popBackStack() },
+                            navigateToRoute = { route -> navController.navigate(route) }
+                        )
+                    }
 
                     composable("profile") { 
                         ProfileScreen(onBack = { navController.popBackStack() })
