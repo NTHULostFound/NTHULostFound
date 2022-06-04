@@ -65,37 +65,7 @@ fun ItemDetailScreen(
                 .padding(contentPadding)
         ) {
             if (viewModel.dialogState !is DialogState.Disabled) {
-                AlertDialog(
-                    onDismissRequest = { viewModel.onDialogDismiss() },
-                    confirmButton = {
-                        TextButton(onClick = { viewModel.onDialogConfirm() }) {
-                            Text(text = when(viewModel.dialogState) {
-                                is DialogState.AskEnd -> "是"
-                                else -> "確定"
-                            })
-                        }
-                    },
-                    dismissButton = {
-                        if (viewModel.dialogState is DialogState.AskEnd) {
-                            TextButton(onClick = { viewModel.onDialogDismiss() }) {
-                                Text(text = when(viewModel.dialogState) {
-                                    is DialogState.AskEnd -> "否"
-                                    else -> "取消"
-                                })
-                            }
-                        }
-                    },
-                    title = { Text(viewModel.dialogState.title) },
-                    text = {
-                        if (viewModel.dialogState is DialogState.ShowContact) {
-                            SelectionContainer() {
-                                Text(viewModel.dialogState.text)
-                            }
-                        } else {
-                                Text(viewModel.dialogState.text)
-                        }
-                    }
-                )
+                ItemDetailScreenDialog(viewModel = viewModel)
             }
 
             ImageCarousel(
@@ -204,4 +174,41 @@ fun ItemDetailScreen(
             }
         }
     }
+}
+
+@Composable
+fun ItemDetailScreenDialog(
+    viewModel: ItemDetailViewModel
+) {
+    AlertDialog(
+        onDismissRequest = { viewModel.onDialogDismiss() },
+        confirmButton = {
+            TextButton(onClick = { viewModel.onDialogConfirm() }) {
+                Text(text = when(viewModel.dialogState) {
+                    is DialogState.AskEnd -> "是"
+                    else -> "確定"
+                })
+            }
+        },
+        dismissButton = {
+            if (viewModel.dialogState is DialogState.AskEnd) {
+                TextButton(onClick = { viewModel.onDialogDismiss() }) {
+                    Text(text = when(viewModel.dialogState) {
+                        is DialogState.AskEnd -> "否"
+                        else -> "取消"
+                    })
+                }
+            }
+        },
+        title = { Text(viewModel.dialogState.title) },
+        text = {
+            if (viewModel.dialogState is DialogState.ShowContact) {
+                SelectionContainer() {
+                    Text(viewModel.dialogState.text)
+                }
+            } else {
+                Text(viewModel.dialogState.text)
+            }
+        }
+    )
 }
