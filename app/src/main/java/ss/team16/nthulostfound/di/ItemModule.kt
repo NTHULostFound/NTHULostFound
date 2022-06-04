@@ -54,4 +54,10 @@ object ItemModule {
     fun provideGetContactUseCase(itemRepository: ItemRepository): GetContactUseCase {
         return GetContactUseCase(itemRepository)
     }
+
+    @Provides
+    @Singleton
+    fun provideShareResultUseCase(): ShareResultUseCase {
+        return ShareResultUseCase()
+    }
 }
