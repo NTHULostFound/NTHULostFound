@@ -23,6 +23,7 @@ import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
 import ss.team16.nthulostfound.ui.itemdetail.ViewMode
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
 import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
+import ss.team16.nthulostfound.ui.notification.NotificationScreen
 import ss.team16.nthulostfound.ui.profile.ProfileScreen
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import ss.team16.nthulostfound.utils.assistedViewModel
@@ -112,7 +113,9 @@ class MainActivity : ComponentActivity() {
                     composable("profile") { 
                         ProfileScreen(onBack = { navController.popBackStack() })
                     }
-                    composable("notifications") { Greeting(name = "notifications") }
+                    composable("notifications") {
+                        NotificationScreen()
+                    }
                 }
             }
         }
