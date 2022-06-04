@@ -4,22 +4,30 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import ss.team16.nthulostfound.domain.model.ItemData
+import ss.team16.nthulostfound.domain.model.ItemType
 
 class ShareItemUseCase {
-    suspend operator fun invoke(context: Context, item: ItemData) {
-        val type = "text/plain"
-        val subject = item.name
-        val extraText = item.description
-        val shareWith = "ShareWith"
+    val LINK = "" // TODO: add dynamic link
 
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = type
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
-        intent.putExtra(Intent.EXTRA_TEXT, extraText)
+    operator fun invoke(context: Context, item: ItemData) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+
+            if (item.type == ItemType.LOST) {
+                putExtra(Intent.EXTRA_TEXT, "喔不，我的${item.name}不見了 QQ，有人可以幫我找嗎？\n" +
+                        "立刻下載「清大遺失物平台」，查看更多資訊！\n" +
+                        "連結: $LINK")
+            } else if (item.type == ItemType.FOUND) {
+                putExtra(Intent.EXTRA_TEXT, "我在${item.place}撿到了${item.name}！有人遺失了${item.name}嗎？\n" +
+                        "立刻下載「清大遺失物平台」來查看更多資訊吧！\n" +
+                        "連結: $LINK")
+            }
+        }
 
         ContextCompat.startActivity(
             context,
-            Intent.createChooser(intent, shareWith),
+            Intent.createChooser(intent, "分享物品資訊..."),
             null
         )
     }
