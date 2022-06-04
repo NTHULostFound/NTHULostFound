@@ -33,4 +33,9 @@ class ItemRepositoryMockImpl: ItemRepository {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getContact(uuid: String): String {
+        return "FB: NTHULostFound" + "\n" +
+                "TG: @NTHULostFound"
+    }
+
 }

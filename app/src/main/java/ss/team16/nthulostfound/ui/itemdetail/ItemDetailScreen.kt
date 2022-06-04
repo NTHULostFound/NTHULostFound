@@ -61,21 +61,29 @@ fun ItemDetailScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(contentPadding)
         ) {
-            if (viewModel.showDialog) {
+            if (viewModel.dialogState !is DialogState.Disabled) {
                 AlertDialog(
-                    onDismissRequest = { viewModel.setDialogStatus(false) },
+                    onDismissRequest = { viewModel.onDialogDismiss() },
                     confirmButton = {
-                        TextButton(onClick = { viewModel.setDialogStatus(false) }) {
-                            Text("Ok")
+                        TextButton(onClick = { viewModel.onDialogConfirm() }) {
+                            Text(text = when(viewModel.dialogState) {
+                                is DialogState.AskEnd -> "是"
+                                else -> "確定"
+                            })
                         }
                     },
                     dismissButton = {
-                        TextButton(onClick = { viewModel.setDialogStatus(false) }) {
-                            Text("Dismiss")
+                        if (viewModel.dialogState is DialogState.AskEnd) {
+                            TextButton(onClick = { viewModel.onDialogDismiss() }) {
+                                Text(text = when(viewModel.dialogState) {
+                                    is DialogState.AskEnd -> "否"
+                                    else -> "取消"
+                                })
+                            }
                         }
                     },
-                    title = { Text("sad") },
-                    text = { Text("sadder") }
+                    title = { Text(viewModel.dialogState.title) },
+                    text = { Text(viewModel.dialogState.text) }
                 )
             }
 
@@ -125,9 +133,11 @@ fun ItemDetailScreen(
                         style = MaterialTheme.typography.h5
                     )
 
-                    Text(
-                        text = viewModel.item.how
-                    )
+                    if (viewModel.item.how.isNotBlank()) {
+                        Text(
+                            text = viewModel.item.how
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.weight(1F))
@@ -137,22 +147,24 @@ fun ItemDetailScreen(
                         verticalArrangement = Arrangement.spacedBy(padding / 2),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Button(
-                            onClick = { },
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = Color.White,
-                                backgroundColor = Color.Black
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = "刪除")
-                        }
+                        // Button(
+                        //     onClick = { },
+                        //     colors = ButtonDefaults.buttonColors(
+                        //         contentColor = Color.White,
+                        //         backgroundColor = Color.Black
+                        //     ),
+                        //     modifier = Modifier
+                        //         .fillMaxWidth()
+                        // ) {
+                        //     Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
+                        //     Spacer(modifier = Modifier.width(4.dp))
+                        //     Text(text = "刪除")
+                        // }
 
                         Button(
-                            onClick = { },
+                            onClick = {
+                                viewModel.askEndItem()
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
