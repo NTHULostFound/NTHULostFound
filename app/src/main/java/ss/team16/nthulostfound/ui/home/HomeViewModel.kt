@@ -33,7 +33,7 @@ class HomeViewModel @AssistedInject constructor(
     private fun getItems(showType: ShowType) : List<ItemData> {
         when(showType) {
             ShowType.LOST -> {
-                return listOf(
+                return List(10) {
                     ItemData(
                         type = ItemType.LOST,
                         name = "書",
@@ -43,7 +43,7 @@ class HomeViewModel @AssistedInject constructor(
                         how = "請聯繫我取回 啾咪",
                         images = listOf("https://example.com")
                     )
-                )
+                }
             }
             ShowType.FOUND -> {
                 return listOf(

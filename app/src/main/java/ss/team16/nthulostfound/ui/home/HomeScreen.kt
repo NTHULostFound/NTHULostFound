@@ -133,8 +133,8 @@ fun HomeScreen(
     ) { paddingValues ->
         LazyColumn(
             modifier = modifier
-                .padding(paddingValues)
-                .padding(12.dp),
+                .padding(paddingValues),
+            contentPadding = PaddingValues(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(items) { item ->
