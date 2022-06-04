@@ -1,6 +1,7 @@
 package ss.team16.nthulostfound.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +29,8 @@ import java.util.*
 @Composable
 fun NotificationItem(
     modifier: Modifier = Modifier,
-    data: NotificationData
+    data: NotificationData,
+    onClick: () -> Unit
 ) {
     val iconType = when(data.type) {
         NotificationType.LOST_NOTIFICATION -> Icons.Filled.Help
@@ -47,6 +49,9 @@ fun NotificationItem(
         modifier = modifier
             .fillMaxWidth()
             .background(color = color)
+            .clickable {
+                onClick()
+            }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -87,6 +92,6 @@ fun NotificationItemPreview() {
             timestamp = Date().time,
             read = false,
         )
-        NotificationItem(data = data)
+        NotificationItem(data = data, onClick = {})
     }
 }
