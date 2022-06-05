@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApolloModule {
+object ApolloModule {
     private val BASE_URL = "https://nthu-lost-found.yikuo.dev/graphql/"
 
     @Provides
