@@ -6,7 +6,7 @@ import ss.team16.nthulostfound.domain.model.NotificationData
 
 @Dao
 interface NotificationDao {
-    @Query("SELECT * FROM notification")
+    @Query("SELECT * FROM notification ORDER BY timestamp DESC")
     fun getNotifications() : Flow<List<NotificationData>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

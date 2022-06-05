@@ -16,7 +16,7 @@ class NotificationViewModel @Inject constructor(
     private val getNotificationUseCase: GetNotificationUseCase,
     private val updateNotificationUseCase: UpdateNotificationUseCase
 ): ViewModel() {
-    private lateinit var _notifs: SnapshotStateList<NotificationData>
+    private var _notifs = emptyList<NotificationData>().toMutableStateList()
     val notifs: List<NotificationData>
         get() = _notifs
 

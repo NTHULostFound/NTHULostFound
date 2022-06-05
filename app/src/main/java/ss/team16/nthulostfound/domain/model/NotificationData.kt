@@ -13,7 +13,7 @@ enum class NotificationType {
 @Entity(tableName = "notification")
 data class NotificationData(
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
+    var id: Int = 0,
     var type: NotificationType,
     var content: String = "",
     @ColumnInfo(name = "item_uuid")

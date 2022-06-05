@@ -74,6 +74,7 @@ dependencies {
     // Add the dependency for the Firebase SDK for Google Analytics
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.0.5'
 
     // Experimental pager, v0.24.9-beta for compose v1.2.0-beta02
     // Needed for userScrollEnabled functionality
