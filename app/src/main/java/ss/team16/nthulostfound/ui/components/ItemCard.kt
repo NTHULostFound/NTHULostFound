@@ -2,6 +2,7 @@ package ss.team16.nthulostfound.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -31,13 +32,17 @@ import java.util.*
 @Composable
 fun ItemCard(
     modifier: Modifier = Modifier,
-    item: ItemData
+    item: ItemData,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.LightGray, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
+            .clickable {
+                onClick()
+            }
     ) {
         Row() {
             Column(
@@ -98,6 +103,6 @@ fun ItemCardPreview() {
         how = "請連絡我取回"
     )
     NTHULostFoundTheme {
-        ItemCard(item = item)
+        ItemCard(item = item, onClick = {})
     }
 }

@@ -138,7 +138,9 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(items) { item ->
-                ItemCard(item = item)
+                ItemCard(item = item, onClick = {
+                    navController.navigate("item/${item.uuid}")
+                })
             }
         }
     }
