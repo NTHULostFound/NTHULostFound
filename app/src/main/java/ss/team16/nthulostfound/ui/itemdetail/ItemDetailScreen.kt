@@ -3,28 +3,23 @@ package ss.team16.nthulostfound.ui.itemdetail
 import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ContactPage
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.IconLabel
 import ss.team16.nthulostfound.ui.components.ImageCarousel
 import ss.team16.nthulostfound.ui.components.InfoBox
-import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
-import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import ss.team16.nthulostfound.utils.assistedViewModel
 import java.util.*
 
@@ -34,15 +29,17 @@ val padding = 24.dp
 fun ItemDetailScreen(
     uuid: String,
     onBack: () -> Unit = { },
+    navigateToRoute: (String) -> Unit = { },
     viewModel: ItemDetailViewModel = assistedViewModel {
         ItemDetailViewModel.provideFactory(
             itemDetailViewModelFactory(),
-            uuid
+            uuid,
+            navigateToRoute
         )
     }
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             BackArrowAppBar(
@@ -62,29 +59,7 @@ fun ItemDetailScreen(
                 .padding(contentPadding)
         ) {
             if (viewModel.dialogState !is DialogState.Disabled) {
-                AlertDialog(
-                    onDismissRequest = { viewModel.onDialogDismiss() },
-                    confirmButton = {
-                        TextButton(onClick = { viewModel.onDialogConfirm() }) {
-                            Text(text = when(viewModel.dialogState) {
-                                is DialogState.AskEnd -> "是"
-                                else -> "確定"
-                            })
-                        }
-                    },
-                    dismissButton = {
-                        if (viewModel.dialogState is DialogState.AskEnd) {
-                            TextButton(onClick = { viewModel.onDialogDismiss() }) {
-                                Text(text = when(viewModel.dialogState) {
-                                    is DialogState.AskEnd -> "否"
-                                    else -> "取消"
-                                })
-                            }
-                        }
-                    },
-                    title = { Text(viewModel.dialogState.title) },
-                    text = { Text(viewModel.dialogState.text) }
-                )
+                ItemDetailScreenDialog(viewModel = viewModel)
             }
 
             ImageCarousel(
@@ -193,4 +168,41 @@ fun ItemDetailScreen(
             }
         }
     }
+}
+
+@Composable
+fun ItemDetailScreenDialog(
+    viewModel: ItemDetailViewModel
+) {
+    AlertDialog(
+        onDismissRequest = { viewModel.onDialogDismiss() },
+        confirmButton = {
+            TextButton(onClick = { viewModel.onDialogConfirm() }) {
+                Text(text = when(viewModel.dialogState) {
+                    is DialogState.AskEnd -> "是"
+                    else -> "確定"
+                })
+            }
+        },
+        dismissButton = {
+            if (viewModel.dialogState is DialogState.AskEnd) {
+                TextButton(onClick = { viewModel.onDialogDismiss() }) {
+                    Text(text = when(viewModel.dialogState) {
+                        is DialogState.AskEnd -> "否"
+                        else -> "取消"
+                    })
+                }
+            }
+        },
+        title = { Text(viewModel.dialogState.title) },
+        text = {
+            if (viewModel.dialogState is DialogState.ShowContact) {
+                SelectionContainer() {
+                    Text(viewModel.dialogState.text)
+                }
+            } else {
+                Text(viewModel.dialogState.text)
+            }
+        }
+    )
 }

@@ -101,7 +101,8 @@ class MainActivity : ComponentActivity() {
                         val itemId = it.arguments?.getString("itemId")!!
                         ItemDetailScreen(
                             uuid = itemId,
-                            onBack = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() },
+                            navigateToRoute = { route -> navController.navigate(route) }
                         )
                     }
                     composable("item/{itemId}/contact") {

@@ -30,7 +30,7 @@ class ItemRepositoryMockImpl: ItemRepository {
     }
 
     override suspend fun endItem(item: ItemData) {
-        TODO("Not yet implemented")
+        // TODO: Not yet implemented
     }
 
     override suspend fun getContact(uuid: String): String {
