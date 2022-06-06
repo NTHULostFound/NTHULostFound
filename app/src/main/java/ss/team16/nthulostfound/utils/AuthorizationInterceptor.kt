@@ -10,10 +10,12 @@ class AuthorizationInterceptor constructor(
 ): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = runBlocking { getUserUseCase().accessToken }
-        val request = chain.request().newBuilder()
-            .addHeader("Authorization", "Bearer $token" ?: "")
-            .build()
+        var builder = chain.request().newBuilder()
 
-        return chain.proceed(request)
+        if (token.isNotBlank()) {
+            builder = builder.addHeader("Authorization", "Bearer $token" ?: "")
+        }
+
+        return chain.proceed(builder.build())
     }
 }
