@@ -39,7 +39,7 @@ fun NotificationItem(
     }
 
     val date = Date(data.timestamp)
-    val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.TAIWAN)
+    val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
     val color = if(data.read) {
         MaterialTheme.colors.surface
     } else {
