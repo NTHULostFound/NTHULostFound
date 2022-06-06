@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.newitem
 
+import android.icu.text.SimpleDateFormat
 import android.view.KeyEvent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
@@ -9,7 +10,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ContactPage
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
@@ -30,16 +35,19 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.components.FormTextField
+import ss.team16.nthulostfound.ui.components.IconLabel
 import ss.team16.nthulostfound.ui.components.ImageCarousel
+import ss.team16.nthulostfound.ui.components.InfoBox
+import ss.team16.nthulostfound.ui.itemdetail.ViewMode
+import java.util.*
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 @Composable
 fun ConfirmPage(
     viewModel: NewItemViewModel
 ) {
-    val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    var whoPosition  by remember { mutableStateOf(0f) }
 
     Column(
         modifier = Modifier
@@ -50,92 +58,95 @@ fun ConfirmPage(
     ) {
         ImageCarousel(
             images = viewModel.imageBitmaps,
-            padding = PaddingValues(bottom = 16.dp)
+            shape = RectangleShape,
+            borderWidth = 0.dp
         )
 
-        FormTextField(
-            value = viewModel.name,
-            label = "物品名稱",
-            onValueChange = { viewModel.onNameChange(it) },
-            icon = Icons.Outlined.WorkOutline,
-            singleLine = true,
-            required = true
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(padding),
+            modifier = Modifier
+                .padding(padding)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                IconLabel(
+                    icon = Icons.Filled.Place,
+                    labelText = viewModel.place
+                )
 
-        FormTextField(
-            value = viewModel.place,
-            label =
-            if (viewModel.type == NewItemType.NEW_FOUND)
-                "拾獲地點"
-            else
-                "估略遺失地點",
-            onValueChange = { viewModel.onPlaceChange(it) },
-            icon = Icons.Outlined.Place,
-            singleLine = true,
-            required = true
-        )
-
-        FormTextField(
-            value = viewModel.description,
-            label = "物品詳細資訊",
-            icon = Icons.Outlined.Info,
-            onValueChange = { viewModel.onDescriptionChange(it) },
-            singleLine = false,
-            required = false
-        )
-
-        FormTextField(
-            value = viewModel.how,
-            label =
-            if (viewModel.type == NewItemType.NEW_FOUND)
-                "物品取回方式"
-            else
-                "物品處理方式",
-            icon =
-            if (viewModel.type == NewItemType.NEW_FOUND)
-                Icons.Outlined.Undo
-            else
-                Icons.Outlined.HelpOutline,
-            onValueChange = { viewModel.onHowChange(it) },
-            singleLine = false,
-            required = true
-        )
-
-        FormTextField(
-            value = viewModel.contact,
-            label = "聯繫方式",
-            onValueChange = { viewModel.onContactChange(it) },
-            icon = Icons.Outlined.ContactPage,
-            singleLine = false,
-            required = true,
-            isLastField = !viewModel.whoEnabled
-        )
-
-        if (viewModel.type == NewItemType.NEW_FOUND) {
-            WhoCheckBox(
-                checked = viewModel.whoEnabled,
-                onCheckedChange = { checked ->
-                    viewModel.onWhoEnabledChange(checked)
-                    if (checked)
-                        scope.launch {
-                            scrollState.animateScrollTo(whoPosition.roundToInt())
-                        }
+                val cal = Calendar.getInstance()
+                with(viewModel) {
+                    cal.set(year, month, day, hour, minute)
                 }
+
+                val formatter = SimpleDateFormat("yyyy/M/d   h:mm a", Locale.getDefault())
+                val timeString = formatter.format(cal.time)
+
+                IconLabel(
+                    icon = Icons.Outlined.AccessTime,
+                    labelText = timeString
+                )
+            }
+
+            Text(
+                text = viewModel.description,
+                modifier = Modifier
+                    .fillMaxWidth()
             )
 
-            AnimatedVisibility(visible = viewModel.whoEnabled) {
-                FormTextField(
-                    value = viewModel.who,
-                    label = "失主的姓名或學號",
-                    onValueChange = { viewModel.onWhoChange(it) },
-                    icon = Icons.Outlined.Badge,
-                    singleLine = true,
-                    required = true,
-                    isLastField = true,
-                    onGloballyPositioned = { coordinates ->
-                        whoPosition = coordinates.positionInRoot().y
-                    }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(padding / 2),
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text =
+                    if (viewModel.type == NewItemType.NEW_FOUND)
+                        "物品取回方式"
+                    else
+                        "物品處理方式",
+                    style = MaterialTheme.typography.h5
                 )
+
+                Text(
+                    text = viewModel.how
+                )
+            }
+
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(padding / 2),
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "聯繫方式",
+                    style = MaterialTheme.typography.h5
+                )
+
+                Text(
+                    text = viewModel.contact
+                )
+            }
+
+            if (viewModel.whoEnabled) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(padding / 2),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "失主的姓名或學號",
+                        style = MaterialTheme.typography.h5
+                    )
+
+                    Text(
+                        text = viewModel.who
+                    )
+                }
             }
         }
     }
