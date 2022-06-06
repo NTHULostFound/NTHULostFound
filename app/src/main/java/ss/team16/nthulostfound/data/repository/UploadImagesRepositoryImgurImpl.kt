@@ -41,7 +41,7 @@ class UploadImagesRepositoryImgurImpl(
                 val uploadImage = UploadedImage(upload.link)
                 Result.success(uploadImage)
             } else {
-                Result.failure(Exception("圖片上傳失敗：網路錯誤！"))
+                Result.failure(Exception("Imgur 發生錯誤"))
             }
         } catch (e: Exception) {
             Result.failure(e)
