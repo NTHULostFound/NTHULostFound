@@ -20,10 +20,15 @@ object ApolloModule {
     private val BASE_URL = "https://nthu-lost-found.yikuo.dev/graphql/"
 
     @Provides
+    fun provideAuthorizationInterceptor(getUserUseCase: GetUserUseCase): AuthorizationInterceptor {
+        return AuthorizationInterceptor(getUserUseCase)
+    }
+
+    @Provides
     @Singleton
-    fun provideOkHttpClient(@ApplicationContext appContext: Context): OkHttpClient {
+    fun provideOkHttpClient(authorizationInterceptor: AuthorizationInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(AuthorizationInterceptor(appContext, UserData())) // TODO: GetUserUseCase is suspend function
+            .addInterceptor(authorizationInterceptor)
             .build()
     }
 
