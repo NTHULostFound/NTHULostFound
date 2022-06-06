@@ -60,9 +60,9 @@ class ItemDetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun shareItem(context: Context) {
+    fun shareItem() {
         viewModelScope.launch {
-            shareItemUseCase(context, item)
+            shareItemUseCase(item)
         }
     }
 

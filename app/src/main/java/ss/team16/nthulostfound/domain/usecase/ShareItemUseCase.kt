@@ -6,10 +6,12 @@ import androidx.core.content.ContextCompat
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
 
-class ShareItemUseCase {
+class ShareItemUseCase(
+    val context: Context
+) {
     val LINK = "" // TODO: add dynamic link
 
-    operator fun invoke(context: Context, item: ItemData) {
+    operator fun invoke(item: ItemData) {
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
             type = "text/plain"
@@ -27,7 +29,7 @@ class ShareItemUseCase {
 
         ContextCompat.startActivity(
             context,
-            Intent.createChooser(intent, "分享物品資訊..."),
+            Intent.createChooser(intent, "分享物品資訊...").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
             null
         )
     }
