@@ -97,6 +97,9 @@ dependencies {
     kapt "androidx.room:room-compiler:2.4.2"
     implementation "androidx.room:room-ktx:2.4.2"
 
+    // Preferences DataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
     // Graphql
     implementation "com.apollographql.apollo3:apollo-runtime:3.3.0"
 
