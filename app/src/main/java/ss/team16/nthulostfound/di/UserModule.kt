@@ -1,8 +1,10 @@
 package ss.team16.nthulostfound.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ss.team16.nthulostfound.data.repository.UserRepositoryImpl
 import ss.team16.nthulostfound.data.repository.UserRepositoryMockImpl
@@ -17,8 +19,8 @@ object UserModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(): UserRepository {
-        return UserRepositoryMockImpl()
+    fun provideUserRepository(@ApplicationContext appContext: Context): UserRepository {
+        return UserRepositoryImpl(appContext)
     }
 
     @Provides
