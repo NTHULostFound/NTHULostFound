@@ -106,7 +106,9 @@ fun StatusIcon(
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
-        if (status == NewItemUploadStatus.UPLOADING_IMAGE || status == NewItemUploadStatus.UPLOADING_DATA) {
+        if (status == NewItemUploadStatus.IDLE ||
+                status == NewItemUploadStatus.UPLOADING_IMAGE ||
+                status == NewItemUploadStatus.UPLOADING_DATA) {
             // Loading Animation Src:
             // https://github.com/mutualmobile/compose-animation-examples
 
@@ -144,7 +146,7 @@ fun StatusIcon(
         } else {
             Box(
                 modifier = Modifier
-                    .size(150.dp)
+                    .size((150+20).dp)
                     .clip(CircleShape)
                     .background(
                         if (status == NewItemUploadStatus.DONE)
