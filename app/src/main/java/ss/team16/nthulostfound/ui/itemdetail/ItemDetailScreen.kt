@@ -38,15 +38,13 @@ fun ItemDetailScreen(
         )
     }
 ) {
-    val context = LocalContext.current
-
     Scaffold(
         topBar = {
             BackArrowAppBar(
                 title = viewModel.item.name,
                 onBack = onBack,
                 onShare = {
-                    viewModel.shareItem(context)
+                    viewModel.shareItem()
                 },
                 backEnabled = true,
             )

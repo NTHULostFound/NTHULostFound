@@ -1,8 +1,10 @@
 package ss.team16.nthulostfound.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ss.team16.nthulostfound.data.repository.ItemRepositoryMockImpl
 import ss.team16.nthulostfound.domain.repository.ItemRepository
@@ -45,8 +47,8 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideShareItemUseCase(): ShareItemUseCase {
-        return ShareItemUseCase()
+    fun provideShareItemUseCase(@ApplicationContext context: Context): ShareItemUseCase {
+        return ShareItemUseCase(context)
     }
 
     @Provides
@@ -57,7 +59,7 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideShareResultUseCase(): ShareResultUseCase {
-        return ShareResultUseCase()
+    fun provideShareResultUseCase(@ApplicationContext context: Context): ShareResultUseCase {
+        return ShareResultUseCase(context)
     }
 }

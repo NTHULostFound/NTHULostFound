@@ -29,8 +29,6 @@ fun ClosedItemScreen(
     navigateToRoute: (String) -> Unit = {},
     viewModel: ClosedItemViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-
     Scaffold(
         topBar = {
             BackArrowAppBar(
@@ -91,7 +89,7 @@ fun ClosedItemScreen(
 
             Button(
                 onClick = {
-                    viewModel.shareResult(context)
+                    viewModel.shareResult()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

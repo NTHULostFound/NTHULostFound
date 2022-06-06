@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClosedItemViewModel @Inject constructor(
-    val stateHandle: SavedStateHandle,
+    stateHandle: SavedStateHandle,
     val shareResultUseCase: ShareResultUseCase
 ): ViewModel() {
     val type = when (stateHandle.get<String>("itemType")!!) {
@@ -22,9 +22,9 @@ class ClosedItemViewModel @Inject constructor(
     }
     val name = stateHandle.get<String>("itemName")!!
 
-    fun shareResult(context: Context) {
+    fun shareResult() {
         viewModelScope.launch {
-            shareResultUseCase(context, type, name)
+            shareResultUseCase(type, name)
         }
     }
 }
