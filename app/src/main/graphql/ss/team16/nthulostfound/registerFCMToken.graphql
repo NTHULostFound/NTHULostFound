@@ -1,0 +1,5 @@
+mutation RegisterFCMToken($token: String!) {
+    registerFCMToken(token: $token) {
+        accessToken
+    }
+}
