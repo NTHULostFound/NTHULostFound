@@ -7,13 +7,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ss.team16.nthulostfound.data.repository.NotificationRepositoryImpl
-import ss.team16.nthulostfound.data.repository.NotificationRepositoryMockImpl
 import ss.team16.nthulostfound.data.source.NotificationDatabase
 import ss.team16.nthulostfound.domain.repository.NotificationRepository
-import ss.team16.nthulostfound.domain.repository.UserRepository
 import ss.team16.nthulostfound.domain.usecase.AddNotificationUseCase
 import ss.team16.nthulostfound.domain.usecase.GetNotificationUseCase
-import ss.team16.nthulostfound.domain.usecase.SaveUserUseCase
 import ss.team16.nthulostfound.domain.usecase.UpdateNotificationUseCase
 import javax.inject.Singleton
 

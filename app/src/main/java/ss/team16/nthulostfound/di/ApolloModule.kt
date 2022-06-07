@@ -1,16 +1,13 @@
 package ss.team16.nthulostfound.di
 
-import android.content.Context
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
-import ss.team16.nthulostfound.domain.model.UserData
-import ss.team16.nthulostfound.domain.usecase.GetUserUseCase
+import ss.team16.nthulostfound.domain.repository.UserRepository
 import ss.team16.nthulostfound.utils.AuthorizationInterceptor
 import javax.inject.Singleton
 
@@ -20,8 +17,8 @@ object ApolloModule {
     private val BASE_URL = "https://nthu-lost-found.yikuo.dev/graphql/"
 
     @Provides
-    fun provideAuthorizationInterceptor(getUserUseCase: GetUserUseCase): AuthorizationInterceptor {
-        return AuthorizationInterceptor(getUserUseCase)
+    fun provideAuthorizationInterceptor(userRepository: UserRepository): AuthorizationInterceptor {
+        return AuthorizationInterceptor(userRepository)
     }
 
     @Provides

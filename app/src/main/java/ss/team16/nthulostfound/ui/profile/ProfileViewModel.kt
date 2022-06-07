@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.profile
 
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,18 +9,18 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.UserData
-import ss.team16.nthulostfound.domain.usecase.GetUserUseCase
-import ss.team16.nthulostfound.domain.usecase.SaveUserUseCase
+import ss.team16.nthulostfound.domain.repository.UserRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    val getUserUseCase: GetUserUseCase,
-    val saveUserUseCase: SaveUserUseCase
+    private val userRepository: UserRepository
 ): ViewModel() {
     private var _user by mutableStateOf(UserData())
     val user: UserData
         get() = _user
+
+    val isNotificationEnable = userRepository.getIsNotificationEnable()
 
     private var _hasChangedTextFieldValue by mutableStateOf(false)
     val hasChangedTextFieldValue: Boolean
@@ -27,7 +28,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _user = getUserUseCase()
+            _user = userRepository.getUser()
         }
     }
 
@@ -43,12 +44,8 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun setEnableNotification(status: Boolean) {
-        _user = user.copy(
-            isNotificationEnable = status
-        )
-
         viewModelScope.launch {
-            saveUserUseCase(_user.copy())
+            userRepository.setIsNotificationEnable(status)
         }
     }
 
@@ -56,7 +53,7 @@ class ProfileViewModel @Inject constructor(
         _hasChangedTextFieldValue = false
 
         viewModelScope.launch {
-            saveUserUseCase(_user.copy())
+            userRepository.saveUser(_user.copy())
         }
     }
 
@@ -64,7 +61,7 @@ class ProfileViewModel @Inject constructor(
         _hasChangedTextFieldValue = false
 
         viewModelScope.launch {
-            _user = getUserUseCase()
+            _user = userRepository.getUser()
         }
     }
 
