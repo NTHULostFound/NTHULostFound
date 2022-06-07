@@ -50,7 +50,7 @@ class HomeViewModel @AssistedInject constructor(
                 }
             }
             ShowType.FOUND -> {
-                return listOf(
+                return List(15) {
                     ItemData(
                         type = ItemType.FOUND,
                         uuid = "C8764",
@@ -59,8 +59,8 @@ class HomeViewModel @AssistedInject constructor(
                         date = Date(),
                         place = "仁齋",
                         how = ""
-                    ),
-                )
+                    )
+                }
             }
         }
     }
