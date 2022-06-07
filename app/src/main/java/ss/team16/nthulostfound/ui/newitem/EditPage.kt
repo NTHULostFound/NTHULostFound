@@ -186,7 +186,7 @@ fun WhoCheckBox(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth(0.9f),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
