@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,6 +21,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -87,6 +90,7 @@ fun HomeAppBar(
                 RoundedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
+                    focusManager = focusManager,
                     modifier = Modifier.focusRequester(focusRequester)
                 )
 
@@ -142,13 +146,14 @@ fun HomeAppBar(
 fun RoundedTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    focusManager: FocusManager,
+    enabled: Boolean = true,
+    singleLine: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember {
         MutableInteractionSource()
     }
-    val enabled = true
-    val singleLine = true
     val visualTransformation = VisualTransformation.None
 
     // TODO: apply NTHULostFoundTheme
@@ -180,6 +185,10 @@ fun RoundedTextField(
               }
           }
         },
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) },
+            onDone = { focusManager.clearFocus() }
+        ),
         modifier = modifier
             .padding(vertical = 4.dp)
             .fillMaxSize()
