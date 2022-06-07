@@ -1,0 +1,14 @@
+mutation NewItem($type: ItemType!, $name: String!, $date: String!, $place: String!, $how: String!, $images: [String!]!, $contact: String!, $who: String, $description: String) {
+  newItem(type: $type, name: $name, date: $date, place: $place, how: $how, images: $images, contact: $contact, who: $who, description: $description) {
+    uuid
+    type
+    name
+    description
+    date
+    place
+    how
+    images
+    isMine
+    resolved
+  }
+}

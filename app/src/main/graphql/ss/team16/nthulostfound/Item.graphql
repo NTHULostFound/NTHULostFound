@@ -1,0 +1,14 @@
+query Item($itemId: String!) {
+  item(itemId: $itemId) {
+    uuid
+    type
+    name
+    description
+    date
+    place
+    how
+    images
+    isMine
+    resolved
+  }
+}

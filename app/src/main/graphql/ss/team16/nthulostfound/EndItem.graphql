@@ -1,0 +1,14 @@
+mutation EndItem($itemId: String!) {
+  endItem(itemId: $itemId) {
+    uuid
+    images
+    isMine
+    resolved
+    how
+    date
+    place
+    description
+    type
+    name
+  }
+}

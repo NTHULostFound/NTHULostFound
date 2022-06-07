@@ -1,0 +1,5 @@
+query ItemContact($itemId: String!) {
+  itemContact(itemId: $itemId) {
+    contact
+  }
+}
