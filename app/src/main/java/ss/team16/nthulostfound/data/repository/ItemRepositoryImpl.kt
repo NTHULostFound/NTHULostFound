@@ -3,6 +3,7 @@ package ss.team16.nthulostfound.data.repository
 import android.icu.text.SimpleDateFormat
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Optional
 import ss.team16.nthulostfound.EndItemMutation
 import ss.team16.nthulostfound.ItemContactQuery
 import ss.team16.nthulostfound.ItemQuery
@@ -71,15 +72,15 @@ class ItemRepositoryImpl(
                 val dateString = format.format(date)
 
                 val newItemMutation = NewItemMutation(
-                    itemType,
-                    name,
-                    dateString,
-                    place,
-                    how,
-                    images,
-                    contact,
-                    who = who,
-                    description = description
+                    type = itemType,
+                    name = name,
+                    date = dateString,
+                    place = place,
+                    how = how,
+                    images = images,
+                    contact = contact,
+                    who = Optional.presentIfNotNull(who),
+                    description = Optional.presentIfNotNull(description)
                 )
 
                 response = apolloClient.mutation(newItemMutation).execute().dataAssertNoErrors
@@ -93,7 +94,7 @@ class ItemRepositoryImpl(
                         else
                             ItemType.LOST
 
-                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.getDefault())
+                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                     val dateString = date.toString()
 
                     ItemData(

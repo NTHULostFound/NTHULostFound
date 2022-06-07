@@ -55,7 +55,7 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            _item = getItemUseCase(uuid)!!
+            _item = getItemUseCase(uuid).getOrDefault(ItemData())
             _viewMode = if (item.isOwner) ViewMode.Owner else ViewMode.Guest
         }
     }
@@ -83,7 +83,7 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     fun getContact() {
         viewModelScope.launch {
-            val contactInfo = getContactUseCase(item.uuid)
+            val contactInfo = getContactUseCase(item.uuid).getOrDefault("無法取得")
             _dialogState = DialogState.ShowContact(text = contactInfo)
         }
     }

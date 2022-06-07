@@ -91,7 +91,7 @@ fun ItemDetailScreen(
                 }
 
                 Text(
-                    text = viewModel.item.description,
+                    text = viewModel.item.description ?: "",
                     modifier = Modifier
                         .fillMaxWidth()
                 )

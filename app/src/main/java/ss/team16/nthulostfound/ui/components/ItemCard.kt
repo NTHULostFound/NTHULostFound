@@ -50,8 +50,9 @@ fun ItemCard(
                     style = MaterialTheme.typography.h5,
                     modifier = modifier.padding(4.dp)
                 )
+
                 Text(
-                    text = item.description,
+                    text = item.description ?: "",
                     style = MaterialTheme.typography.body1,
                     modifier = modifier.padding(4.dp)
                 )

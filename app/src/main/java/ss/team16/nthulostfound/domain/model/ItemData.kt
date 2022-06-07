@@ -10,7 +10,7 @@ data class ItemData(
     val type: ItemType = ItemType.FOUND,
     val uuid: String = "",
     val name: String = "",
-    val description: String?,
+    val description: String? = null,
     val date: Date = Date(),
     val place: String = "",
     val how: String = "",

@@ -41,7 +41,7 @@ class HomeViewModel @AssistedInject constructor(
                         date = Date(),
                         place = "台達 105",
                         how = "請聯繫我取回 啾咪",
-                        images = listOf(UploadedImage("https://example.com"))
+                        images = listOf("https://example.com")
                     )
                 )
             }
