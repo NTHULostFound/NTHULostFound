@@ -126,19 +126,22 @@ fun HomeScreen(
                 currentRoute = "home/$showTypeStr",
                 modifier = modifier,
                 navigateToRoute = {
-                    navController.navigate(it)
+                    if(it != "home/$showTypeStr")
+                        navController.navigate(it)
                 }
             )
         }
     ) { paddingValues ->
         LazyColumn(
             modifier = modifier
-                .padding(paddingValues)
-                .padding(12.dp),
+                .padding(paddingValues),
+            contentPadding = PaddingValues(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(items) { item ->
-                ItemCard(item = item)
+                ItemCard(item = item, onClick = {
+                    navController.navigate("item/${item.uuid}")
+                })
             }
         }
     }
