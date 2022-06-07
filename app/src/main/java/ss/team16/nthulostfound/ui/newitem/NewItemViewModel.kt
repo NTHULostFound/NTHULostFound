@@ -264,7 +264,7 @@ class NewItemViewModel @AssistedInject constructor(
             assistedFactory: Factory,
             type: NewItemType,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(type) as T
             }
         }
