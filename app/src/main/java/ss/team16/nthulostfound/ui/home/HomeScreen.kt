@@ -126,7 +126,8 @@ fun HomeScreen(
                 currentRoute = "home/$showTypeStr",
                 modifier = modifier,
                 navigateToRoute = {
-                    navController.navigate(it)
+                    if(it != "home/$showTypeStr")
+                        navController.navigate(it)
                 }
             )
         }
