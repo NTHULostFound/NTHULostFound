@@ -1,11 +1,13 @@
 package ss.team16.nthulostfound.di
 
 import android.content.Context
+import com.apollographql.apollo3.ApolloClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import ss.team16.nthulostfound.data.repository.ItemRepositoryImpl
 import ss.team16.nthulostfound.data.repository.ItemRepositoryMockImpl
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import ss.team16.nthulostfound.domain.usecase.*
@@ -17,8 +19,8 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideItemRepository(): ItemRepository {
-        return ItemRepositoryMockImpl()
+    fun provideItemRepository(apolloClient: ApolloClient): ItemRepository {
+        return ItemRepositoryImpl(apolloClient)
     }
 
     @Provides

@@ -1,0 +1,7 @@
+mutation UpdateUserData($studentId: String) {
+  updateUserData(studentId: $studentId) {
+    name
+    studentId
+    email
+  }
+}

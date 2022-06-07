@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
                         "item/{itemId}",
                         arguments = listOf(navArgument("itemId") {
                             type = NavType.StringType
-                            defaultValue = ""
+                            defaultValue = "bd5234b5-35b5-4faf-9c01-684819077461"
                         })
                     ) {
                         val itemId = it.arguments?.getString("itemId")!!

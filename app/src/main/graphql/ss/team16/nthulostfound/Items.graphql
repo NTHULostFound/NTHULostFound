@@ -1,0 +1,23 @@
+query Items($type: ItemType!, $before: String, $first: Int, $last: Int, $after: String, $search: String, $mine: Boolean) {
+  items(type: $type, before: $before, first: $first, last: $last, after: $after, search: $search, mine: $mine) {
+    edges {
+      node {
+        uuid
+        type
+        name
+        description
+        date
+        place
+        how
+        images
+        isMine
+        resolved
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
+  }
+}
