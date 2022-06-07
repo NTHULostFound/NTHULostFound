@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +39,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
+    val isNotificationEnable = viewModel.isNotificationEnable.collectAsState(initial = false)
 
     Scaffold(
         topBar = {
@@ -154,7 +156,7 @@ fun ProfileScreen(
                 // fill space so the switch would be and the end of the row
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
-                    checked = viewModel.user.isNotificationEnable,
+                    checked = isNotificationEnable.value,
                     onCheckedChange = { status -> viewModel.setEnableNotification(status) },
                 )
             }
