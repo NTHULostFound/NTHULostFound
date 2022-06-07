@@ -10,11 +10,11 @@ data class ItemData(
     val type: ItemType = ItemType.FOUND,
     val uuid: String = "",
     val name: String = "",
-    val description: String = "",
+    val description: String?,
     val date: Date = Date(),
     val place: String = "",
     val how: String = "",
-    val images: List<UploadedImage> = emptyList(),
+    val images: List<String> = emptyList(),
     val isOwner: Boolean = false,
     val resolved: Boolean = false
 )

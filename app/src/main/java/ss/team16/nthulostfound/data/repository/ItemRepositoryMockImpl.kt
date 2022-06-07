@@ -2,6 +2,7 @@ package ss.team16.nthulostfound.data.repository
 
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
+import ss.team16.nthulostfound.domain.model.NewItemData
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import java.util.*
 
@@ -21,11 +22,7 @@ class ItemRepositoryMockImpl: ItemRepository {
         )
     }
 
-    override suspend fun addItem(item: ItemData) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteItem(item: ItemData) {
+    override suspend fun newItem(item: NewItemData) {
         TODO("Not yet implemented")
     }
 
