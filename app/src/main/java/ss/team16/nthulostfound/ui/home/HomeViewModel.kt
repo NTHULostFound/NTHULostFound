@@ -87,7 +87,7 @@ class HomeViewModel @AssistedInject constructor(
             assistedFactory: Factory,
             showType: ShowType
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(showType) as T
             }
         }
