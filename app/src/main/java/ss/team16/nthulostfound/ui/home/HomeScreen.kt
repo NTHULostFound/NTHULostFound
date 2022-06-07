@@ -33,8 +33,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
-    val items = viewModel.items
-    val showTypeStr = if(viewModel.showType == ShowType.FOUND) "found" else "lost"
     Scaffold(
         topBar = {
             HomeAppBar(navigateToRoute = {
@@ -122,12 +120,14 @@ fun HomeScreen(
             }
         },
         bottomBar = {
+            val showTypeStr = if(viewModel.showType == ShowType.FOUND) "found" else "lost"
             BottomNav(
                 currentRoute = "home/$showTypeStr",
                 modifier = modifier,
                 navigateToRoute = {
-                    if(it != "home/$showTypeStr")
-                        navController.navigate(it)
+                    if(it != "home/$showTypeStr") {
+                        viewModel.onShowTypeChanged()
+                    }
                 }
             )
         }
@@ -138,6 +138,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            val items = viewModel.items
             items(items) { item ->
                 ItemCard(item = item, onClick = {
                     navController.navigate("item/${item.uuid}")

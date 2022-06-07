@@ -23,9 +23,12 @@ enum class FabState {
 }
 
 class HomeViewModel @AssistedInject constructor(
-    @Assisted val showType: ShowType
+    @Assisted showType: ShowType
 ) : ViewModel() {
-    private var _items = getItems(showType).toMutableStateList()
+    private var _showType by mutableStateOf(showType)
+    val showType: ShowType
+        get() = _showType
+    private var _items by mutableStateOf(getItems(showType))
     val items: List<ItemData>
         get() = _items
     var fabState: FabState by mutableStateOf(FabState.WITH_TEXT)
@@ -62,8 +65,9 @@ class HomeViewModel @AssistedInject constructor(
         }
     }
 
-    fun onShowTypeChanged(showType: ShowType) {
-        _items = getItems(showType).toMutableStateList()
+    fun onShowTypeChanged() {
+        _showType = if(_showType == ShowType.FOUND) ShowType.LOST else ShowType.FOUND
+        _items = getItems(showType)
     }
 
     fun onSearch(text: String) {
