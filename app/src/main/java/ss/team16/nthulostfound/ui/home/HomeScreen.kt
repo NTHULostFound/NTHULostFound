@@ -22,9 +22,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.ui.components.*
 
 @Composable
@@ -100,6 +102,19 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     state = lazyState
                 ) {
+
+                    if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+                        items(10) {
+                            ItemCard(
+                                item = ItemData(
+                                    name = "...",
+                                    place = "...",
+                                ),
+                                modifier = Modifier.shimmer(),
+                                onClick = {}
+                            )
+                        }
+                    }
 
                     itemsIndexed(lazyPagingItems) { _, item ->
                         if (item != null) {
