@@ -43,8 +43,14 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideNewItemUseCase(uploadImagesUseCase: UploadImagesUseCase) : NewItemUseCase {
-        return NewItemUseCase(uploadImagesUseCase)
+    fun provideNewItemUseCase(
+        uploadImagesUseCase: UploadImagesUseCase,
+        itemRepository: ItemRepository,
+    ) : NewItemUseCase {
+        return NewItemUseCase(
+            uploadImagesUseCase,
+            itemRepository
+        )
     }
 
     @Provides
