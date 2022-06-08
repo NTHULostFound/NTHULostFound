@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.data.paging
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -15,13 +16,12 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class ItemsRemoteMediator(
+    private val itemsDatabase: ItemsDatabase,
+    private val itemsRepository: ItemRepository,
     private val type: ItemType,
     private val search: String? = null,
-    private val myItems: Boolean = false,
+    private val myItems: Boolean = false
 ) : RemoteMediator<Int, ItemData>() {
-
-    @Inject lateinit var itemsDatabase: ItemsDatabase
-    @Inject lateinit var itemsRepository: ItemRepository
 
     private val itemsDao = itemsDatabase.itemsDao()
     private val itemRemoteKeysDao = itemsDatabase.itemRemoteKeysDao()
@@ -64,6 +64,7 @@ class ItemsRemoteMediator(
                 }
             }
 
+
             itemsResult.fold(
                 onSuccess = { itemConnection ->
                     val endOfPaginationReached = !itemConnection.hasNextPage
@@ -85,6 +86,10 @@ class ItemsRemoteMediator(
 
                         itemsDao.insertAll(items)
                         itemRemoteKeysDao.insertAll(keys)
+
+                        Log.d("RemoteMediator", "Insert all: $items")
+                        Log.d("RemoteMediator", "Total: ${items.size}")
+
                     }
 
                     MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)

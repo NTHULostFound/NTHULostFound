@@ -11,8 +11,8 @@ enum class ItemType {
 
 @Entity(tableName = "items")
 data class ItemData(
-    @PrimaryKey(autoGenerate = false)
     val type: ItemType = ItemType.FOUND,
+    @PrimaryKey(autoGenerate = false)
     val uuid: String = "",
     val name: String = "",
     val description: String? = null,

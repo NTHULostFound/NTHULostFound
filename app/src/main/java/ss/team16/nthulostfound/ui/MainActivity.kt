@@ -11,6 +11,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.IntOffset
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -42,7 +44,6 @@ class MainActivity : ComponentActivity() {
     interface ViewModelFactoryProvider {
         fun newItemViewModelFactory(): NewItemViewModel.Factory
         fun itemDetailViewModelFactory(): ItemDetailViewModel.Factory
-        fun homeViewModelFactory(): HomeViewModel.Factory
     }
 
     @OptIn(ExperimentalAnimationApi::class)
@@ -54,39 +55,16 @@ class MainActivity : ComponentActivity() {
 
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "home/{show_type}",
+                    startDestination = "home",
                     enterTransition = { EnterTransition.None },
                     exitTransition = { ExitTransition.None },
                 ) {
-                    composable("home/{show_type}",
-                        arguments = listOf(navArgument("show_type") {
-                            type = NavType.StringType
-                            defaultValue = "found"
-                        })
-                    ) {
-//                        LaunchedEffect(Unit) {
-//                            navController.navigate("new_item/found")
-//                        }
-                        val showType =
-                            if(it.arguments?.getString("show_type") == "found") {
-                                ShowType.FOUND
-                            } else {
-                                ShowType.LOST
-                            }
+                    composable("home") {
                         HomeScreen(
-                            navController = navController,
-                            viewModel = assistedViewModel {
-                                HomeViewModel.provideFactory(
-                                    homeViewModelFactory(),
-                                    showType
-                                )
-                            }
+                            navController = navController
                         )
                     }
-//                    composable("home/lost") {
-//
-//                        Greeting(name = "lost items")
-//                    }
+
                     composable("new_item/found") {
                         NewItemScreen(
                             type = NewItemType.NEW_FOUND,

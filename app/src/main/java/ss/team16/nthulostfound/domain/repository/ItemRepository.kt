@@ -11,8 +11,8 @@ interface ItemRepository {
 
     fun getPagingItems(
         type: ItemType,
-        search: String?,
-        myItems: Boolean
+        search: String? = null,
+        myItems: Boolean = false
     ): Flow<PagingData<ItemData>>
 
     suspend fun getItems(

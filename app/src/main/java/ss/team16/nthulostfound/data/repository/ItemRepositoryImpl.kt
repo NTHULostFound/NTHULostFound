@@ -31,7 +31,13 @@ class ItemRepositoryImpl(
         val pagingSourceFactory = { itemsDatabase.itemsDao().getItems() }
         return Pager(
             config = PagingConfig(pageSize = ITEMS_PER_PAGE),
-            remoteMediator = ItemsRemoteMediator(type, search, myItems),
+            remoteMediator = ItemsRemoteMediator(
+                itemsDatabase = itemsDatabase,
+                itemsRepository = this,
+                type = type,
+                search = search,
+                myItems = myItems
+            ),
             pagingSourceFactory = pagingSourceFactory
         ).flow
     }

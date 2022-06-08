@@ -1,8 +1,6 @@
 package ss.team16.nthulostfound.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -11,15 +9,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,6 +31,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val scaffoldState = rememberScaffoldState()
+    val showType = viewModel.showTypeFlow.collectAsState().value
+
     Scaffold(
         topBar = {
             HomeAppBar(navigateToRoute = {
@@ -69,19 +70,17 @@ fun HomeScreen(
                 items = expandFabItemList)
         },
         bottomBar = {
-            val showTypeStr = if(viewModel.showType == ShowType.FOUND) "found" else "lost"
             BottomNav(
-                currentRoute = "home/$showTypeStr",
+                currentShowType = showType,
                 modifier = modifier,
-                navigateToRoute = {
-                    if(it != "home/$showTypeStr") {
-                        viewModel.onShowTypeChanged()
-                    }
-                }
+                onChangePage = { viewModel.onPageChanged(it) }
             )
         }
     ) { paddingValues ->
+
         val lazyState = rememberLazyListState()
+        val lazyPagingItems = viewModel.items.collectAsLazyPagingItems()
+
         LazyColumn(
             modifier = modifier
                 .padding(paddingValues),
@@ -89,11 +88,33 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             state = lazyState
         ) {
-            val items = viewModel.items
-            items(items) { item ->
-                ItemCard(item = item, onClick = {
-                    navController.navigate("item/${item.uuid}")
-                })
+            if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+                item {
+                    Text(
+                        text = "Waiting for items to load from the backend",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+
+            itemsIndexed(lazyPagingItems) { _, item ->
+                if (item != null) {
+                    ItemCard(item = item, onClick = {
+                        navController.navigate("item/${item.uuid}")
+                    })
+                }
+            }
+
+            if (lazyPagingItems.loadState.append == LoadState.Loading) {
+                item {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                }
             }
         }
         val isScrolledToEnd = remember(lazyState) {
@@ -101,7 +122,7 @@ fun HomeScreen(
                 lazyState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyState.layoutInfo.totalItemsCount - 1
             }
         }
-        if (isScrolledToEnd.value && viewModel.showType == ShowType.FOUND) {
+        if (isScrolledToEnd.value && showType == ShowType.FOUND) {
             LaunchedEffect(Unit) {
                 launch {
                     val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
