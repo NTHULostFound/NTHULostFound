@@ -43,7 +43,7 @@ fun HomeScreen(
             HomeAppBar(navigateToRoute = {
                 navController.navigate(it)
             }, onSearch = {
-
+                viewModel.onSearch(it)
             })
         },
         scaffoldState = scaffoldState,

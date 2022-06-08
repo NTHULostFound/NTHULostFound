@@ -77,7 +77,10 @@ fun HomeAppBar(
                     )
                 }
             } else {
-                IconButton(onClick = { showSearchBar = false }) {
+                IconButton(onClick = {
+                    showSearchBar = false
+                    onSearch("")
+                }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "back"
@@ -91,7 +94,10 @@ fun HomeAppBar(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     focusManager = focusManager,
-                    modifier = Modifier.focusRequester(focusRequester)
+                    modifier = Modifier.focusRequester(focusRequester),
+                    onDone = {
+                        onSearch(searchQuery)
+                    }
                 )
 
                 // we must request focus after search bar is composed,
@@ -147,6 +153,7 @@ fun RoundedTextField(
     value: String,
     onValueChange: (String) -> Unit,
     focusManager: FocusManager,
+    onDone: () -> Unit,
     enabled: Boolean = true,
     singleLine: Boolean = true,
     modifier: Modifier = Modifier
@@ -187,7 +194,10 @@ fun RoundedTextField(
         },
         keyboardActions = KeyboardActions(
             onNext = { focusManager.moveFocus(FocusDirection.Down) },
-            onDone = { focusManager.clearFocus() }
+            onDone = {
+                focusManager.clearFocus()
+                onDone()
+            }
         ),
         modifier = modifier
             .padding(vertical = 4.dp)

@@ -10,9 +10,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.model.UploadedImage
@@ -27,27 +25,46 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val showTypeFlow = MutableStateFlow(ShowType.FOUND)
+    val searchFlow = MutableStateFlow<String?>(null)
+    val myItemsFlow = MutableStateFlow<Boolean>(false)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    var items = showTypeFlow.flatMapLatest { type ->
-        itemsRepository.getPagingItems(
-            type =
-            if (type == ShowType.FOUND)
-                ItemType.FOUND
-            else
-                ItemType.LOST
-        ).cachedIn(viewModelScope)
-    }
+    var items =
+        combine(
+            showTypeFlow,
+            searchFlow,
+            myItemsFlow
+        ) { showType, search, myItems ->
+            ItemsArgs(
+                itemType =
+                    if (showType == ShowType.FOUND)
+                        ItemType.FOUND
+                    else
+                        ItemType.LOST
+                ,
+                search = search,
+                myItems = myItems
+            )
+        }.flatMapLatest { args ->
+            itemsRepository.getPagingItems(
+                type = args.itemType,
+                search = args.search,
+                myItems = args.myItems
+            ).cachedIn(viewModelScope)
+        }
 
     var fabState: FabState by mutableStateOf(FabState.WITH_TEXT)
         private set
 
     fun onPageChanged(showType: ShowType) {
-        showTypeFlow.update { _ -> showType }
+        showTypeFlow.value = showType
     }
 
     fun onSearch(text: String) {
-
+        if (text.isBlank())
+            searchFlow.value = null
+        else
+            searchFlow.value = text
     }
 
     fun onFabClicked() {
@@ -70,3 +87,8 @@ enum class FabState {
     EXTENDED
 }
 
+data class ItemsArgs(
+    val itemType: ItemType,
+    val search: String?,
+    val myItems: Boolean
+)
