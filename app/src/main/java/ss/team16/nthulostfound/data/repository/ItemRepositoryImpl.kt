@@ -1,25 +1,115 @@
 package ss.team16.nthulostfound.data.repository
 
 import android.icu.text.SimpleDateFormat
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
-import ss.team16.nthulostfound.EndItemMutation
-import ss.team16.nthulostfound.ItemContactQuery
-import ss.team16.nthulostfound.ItemQuery
-import ss.team16.nthulostfound.NewItemMutation
-import ss.team16.nthulostfound.domain.model.ItemData
-import ss.team16.nthulostfound.domain.model.ItemType
-import ss.team16.nthulostfound.domain.model.NewItemData
-import ss.team16.nthulostfound.domain.model.NewItemType
+import kotlinx.coroutines.flow.Flow
+import ss.team16.nthulostfound.*
+import ss.team16.nthulostfound.data.paging.ItemsRemoteMediator
+import ss.team16.nthulostfound.data.paging.ItemsRemoteMediator.Companion.ITEMS_PER_PAGE
+import ss.team16.nthulostfound.data.source.ItemsDatabase
+import ss.team16.nthulostfound.domain.model.*
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import java.util.*
 
 class ItemRepositoryImpl(
-    private val apolloClient: ApolloClient
+    private val apolloClient: ApolloClient,
+    private val itemsDatabase: ItemsDatabase
 ): ItemRepository {
-    override fun getItems(): List<ItemData> {
-        TODO("Not yet implemented")
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getPagingItems(
+        type: ItemType,
+        search: String?,
+        myItems: Boolean
+    ): Flow<PagingData<ItemData>> {
+        val pagingSourceFactory = { itemsDatabase.itemsDao().getItems() }
+        return Pager(
+            config = PagingConfig(pageSize = ITEMS_PER_PAGE),
+            remoteMediator = ItemsRemoteMediator(
+                itemsDatabase = itemsDatabase,
+                itemsRepository = this,
+                type = type,
+                search = search,
+                myItems = myItems
+            ),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow
+    }
+
+    override suspend fun getItems(
+        type: ItemType,
+        first: Int?,
+        last: Int?,
+        after: String?,
+        before: String?,
+        search: String?,
+        mine: Boolean
+    ): Result<ItemsConnection> {
+
+        val queryType =
+            if (type == ItemType.FOUND)
+                ss.team16.nthulostfound.type.ItemType.FOUND
+            else
+                ss.team16.nthulostfound.type.ItemType.LOST
+
+        return try {
+            val itemsQuery = ItemsQuery(
+                type = queryType,
+                first = Optional.presentIfNotNull(first),
+                last = Optional.presentIfNotNull(last),
+                after = Optional.presentIfNotNull(after),
+                before = Optional.presentIfNotNull(before),
+                search = Optional.presentIfNotNull(search),
+                mine = Optional.presentIfNotNull(mine)
+            )
+            val response = apolloClient.query(itemsQuery).execute().dataAssertNoErrors
+
+            val itemEdges = response.items.edges.map { edge ->
+                ItemEdge(
+                    item =
+                        with (edge.node) {
+                            val itemType =
+                                if (edge.node.type == ss.team16.nthulostfound.type.ItemType.FOUND)
+                                    ItemType.FOUND
+                                else
+                                    ItemType.LOST
+
+                            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                            val dateString = date.toString()
+
+                            ItemData(
+                                type = itemType,
+                                uuid = uuid,
+                                name = name,
+                                description = description,
+                                date = format.parse(dateString),
+                                place = place,
+                                how = how,
+                                images = images,
+                                isOwner = isMine,
+                                resolved = resolved
+                            )
+                        },
+                    cursor = edge.cursor
+                )
+            }
+
+            val itemsConnection = ItemsConnection(
+                edges = itemEdges,
+                hasNextPage = response.items.pageInfo.hasNextPage,
+                hasPreviousPage = response.items.pageInfo.hasPreviousPage
+            )
+
+            Result.success(itemsConnection)
+        } catch (e: Exception) {
+            Result.failure(Exception(e))
+        }
     }
 
     override suspend fun getItem(uuid: String): Result<ItemData> {

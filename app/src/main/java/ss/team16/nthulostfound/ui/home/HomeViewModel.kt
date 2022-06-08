@@ -3,13 +3,78 @@ package ss.team16.nthulostfound.ui.home
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.model.UploadedImage
+import ss.team16.nthulostfound.domain.repository.ItemRepository
 import java.util.*
+import javax.inject.Inject
+
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val itemsRepository: ItemRepository
+) : ViewModel() {
+
+    val showTypeFlow = MutableStateFlow(ShowType.FOUND)
+    val searchFlow = MutableStateFlow<String?>(null)
+    val myItemsFlow = MutableStateFlow<Boolean>(false)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var items =
+        combine(
+            showTypeFlow,
+            searchFlow,
+            myItemsFlow
+        ) { showType, search, myItems ->
+            ItemsArgs(
+                itemType =
+                    if (showType == ShowType.FOUND)
+                        ItemType.FOUND
+                    else
+                        ItemType.LOST
+                ,
+                search = search,
+                myItems = myItems
+            )
+        }.flatMapLatest { args ->
+            itemsRepository.getPagingItems(
+                type = args.itemType,
+                search = args.search,
+                myItems = args.myItems
+            ).cachedIn(viewModelScope)
+        }
+
+    var fabState: FabState by mutableStateOf(FabState.WITH_TEXT)
+        private set
+
+    fun onPageChanged(showType: ShowType) {
+        showTypeFlow.value = showType
+    }
+
+    fun onSearch(text: String) {
+        if (text.isBlank())
+            searchFlow.value = null
+        else
+            searchFlow.value = text
+    }
+
+    fun onFabClicked() {
+        fabState = when(fabState) {
+            FabState.COLLAPSED -> FabState.EXTENDED
+            FabState.EXTENDED -> FabState.WITH_TEXT
+            FabState.WITH_TEXT -> FabState.EXTENDED
+        }
+    }
+}
 
 enum class ShowType {
     FOUND,
@@ -22,82 +87,8 @@ enum class FabState {
     EXTENDED
 }
 
-class HomeViewModel @AssistedInject constructor(
-    @Assisted showType: ShowType
-) : ViewModel() {
-    private var _showType by mutableStateOf(showType)
-    val showType: ShowType
-        get() = _showType
-    private var _items by mutableStateOf(getItems(showType))
-    val items: List<ItemData>
-        get() = _items
-    var fabState: FabState by mutableStateOf(FabState.WITH_TEXT)
-
-    private fun getItems(showType: ShowType) : List<ItemData> {
-        when(showType) {
-            ShowType.LOST -> {
-                return List(10) {
-                    ItemData(
-                        type = ItemType.LOST,
-                        uuid = "C8763",
-                        name = "書",
-                        description = "好像是機率的書",
-                        date = Date(),
-                        place = "台達 105",
-                        how = "請聯繫我取回 啾咪",
-                        images = listOf("https://example.com")
-                    )
-                }
-            }
-            ShowType.FOUND -> {
-                return List(15) {
-                    ItemData(
-                        type = ItemType.FOUND,
-                        uuid = "C8764",
-                        name = "錢包",
-                        description = "我的錢包不見了QAQ",
-                        date = Date(),
-                        place = "仁齋",
-                        how = ""
-                    )
-                }
-            }
-        }
-    }
-
-    fun onShowTypeChanged() {
-        _showType = if(_showType == ShowType.FOUND) ShowType.LOST else ShowType.FOUND
-        _items = getItems(showType)
-    }
-
-    fun onSearch(text: String) {
-
-    }
-
-    fun onFabClicked() {
-        fabState = when(fabState) {
-            FabState.COLLAPSED -> FabState.EXTENDED
-            FabState.EXTENDED -> FabState.WITH_TEXT
-            FabState.WITH_TEXT -> FabState.EXTENDED
-        }
-    }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(showType: ShowType): HomeViewModel
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    companion object {
-        fun provideFactory(
-            assistedFactory: Factory,
-            showType: ShowType
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(showType) as T
-            }
-        }
-    }
-
-
-}
+data class ItemsArgs(
+    val itemType: ItemType,
+    val search: String?,
+    val myItems: Boolean
+)

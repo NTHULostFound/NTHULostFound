@@ -18,21 +18,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ss.team16.nthulostfound.R
+import ss.team16.nthulostfound.ui.home.ShowType
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
 enum class IndexTabs(
     @StringRes val title: Int,
     val icon: ImageVector,
-    val route: String
+    val showType: ShowType
 ) {
-    FOUND(R.string.index_found_tab, Icons.Outlined.Search, "home/found"),
-    LOST(R.string.index_lost_tab, Icons.Filled.Help, "home/lost")
+    FOUND(R.string.index_found_tab, Icons.Outlined.Search, ShowType.FOUND),
+    LOST(R.string.index_lost_tab, Icons.Filled.Help, ShowType.LOST)
 }
 
 @Composable
 fun BottomNav(
-    currentRoute: String,
-    navigateToRoute: (String) -> Unit,
+    currentShowType: ShowType,
+    onChangePage: (ShowType) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BottomNavigation(
@@ -40,7 +41,7 @@ fun BottomNav(
         modifier = modifier
     ) {
         IndexTabs.values().forEach {
-            val selected = it.route == currentRoute
+            val selected = it.showType == currentShowType
 
             BottomNavigationItem(
                 icon = {
@@ -71,7 +72,8 @@ fun BottomNav(
                 },
                 selected = selected,
                 onClick = {
-                    navigateToRoute(it.route)
+                    if (it.showType != currentShowType)
+                        onChangePage(it.showType)
                 },
                 modifier = Modifier
                     .padding()
@@ -84,13 +86,7 @@ fun BottomNav(
 @Preview
 @Composable
 fun BottomNavPreview() {
-    var route by remember {
-        mutableStateOf("home/found")
-    }
-
     NTHULostFoundTheme {
-        BottomNav(currentRoute = route, navigateToRoute = {
-            route = it
-        })
+        BottomNav(currentShowType = ShowType.FOUND, onChangePage = { })
     }
 }

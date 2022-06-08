@@ -3,19 +3,13 @@ package ss.team16.nthulostfound.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.*
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,8 +17,6 @@ import dagger.hilt.android.components.ActivityComponent
 import ss.team16.nthulostfound.domain.model.NewItemType
 import ss.team16.nthulostfound.ui.closeditem.ClosedItemScreen
 import ss.team16.nthulostfound.ui.home.HomeScreen
-import ss.team16.nthulostfound.ui.home.HomeViewModel
-import ss.team16.nthulostfound.ui.home.ShowType
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailScreen
 import ss.team16.nthulostfound.ui.itemdetail.ItemDetailViewModel
 import ss.team16.nthulostfound.ui.newitem.NewItemScreen
@@ -32,7 +24,6 @@ import ss.team16.nthulostfound.ui.newitem.NewItemViewModel
 import ss.team16.nthulostfound.ui.notification.NotificationScreen
 import ss.team16.nthulostfound.ui.profile.ProfileScreen
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
-import ss.team16.nthulostfound.utils.assistedViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -42,58 +33,30 @@ class MainActivity : ComponentActivity() {
     interface ViewModelFactoryProvider {
         fun newItemViewModelFactory(): NewItemViewModel.Factory
         fun itemDetailViewModelFactory(): ItemDetailViewModel.Factory
-        fun homeViewModelFactory(): HomeViewModel.Factory
     }
 
-    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             NTHULostFoundTheme {
-                val navController = rememberAnimatedNavController()
+                val navController = rememberNavController()
 
-                AnimatedNavHost(
+                NavHost(
                     navController = navController,
-                    startDestination = "home/{show_type}",
-                    enterTransition = { EnterTransition.None },
-                    exitTransition = { ExitTransition.None },
+                    startDestination = "home"
                 ) {
-                    composable("home/{show_type}",
-                        arguments = listOf(navArgument("show_type") {
-                            type = NavType.StringType
-                            defaultValue = "found"
-                        })
-                    ) {
-//                        LaunchedEffect(Unit) {
-//                            navController.navigate("new_item/found")
-//                        }
-                        val showType =
-                            if(it.arguments?.getString("show_type") == "found") {
-                                ShowType.FOUND
-                            } else {
-                                ShowType.LOST
-                            }
+                    composable("home") {
                         HomeScreen(
-                            navController = navController,
-                            viewModel = assistedViewModel {
-                                HomeViewModel.provideFactory(
-                                    homeViewModelFactory(),
-                                    showType
-                                )
-                            }
+                            navController = navController
                         )
                     }
-//                    composable("home/lost") {
-//
-//                        Greeting(name = "lost items")
-//                    }
+
                     composable("new_item/found") {
                         NewItemScreen(
                             type = NewItemType.NEW_FOUND,
                             popScreen = { navController.popBackStack() }
                         )
                     }
-
                     composable("new_item/lost") {
                         NewItemScreen(
                             type = NewItemType.NEW_LOST,
