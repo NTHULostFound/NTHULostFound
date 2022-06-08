@@ -1,5 +1,7 @@
 package ss.team16.nthulostfound.data.repository
 
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.model.ItemsConnection
@@ -8,12 +10,22 @@ import ss.team16.nthulostfound.domain.repository.ItemRepository
 import java.util.*
 
 class ItemRepositoryMockImpl: ItemRepository {
+    override fun getPagingItems(
+        type: ItemType,
+        search: String?,
+        myItems: Boolean
+    ): Flow<PagingData<ItemData>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getItems(
         type: ItemType,
         first: Int?,
         last: Int?,
         after: String?,
-        before: String?
+        before: String?,
+        search: String?,
+        mine: Boolean
     ): Result<ItemsConnection> {
         TODO("Not yet implemented")
     }

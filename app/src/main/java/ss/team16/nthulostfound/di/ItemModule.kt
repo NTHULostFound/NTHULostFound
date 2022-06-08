@@ -33,8 +33,11 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideItemRepository(apolloClient: ApolloClient): ItemRepository {
-        return ItemRepositoryImpl(apolloClient)
+    fun provideItemRepository(
+        apolloClient: ApolloClient,
+        itemsDatabase: ItemsDatabase
+    ): ItemRepository {
+        return ItemRepositoryImpl(apolloClient, itemsDatabase)
     }
 
     @Provides

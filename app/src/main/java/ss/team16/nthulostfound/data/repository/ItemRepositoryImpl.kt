@@ -1,23 +1,49 @@
 package ss.team16.nthulostfound.data.repository
 
 import android.icu.text.SimpleDateFormat
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
+import kotlinx.coroutines.flow.Flow
 import ss.team16.nthulostfound.*
+import ss.team16.nthulostfound.data.paging.ItemsRemoteMediator
+import ss.team16.nthulostfound.data.paging.ItemsRemoteMediator.Companion.ITEMS_PER_PAGE
+import ss.team16.nthulostfound.data.source.ItemsDatabase
 import ss.team16.nthulostfound.domain.model.*
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import java.util.*
 
 class ItemRepositoryImpl(
-    private val apolloClient: ApolloClient
+    private val apolloClient: ApolloClient,
+    private val itemsDatabase: ItemsDatabase
 ): ItemRepository {
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getPagingItems(
+        type: ItemType,
+        search: String?,
+        myItems: Boolean
+    ): Flow<PagingData<ItemData>> {
+        val pagingSourceFactory = { itemsDatabase.itemsDao().getItems() }
+        return Pager(
+            config = PagingConfig(pageSize = ITEMS_PER_PAGE),
+            remoteMediator = ItemsRemoteMediator(type, search, myItems),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow
+    }
+
     override suspend fun getItems(
         type: ItemType,
         first: Int?,
         last: Int?,
         after: String?,
-        before: String?
+        before: String?,
+        search: String?,
+        mine: Boolean
     ): Result<ItemsConnection> {
 
         val queryType =
@@ -33,6 +59,8 @@ class ItemRepositoryImpl(
                 last = Optional.presentIfNotNull(last),
                 after = Optional.presentIfNotNull(after),
                 before = Optional.presentIfNotNull(before),
+                search = Optional.presentIfNotNull(search),
+                mine = Optional.presentIfNotNull(mine)
             )
             val response = apolloClient.query(itemsQuery).execute().dataAssertNoErrors
 

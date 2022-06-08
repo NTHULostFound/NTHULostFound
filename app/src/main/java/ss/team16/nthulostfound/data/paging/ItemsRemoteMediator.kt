@@ -16,7 +16,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalPagingApi::class)
 class ItemsRemoteMediator(
     private val type: ItemType,
-    private val showMine: Boolean
+    private val search: String? = null,
+    private val myItems: Boolean = false,
 ) : RemoteMediator<Int, ItemData>() {
 
     @Inject lateinit var itemsDatabase: ItemsDatabase
@@ -36,7 +37,9 @@ class ItemsRemoteMediator(
                     itemsRepository.getItems(
                         type = type,
                         first = ITEMS_PER_PAGE,
-                        after = key?.cursor
+                        after = key?.cursor,
+                        search = search,
+                        mine = myItems
                     )
                 }
                 LoadType.PREPEND -> {
@@ -44,7 +47,9 @@ class ItemsRemoteMediator(
                     itemsRepository.getItems(
                         type = type,
                         last = ITEMS_PER_PAGE,
-                        before = key?.cursor
+                        before = key?.cursor,
+                        search = search,
+                        mine = myItems
                     )
                 }
                 LoadType.APPEND -> {
@@ -52,7 +57,9 @@ class ItemsRemoteMediator(
                     itemsRepository.getItems(
                         type = type,
                         first = ITEMS_PER_PAGE,
-                        after = key?.cursor
+                        after = key?.cursor,
+                        search = search,
+                        mine = myItems
                     )
                 }
             }
