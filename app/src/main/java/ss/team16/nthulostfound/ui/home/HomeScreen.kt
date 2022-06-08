@@ -82,84 +82,81 @@ fun HomeScreen(
             )
         }
     ) { paddingValues ->
-        Crossfade(
-            targetState = showType,
-        ) { showType ->
-            val lazyState = rememberLazyListState()
-            val lazyPagingItems = viewModel.items.collectAsLazyPagingItems()
 
-            val isRefreshing = lazyPagingItems.loadState.refresh == LoadState.Loading
-            val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
+        val lazyState = rememberLazyListState()
+        val lazyPagingItems = viewModel.items.collectAsLazyPagingItems()
 
-            SwipeRefresh(
-                state = swipeRefreshState,
-                onRefresh = { lazyPagingItems.refresh() },
+        val isRefreshing = lazyPagingItems.loadState.refresh == LoadState.Loading
+        val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
+
+        SwipeRefresh(
+            state = swipeRefreshState,
+            onRefresh = { lazyPagingItems.refresh() },
+        ) {
+            LazyColumn(
+                modifier = modifier
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                state = lazyState
             ) {
-                LazyColumn(
-                    modifier = modifier
-                        .padding(paddingValues),
-                    contentPadding = PaddingValues(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    state = lazyState
-                ) {
 
-                    if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
-                        items(10) {
-                            ItemCard(
-                                item = ItemData(
-                                    name = "...",
-                                    place = "...",
-                                ),
-                                modifier = Modifier.shimmer(),
-                                onClick = {}
-                            )
-                        }
-                    }
-
-                    itemsIndexed(lazyPagingItems) { _, item ->
-                        if (item != null) {
-                            ItemCard(item = item, onClick = {
-                                navController.navigate("item/${item.uuid}")
-                            })
-                        }
-                    }
-
-                    if (lazyPagingItems.loadState.append == LoadState.Loading) {
-                        item {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                            )
-                        }
-                    }
-                }
-            }
-
-            val isScrolledToEnd = remember(lazyState) {
-                derivedStateOf {
-                    lazyState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyState.layoutInfo.totalItemsCount - 1
-                }
-            }
-            if (isScrolledToEnd.value
-                && lazyPagingItems.loadState.append.endOfPaginationReached
-                && showType == ShowType.FOUND) {
-                LaunchedEffect(Unit) {
-                    launch {
-                        val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
-                            message = "沒有找到您的失物？不要氣餒！立即新增協尋物品，讓找到的人能立刻聯繫到您！",
-                            actionLabel = "前往新增"
+                if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+                    items(10) {
+                        ItemCard(
+                            item = ItemData(
+                                name = "...",
+                                place = "...",
+                            ),
+                            modifier = Modifier.shimmer(),
+                            onClick = {}
                         )
-                        when (snackbarResult) {
-                            SnackbarResult.ActionPerformed -> {
-                                navController.navigate("new_item/lost")
-                            }
-                            SnackbarResult.Dismissed -> {}
-                        }
+                    }
+                }
+
+                itemsIndexed(lazyPagingItems) { _, item ->
+                    if (item != null) {
+                        ItemCard(item = item, onClick = {
+                            navController.navigate("item/${item.uuid}")
+                        })
+                    }
+                }
+
+                if (lazyPagingItems.loadState.append == LoadState.Loading) {
+                    item {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentWidth(Alignment.CenterHorizontally)
+                        )
                     }
                 }
             }
+        }
 
+        val isScrolledToEnd = remember(lazyState) {
+            derivedStateOf {
+                lazyState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyState.layoutInfo.totalItemsCount - 1
+            }
+        }
+        if (isScrolledToEnd.value
+            && lazyPagingItems.loadState.append.endOfPaginationReached
+            && lazyPagingItems.loadState.append != LoadState.Loading
+            && showType == ShowType.FOUND) {
+            LaunchedEffect(Unit) {
+                launch {
+                    val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
+                        message = "沒有找到您的失物？不要氣餒！立即新增協尋物品，讓找到的人能立刻聯繫到您！",
+                        actionLabel = "前往新增"
+                    )
+                    when (snackbarResult) {
+                        SnackbarResult.ActionPerformed -> {
+                            navController.navigate("new_item/lost")
+                        }
+                        SnackbarResult.Dismissed -> {}
+                    }
+                }
+            }
         }
     }
 }
