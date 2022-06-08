@@ -33,11 +33,9 @@ class ItemsRemoteMediator(
         return try {
             val itemsResult = when (loadType) {
                 LoadType.REFRESH -> {
-                    val key = getRemoteKeyClosestToCurrentPosition(state)
                     itemsRepository.getItems(
                         type = type,
                         first = ITEMS_PER_PAGE,
-                        after = key?.cursor,
                         search = search,
                         mine = myItems
                     )
@@ -100,16 +98,6 @@ class ItemsRemoteMediator(
             )
         } catch (e: Exception) {
             return MediatorResult.Error(e)
-        }
-    }
-
-    private suspend fun getRemoteKeyClosestToCurrentPosition(
-        state: PagingState<Int, ItemData>
-    ): ItemRemoteKeys? {
-        return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.uuid?.let { uuid ->
-                itemRemoteKeysDao.getRemoteKey(uuid = uuid)
-            }
         }
     }
 
