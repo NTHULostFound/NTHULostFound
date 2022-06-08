@@ -10,11 +10,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.UserData
 import ss.team16.nthulostfound.domain.repository.UserRepository
+import ss.team16.nthulostfound.domain.usecase.SaveUserUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val saveUserUseCase: SaveUserUseCase
 ): ViewModel() {
     private var _user by mutableStateOf(UserData())
     val user: UserData
@@ -25,6 +27,10 @@ class ProfileViewModel @Inject constructor(
     private var _hasChangedTextFieldValue by mutableStateOf(false)
     val hasChangedTextFieldValue: Boolean
         get() = _hasChangedTextFieldValue
+
+    private var _submitDisabled by mutableStateOf(false)
+    val submitDisabled: Boolean
+        get() = _submitDisabled
 
     init {
         viewModelScope.launch {
@@ -50,10 +56,16 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun saveUser() {
-        _hasChangedTextFieldValue = false
+        // disable submit buttons while waiting API response
+        _submitDisabled = true
 
         viewModelScope.launch {
-            userRepository.saveUser(_user.copy())
+            // call API
+            saveUserUseCase(_user.copy())
+
+            // if done, make submit button invisible
+            _submitDisabled = false
+            _hasChangedTextFieldValue = false
         }
     }
 

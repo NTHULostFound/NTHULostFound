@@ -119,16 +119,22 @@ fun ProfileScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        OutlinedButton(onClick = {
-                            focusManager.clearFocus(true)
-                            viewModel.resetUser()
-                        }) {
+                        OutlinedButton(
+                            onClick = {
+                                focusManager.clearFocus(true)
+                                viewModel.resetUser()
+                            },
+                            enabled = !viewModel.submitDisabled
+                        ) {
                             Text("取消變更")
                         }
-                        Button(onClick = {
-                            focusManager.clearFocus(true)
-                            viewModel.saveUser()
-                        }) {
+                        Button(
+                            onClick = {
+                                focusManager.clearFocus(true)
+                                viewModel.saveUser()
+                            },
+                            enabled = !viewModel.submitDisabled
+                        ) {
                             Text("儲存")
                         }
                     }
