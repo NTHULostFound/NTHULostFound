@@ -84,16 +84,12 @@ class ItemsRemoteMediator(
 
                         itemsDao.insertAll(items)
                         itemRemoteKeysDao.insertAll(keys)
-
-                        Log.d("RemoteMediator", "Insert all: $items")
-                        Log.d("RemoteMediator", "Total: ${items.size}")
-
                     }
 
                     MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
                 },
                 onFailure = {
-                    throw Error(it)
+                    MediatorResult.Error(it)
                 }
             )
         } catch (e: Exception) {

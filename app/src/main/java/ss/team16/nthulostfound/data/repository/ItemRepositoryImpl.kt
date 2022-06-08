@@ -1,6 +1,7 @@
 package ss.team16.nthulostfound.data.repository
 
 import android.icu.text.SimpleDateFormat
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -29,6 +30,7 @@ class ItemRepositoryImpl(
         myItems: Boolean
     ): Flow<PagingData<ItemData>> {
         val pagingSourceFactory = { itemsDatabase.itemsDao().getItems() }
+        Log.d("PagingItems", "Getting items for: $type, ($search), mine: $myItems")
         return Pager(
             config = PagingConfig(pageSize = ITEMS_PER_PAGE),
             remoteMediator = ItemsRemoteMediator(
