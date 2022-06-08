@@ -67,7 +67,7 @@ fun ItemCard(
                     .weight(2F)
                     .padding(12.dp)
             ) {
-                val formatter = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
+                val formatter = SimpleDateFormat("yyyy/MM/dd\nh:mm a", Locale.TAIWAN)
                 IconLabel(
                     icon = Icons.Outlined.AccessTime,
                     labelText = formatter.format(item.date),
