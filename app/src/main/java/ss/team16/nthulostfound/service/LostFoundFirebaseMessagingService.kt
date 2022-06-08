@@ -1,20 +1,26 @@
 package ss.team16.nthulostfound.service
 
 import android.util.Log
+import com.apollographql.apollo3.ApolloClient
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import ss.team16.nthulostfound.RegisterFCMTokenMutation
 import ss.team16.nthulostfound.domain.model.NotificationData
 import ss.team16.nthulostfound.domain.model.NotificationType
+import ss.team16.nthulostfound.domain.repository.UserRepository
 import ss.team16.nthulostfound.domain.usecase.AddNotificationUseCase
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
     @Inject lateinit var addNotificationUseCase: AddNotificationUseCase
+    @Inject lateinit var apolloClient: ApolloClient
+    @Inject lateinit var userRepository: UserRepository
+
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
@@ -57,8 +63,18 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
         // TODO: send notification
     }
 
-    private fun registerToken(token: String) {
-        // TODO: register token to server
+    private fun registerToken(fcmToken: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = apolloClient.mutation(RegisterFCMTokenMutation(fcmToken)).execute().dataAssertNoErrors
+                val accessToken = response.registerFCMToken.accessToken
+
+                Log.d("FCM-Apollo", "register fcm token $fcmToken, get access token $accessToken")
+                userRepository.saveAccessToken(accessToken)
+            } catch(e: Exception) {
+                Log.e("FCM-Apollo", "Error while registering token", e)
+            }
+        }
     }
 
 }
