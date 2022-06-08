@@ -4,22 +4,78 @@ import android.icu.text.SimpleDateFormat
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
-import ss.team16.nthulostfound.EndItemMutation
-import ss.team16.nthulostfound.ItemContactQuery
-import ss.team16.nthulostfound.ItemQuery
-import ss.team16.nthulostfound.NewItemMutation
-import ss.team16.nthulostfound.domain.model.ItemData
-import ss.team16.nthulostfound.domain.model.ItemType
-import ss.team16.nthulostfound.domain.model.NewItemData
-import ss.team16.nthulostfound.domain.model.NewItemType
+import ss.team16.nthulostfound.*
+import ss.team16.nthulostfound.domain.model.*
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import java.util.*
 
 class ItemRepositoryImpl(
     private val apolloClient: ApolloClient
 ): ItemRepository {
-    override fun getItems(): List<ItemData> {
-        TODO("Not yet implemented")
+    override suspend fun getItems(
+        type: ItemType,
+        first: Int?,
+        last: Int?,
+        after: String?,
+        before: String?
+    ): Result<ItemsConnection> {
+
+        val queryType =
+            if (type == ItemType.FOUND)
+                ss.team16.nthulostfound.type.ItemType.FOUND
+            else
+                ss.team16.nthulostfound.type.ItemType.LOST
+
+        return try {
+            val itemsQuery = ItemsQuery(
+                type = queryType,
+                first = Optional.presentIfNotNull(first),
+                last = Optional.presentIfNotNull(last),
+                after = Optional.presentIfNotNull(after),
+                before = Optional.presentIfNotNull(before),
+            )
+            val response = apolloClient.query(itemsQuery).execute().dataAssertNoErrors
+
+            val itemEdges = response.items.edges.map { edge ->
+                ItemEdge(
+                    item =
+                        with (edge.node) {
+                            val itemType =
+                                if (edge.node.type == ss.team16.nthulostfound.type.ItemType.FOUND)
+                                    ItemType.FOUND
+                                else
+                                    ItemType.LOST
+
+                            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                            val dateString = date.toString()
+
+                            ItemData(
+                                type = itemType,
+                                uuid = uuid,
+                                name = name,
+                                description = description,
+                                date = format.parse(dateString),
+                                place = place,
+                                how = how,
+                                images = images,
+                                isOwner = isMine,
+                                resolved = resolved
+                            )
+                        },
+                    cursor = edge.cursor
+                )
+            }
+
+            val itemsConnection = ItemsConnection(
+                edges = itemEdges,
+                hasNextPage = response.items.pageInfo.hasNextPage,
+                hasPreviousPage = response.items.pageInfo.hasPreviousPage
+            )
+
+            Result.success(itemsConnection)
+        } catch (e: Exception) {
+            Result.failure(Exception(e))
+        }
     }
 
     override suspend fun getItem(uuid: String): Result<ItemData> {

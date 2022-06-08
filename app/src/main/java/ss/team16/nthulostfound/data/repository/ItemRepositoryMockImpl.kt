@@ -2,12 +2,19 @@ package ss.team16.nthulostfound.data.repository
 
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
+import ss.team16.nthulostfound.domain.model.ItemsConnection
 import ss.team16.nthulostfound.domain.model.NewItemData
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import java.util.*
 
 class ItemRepositoryMockImpl: ItemRepository {
-    override fun getItems(): List<ItemData> {
+    override suspend fun getItems(
+        type: ItemType,
+        first: Int?,
+        last: Int?,
+        after: String?,
+        before: String?
+    ): Result<ItemsConnection> {
         TODO("Not yet implemented")
     }
 

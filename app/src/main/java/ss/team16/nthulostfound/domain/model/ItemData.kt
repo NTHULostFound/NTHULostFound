@@ -2,6 +2,7 @@ package ss.team16.nthulostfound.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import java.util.*
 
 enum class ItemType {
@@ -22,3 +23,27 @@ data class ItemData(
     val isOwner: Boolean = false,
     val resolved: Boolean = false
 )
+
+object DateConverter {
+    @TypeConverter
+    fun toDate(dateLong: Long?): Date? {
+        return dateLong?.let { Date(it) }
+    }
+
+    @TypeConverter
+    fun fromDate(date: Date?): Long? {
+        return date?.time
+    }
+}
+
+object ImagesConverter {
+    @TypeConverter
+    fun toImages(imagesStr: String?): List<String>? {
+        return imagesStr?.split(",")
+    }
+
+    @TypeConverter
+    fun fromImages(images: List<String>?): String? {
+        return images?.joinToString(",")
+    }
+}

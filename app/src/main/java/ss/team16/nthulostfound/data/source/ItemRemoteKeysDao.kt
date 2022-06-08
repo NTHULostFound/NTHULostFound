@@ -12,7 +12,7 @@ import ss.team16.nthulostfound.domain.model.ItemRemoteKeys
 interface ItemRemoteKeysDao {
 
     @Query("SELECT * FROM items_remote_keys WHERE uuid = :uuid")
-    fun getRemoteKey(uuid: String): ItemRemoteKeys
+    suspend fun getRemoteKey(uuid: String): ItemRemoteKeys
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<ItemRemoteKeys>)
