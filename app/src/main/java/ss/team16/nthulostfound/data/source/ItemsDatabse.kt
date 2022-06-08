@@ -22,6 +22,6 @@ abstract class ItemsDatabase : RoomDatabase() {
     abstract fun itemRemoteKeysDao(): ItemRemoteKeysDao
 
     companion object {
-        const val DATABASE_NAME = "lost_and_found_db"
+        const val DATABASE_NAME = "items"
     }
 }

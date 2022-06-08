@@ -6,11 +6,12 @@ import ss.team16.nthulostfound.domain.model.NotificationData
 
 @Database(
     entities = [NotificationData::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class NotificationDatabase : RoomDatabase() {
     abstract val dao: NotificationDao
     companion object {
-        const val DATABASE_NAME = "lost_and_found_db"
+        const val DATABASE_NAME = "notifications"
     }
 }
