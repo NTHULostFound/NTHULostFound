@@ -92,10 +92,10 @@ fun HomeScreen(
         SwipeRefresh(
             state = swipeRefreshState,
             onRefresh = { lazyPagingItems.refresh() },
+            modifier = Modifier.padding(paddingValues)
         ) {
             LazyColumn(
-                modifier = modifier
-                    .padding(paddingValues),
+                modifier = modifier.fillMaxSize(),
                 contentPadding = PaddingValues(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 state = lazyState
