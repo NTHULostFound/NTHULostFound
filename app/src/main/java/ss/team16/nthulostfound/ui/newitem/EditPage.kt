@@ -41,7 +41,8 @@ fun EditPage(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ImageCarousel(
-            images = viewModel.imageBitmaps,
+            modifier = Modifier.aspectRatio(4/3f),
+            bitmapImages = viewModel.imageBitmaps,
             padding = PaddingValues(bottom = 16.dp),
             addImage = true,
             onAddImage = { uri, context ->

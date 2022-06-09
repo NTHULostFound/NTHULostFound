@@ -27,6 +27,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -35,9 +38,10 @@ import com.google.accompanist.pager.rememberPagerState
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun ImageCarousel(
-    images: List<Bitmap> = emptyList(),
+    modifier: Modifier,
+    bitmapImages: List<Bitmap> = emptyList(),
+    networkImages: List<String>? = null,
     padding: PaddingValues = PaddingValues(0.dp),
-    aspectRatio: Float = 4 / 3f,
     shape: Shape = RoundedCornerShape(16.dp),
     contextScale: ContentScale = ContentScale.FillWidth,
     borderWidth: Dp = 4.dp,
@@ -49,11 +53,12 @@ fun ImageCarousel(
 ) {
     val pagerState = rememberPagerState()
 
+    val imageCnt = networkImages?.size ?: bitmapImages.size
+
     Box(
-        Modifier
+        modifier
             .fillMaxSize()
             .padding(padding)
-            .aspectRatio(aspectRatio)
             .clip(shape)
             .border(
                 width = borderWidth,
@@ -62,11 +67,11 @@ fun ImageCarousel(
             )
     ) {
         HorizontalPager(
-            count = if (addImage) images.size + 1 else images.size,
+            count = if (addImage) imageCnt + 1 else imageCnt,
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
         ) { page ->
-            if (page == images.size) { // Add image
+            if (page == imageCnt) { // Add image
                 val context = LocalContext.current
 
                 val launcher = rememberLauncherForActivityResult(
@@ -89,12 +94,29 @@ fun ImageCarousel(
                     )
                 }
             } else {
-                Image(
-                    bitmap = images[page].asImageBitmap(),
-                    contentDescription = null,
-                    contentScale = contextScale,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                if (networkImages != null) {
+                    SubcomposeAsyncImage(
+                        model = networkImages[page],
+                        contentDescription = null,
+                        contentScale = contextScale,
+                        modifier = Modifier.fillMaxWidth(),
+                        loading = {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .wrapContentWidth(Alignment.CenterHorizontally)
+                            )
+                        },
+                    )
+                } else {
+                    Image(
+                        bitmap = bitmapImages[page].asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = contextScale,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
                 if (deleteButton)
                     IconButton(
                         onClick = { onDeleteImage(page) },
@@ -111,7 +133,7 @@ fun ImageCarousel(
             }
         }
 
-        if (addImage || images.isNotEmpty()) {
+        if (addImage || imageCnt != 0) {
             if (pagerState.pageCount > 1)
                 HorizontalPagerIndicator(
                     pagerState = pagerState,

@@ -82,10 +82,11 @@ fun ItemCard(
         }
 
         if(item.images.isNotEmpty()) {
-            Image(
-                painter = painterResource(id = R.drawable.image_book),
-                contentDescription = null,
-                contentScale = ContentScale.Fit
+            ImageCarousel(
+                modifier = Modifier.aspectRatio(4/3f),
+                networkImages = item.images,
+                shape = RectangleShape,
+                borderWidth = 0.dp
             )
         }
     }

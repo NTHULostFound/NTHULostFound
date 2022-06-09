@@ -39,7 +39,12 @@ object DateConverter {
 object ImagesConverter {
     @TypeConverter
     fun toImages(imagesStr: String?): List<String>? {
-        return imagesStr?.split(",")
+        val list = imagesStr?.split(",")
+        if (list != null) {
+            if (list.size == 1 && list.first().isEmpty())
+                return emptyList()
+        }
+        return list
     }
 
     @TypeConverter
