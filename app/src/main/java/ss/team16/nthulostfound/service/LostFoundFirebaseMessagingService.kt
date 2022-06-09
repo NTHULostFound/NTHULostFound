@@ -106,7 +106,7 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
 //
 //        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(true)
@@ -122,7 +122,7 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
                 NotificationManager.IMPORTANCE_LOW)
             notificationManager.createNotificationChannel(channel)
         }
-
+        Log.d("FCM", "$id")
         notificationManager.notify(id++ /* ID of notification */, notificationBuilder.build())
     }
 
