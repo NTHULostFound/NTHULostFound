@@ -39,7 +39,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-    val isNotificationEnable = viewModel.isNotificationEnable.collectAsState(initial = false)
+    val isNotificationEnable = viewModel.isNotificationEnable.collectAsState(initial = true)
 
     Scaffold(
         topBar = {
@@ -119,16 +119,22 @@ fun ProfileScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        OutlinedButton(onClick = {
-                            focusManager.clearFocus(true)
-                            viewModel.resetUser()
-                        }) {
+                        OutlinedButton(
+                            onClick = {
+                                focusManager.clearFocus(true)
+                                viewModel.resetUser()
+                            },
+                            enabled = !viewModel.submitDisabled
+                        ) {
                             Text("取消變更")
                         }
-                        Button(onClick = {
-                            focusManager.clearFocus(true)
-                            viewModel.saveUser()
-                        }) {
+                        Button(
+                            onClick = {
+                                focusManager.clearFocus(true)
+                                viewModel.saveUser()
+                            },
+                            enabled = !viewModel.submitDisabled
+                        ) {
                             Text("儲存")
                         }
                     }

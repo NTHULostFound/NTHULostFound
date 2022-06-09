@@ -34,7 +34,7 @@ class UserRepositoryImpl(
 
     override fun getIsNotificationEnable(): Flow<Boolean> {
         return appContext.dataStore.data.map { preferences ->
-            preferences[IS_NOTIFICATION_ENABLE] ?: false
+            preferences[IS_NOTIFICATION_ENABLE] ?: true
         }
     }
 

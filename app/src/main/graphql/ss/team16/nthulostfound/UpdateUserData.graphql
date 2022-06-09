@@ -1,5 +1,5 @@
-mutation UpdateUserData($studentId: String) {
-  updateUserData(studentId: $studentId) {
+mutation UpdateUserData($name: String, $studentId: String, $email: String) {
+  updateUserData(name: $name, studentId: $studentId, email: $email) {
     name
     studentId
     email
