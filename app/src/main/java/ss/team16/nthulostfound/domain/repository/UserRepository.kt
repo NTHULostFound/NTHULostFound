@@ -20,4 +20,7 @@ interface UserRepository {
 
     suspend fun setAvatarFilename(filename: String)
 
+    fun getShowPinMessage(): Flow<Int>
+
+    suspend fun setShowPinMessage(code: Int)
 }
