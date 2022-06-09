@@ -91,13 +91,13 @@ fun HomeScreen(
             modifier = modifier
                 .padding(paddingValues)
         ) {
-            // TODO: save these state in datastore to preserve through app close
-            var showFoundPinMessage by rememberSaveable { mutableStateOf(true) }
-            var showLostPinMessage by rememberSaveable { mutableStateOf(true) }
+            // default: show both
+            val showPinMessage = viewModel.showPinMessageFlow.collectAsState(initial = 0b11)
 
             if (showType == ShowType.FOUND) {
                 AnimatedVisibility(
-                    visible = showFoundPinMessage,
+                    // check FOUND bit
+                    visible = (showPinMessage.value and 0b10 != 0),
                     exit = slideOutVertically(
                         targetOffsetY = { -it },
                     ) + shrinkVertically()
@@ -105,12 +105,13 @@ fun HomeScreen(
                     PinMessage(
                         message = "其他人撿到的遺失物將會刊登在這裡\n" +
                                 "如果您遺失了物品，請從這裡尋找！",
-                        onClose = { showFoundPinMessage = false }
+                        onClose = { viewModel.onPinMessageClose() }
                     )
                 }
             } else if (showType == ShowType.LOST) {
                 AnimatedVisibility(
-                    visible = showLostPinMessage,
+                    // check LOST bit
+                    visible = (showPinMessage.value and 0b01 != 0),
                     exit = slideOutVertically(
                         targetOffsetY = { -it }
                     ) + shrinkVertically()
@@ -118,7 +119,7 @@ fun HomeScreen(
                     PinMessage(
                         message = "這裡是失主刊登遺失物的地方\n" +
                                 "如果您有發現這些物品，請與失主聯絡！",
-                        onClose = { showLostPinMessage = false }
+                        onClose = { viewModel.onPinMessageClose() }
                     )
                 }
             }

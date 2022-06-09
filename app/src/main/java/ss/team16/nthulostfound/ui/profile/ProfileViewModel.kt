@@ -89,6 +89,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun resetPinMessage() {
+        viewModelScope.launch {
+            userRepository.setShowPinMessage(0b11)
+        }
+    }
+
     fun onChangeAvatar(uri: Uri?) {
         if (uri == null)
             return

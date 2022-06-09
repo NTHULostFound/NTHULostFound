@@ -11,10 +11,12 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.model.UploadedImage
 import ss.team16.nthulostfound.domain.repository.ItemRepository
+import ss.team16.nthulostfound.domain.repository.UserRepository
 import ss.team16.nthulostfound.domain.usecase.GetAvatarUseCase
 import java.util.*
 import javax.inject.Inject
@@ -23,12 +25,15 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val itemsRepository: ItemRepository,
+    private val userRepository: UserRepository,
     private val getAvatarUseCase: GetAvatarUseCase
 ) : ViewModel() {
 
     val showTypeFlow = MutableStateFlow(ShowType.FOUND)
     val searchFlow = MutableStateFlow<String?>(null)
     val myItemsFlow = MutableStateFlow<Boolean>(false)
+
+    val showPinMessageFlow = userRepository.getShowPinMessage()
 
     val avatarBitmap = getAvatarUseCase()
 
@@ -69,6 +74,22 @@ class HomeViewModel @Inject constructor(
             searchFlow.value = null
         else
             searchFlow.value = text
+    }
+
+    fun onPinMessageClose() {
+        viewModelScope.launch {
+            var code = showPinMessageFlow.first()
+
+            if (showTypeFlow.value == ShowType.FOUND) {
+                // set FOUND bit = 0
+                code = code and 0b01
+            } else if (showTypeFlow.value == ShowType.LOST) {
+                // set LOST bit = 0
+                code = code and 0b10
+            }
+
+            userRepository.setShowPinMessage(code)
+        }
     }
 
     fun onFabClicked() {

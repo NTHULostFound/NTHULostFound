@@ -6,6 +6,7 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -55,6 +56,7 @@ fun ProfileScreen(
     onBack: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val isNotificationEnable = viewModel.isNotificationEnable.collectAsState(initial = true)
 
@@ -195,6 +197,25 @@ fun ProfileScreen(
                     checked = isNotificationEnable.value,
                     onCheckedChange = { status -> viewModel.setEnableNotification(status) },
                 )
+            }
+
+            InfoBox(
+                info = "按下按鈕後，將會重設首頁說明訊息（預設為顯示）。",
+            )
+            
+            OutlinedButton(
+                onClick = {
+                    viewModel.resetPinMessage()
+                    Toast.makeText(
+                        context,
+                        "重設完成！",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text("重設首頁說明訊息")
             }
         }
     }

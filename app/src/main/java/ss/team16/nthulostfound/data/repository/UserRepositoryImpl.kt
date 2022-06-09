@@ -3,6 +3,7 @@ package ss.team16.nthulostfound.data.repository
 import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -70,6 +71,18 @@ class UserRepositoryImpl(
         }
     }
 
+    override fun getShowPinMessage(): Flow<Int> {
+        return appContext.dataStore.data.map { preferences ->
+            preferences[SHOW_PIN_MESSAGE] ?: 0b11 // default show all
+        }
+    }
+
+    override suspend fun setShowPinMessage(code: Int) {
+        appContext.dataStore.edit { preferences ->
+            preferences[SHOW_PIN_MESSAGE] = code
+        }
+    }
+
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("user_access_token")
 
@@ -80,5 +93,7 @@ class UserRepositoryImpl(
         val IS_NOTIFICATION_ENABLE = booleanPreferencesKey("user_is_notification_enable")
 
         val AVATAR_FILENAME = stringPreferencesKey("user_avatar_filename")
+
+        val SHOW_PIN_MESSAGE = intPreferencesKey("user_show_pin_message")
     }
 }
