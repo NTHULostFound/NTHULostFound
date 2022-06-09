@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.RegisterFCMTokenMutation
@@ -72,8 +73,8 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
             )
             CoroutineScope(Dispatchers.IO).launch {
                 val id = addNotificationUseCase(notificationData)
-                sendNotification(notifTitle, notifMessage, message.data["item_uuid"]!!, id)
-
+                if(userRepository.getIsNotificationEnable().first())
+                    sendNotification(notifTitle, notifMessage, message.data["item_uuid"]!!, id)
             }
         }
 
