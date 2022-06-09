@@ -1,10 +1,12 @@
 package ss.team16.nthulostfound.di
 
+import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -43,8 +45,11 @@ object ImgurModule {
 
     @Provides
     @Singleton
-    fun provideUploadImagesRepository(imgurApi: ImgurApi) : UploadImagesRepository {
-        return UploadImagesRepositoryImgurImpl(imgurApi)
+    fun provideUploadImagesRepository(
+        imgurApi: ImgurApi,
+        @ApplicationContext context: Context
+    ) : UploadImagesRepository {
+        return UploadImagesRepositoryImgurImpl(imgurApi, context)
     }
 
     @Provides

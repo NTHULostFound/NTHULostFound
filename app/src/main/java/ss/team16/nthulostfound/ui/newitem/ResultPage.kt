@@ -76,10 +76,8 @@ fun ResultPage(
                 )
 
                 if (status == NewItemUploadStatus.ERROR) {
-                    val contentResolver = LocalContext.current.contentResolver
-
                     TextButton(
-                        onClick = { viewModel.submitForm(contentResolver) }
+                        onClick = { viewModel.submitForm() }
                     ) {
                         Icon(
                             Icons.Filled.RestartAlt,

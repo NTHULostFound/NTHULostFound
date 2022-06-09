@@ -11,14 +11,13 @@ class UploadImagesUseCase(
 ) {
     suspend operator fun invoke(
         uris: List<Uri>,
-        contentResolver: ContentResolver,
         onImageUploaded: (Int, String) -> Unit,
         onError: (Int, Throwable) -> Unit
     ): List<UploadedImage> {
         val uploadedImages = mutableListOf<UploadedImage>()
 
         uris.forEachIndexed { index, uri ->
-            uploadImagesRepository.uploadImage(uri, contentResolver).fold(
+            uploadImagesRepository.uploadImage(uri).fold(
                 onSuccess = {
                     uploadedImages.add(it)
                     onImageUploaded(index, it.imageUrl)

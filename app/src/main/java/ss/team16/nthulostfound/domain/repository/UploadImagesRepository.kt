@@ -7,7 +7,6 @@ import ss.team16.nthulostfound.domain.model.UploadedImage
 interface UploadImagesRepository {
     suspend fun uploadImage(
         uri: Uri,
-        contentResolver: ContentResolver,
         title: String? = null
     ): Result<UploadedImage>
 }

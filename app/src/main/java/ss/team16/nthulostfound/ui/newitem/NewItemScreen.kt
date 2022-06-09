@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -57,13 +56,11 @@ fun NewItemScreen(
                 }
             }
 
-            val contentResolver = LocalContext.current.contentResolver
-
             ViewPagerBar(
                 pagerState = viewModel.pagerState,
                 nextButtonInfo = viewModel.getPagerNextButtonInfo(),
                 prevButtonInfo = viewModel.getPagerPrevButtonInfo(),
-                onNextPage = { viewModel.goToNextPage(scrollToPage, popScreen, contentResolver) },
+                onNextPage = { viewModel.goToNextPage(scrollToPage, popScreen) },
                 onPrevPage = { viewModel.goToPrevPage(scrollToPage) }
             )
         }
