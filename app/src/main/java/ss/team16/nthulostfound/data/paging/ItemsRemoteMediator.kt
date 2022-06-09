@@ -41,14 +41,9 @@ class ItemsRemoteMediator(
                     )
                 }
                 LoadType.PREPEND -> {
-                    val key = getRemoteKeyForFirstItem(state)
-                    itemsRepository.getItems(
-                        type = type,
-                        last = ITEMS_PER_PAGE,
-                        before = key?.cursor,
-                        search = search,
-                        mine = myItems
-                    )
+                    // We never need to prepend, since REFRESH will always load the
+                    // first page in the list. Immediately return, reporting end of pagination.
+                    return MediatorResult.Success(endOfPaginationReached = true)
                 }
                 LoadType.APPEND -> {
                     val key = getRemoteKeyForLastItem(state)
@@ -95,15 +90,6 @@ class ItemsRemoteMediator(
         } catch (e: Exception) {
             return MediatorResult.Error(e)
         }
-    }
-
-    private suspend fun getRemoteKeyForFirstItem(
-        state: PagingState<Int, ItemData>
-    ): ItemRemoteKeys? {
-        return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
-            ?.let { item ->
-                itemRemoteKeysDao.getRemoteKey(uuid = item.uuid)
-            }
     }
 
     private suspend fun getRemoteKeyForLastItem(
