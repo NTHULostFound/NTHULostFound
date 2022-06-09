@@ -40,6 +40,12 @@ class UserRepositoryImpl(
         }
     }
 
+    override fun getIsUserDataSet(): Flow<Boolean> {
+        return appContext.dataStore.data.map {  preferences ->
+            !(preferences[NAME].isNullOrBlank() && preferences[STUDENT_ID].isNullOrBlank())
+        }
+    }
+
     override suspend fun setIsNotificationEnable(status: Boolean) {
         appContext.dataStore.edit { preferences ->
             preferences[IS_NOTIFICATION_ENABLE] = status
