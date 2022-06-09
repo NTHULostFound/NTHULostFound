@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.google.firebase.dynamiclinks.ShortDynamicLink
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
@@ -22,15 +23,22 @@ class ShareItemUseCase(
     companion object {
         const val DYNAMIC_LINK_BASE_URI = "https://nthu-lost-found.link"
         const val DYNAMIC_LINK_DOMAIN_PREFIX = "https://nthulostfound.page.link"
+        const val OTHER_PLATFORM_LINK = "https://play.google.com/store/apps/details?id=ss.team16.nthulostfound"
     }
 
     operator fun invoke(item: ItemData) {
-        Firebase.dynamicLinks.shortLinkAsync(ShortDynamicLink.Suffix.SHORT) {
+        val dynamicLink = Firebase.dynamicLinks.dynamicLink {
             link = Uri.parse("$DYNAMIC_LINK_BASE_URI/?item=${item.uuid}")
             domainUriPrefix = DYNAMIC_LINK_DOMAIN_PREFIX
             androidParameters {
                 minimumVersion = 2
             }
+        }.uri.toString()
+
+        val linkWithOfl = "$dynamicLink&ofl=$OTHER_PLATFORM_LINK"
+
+        Firebase.dynamicLinks.shortLinkAsync(ShortDynamicLink.Suffix.SHORT) {
+            longLink = linkWithOfl.toUri()
         }.addOnSuccessListener { (shortLink, flowchartLink) ->
             val intent = Intent().apply {
                 action = Intent.ACTION_SEND
