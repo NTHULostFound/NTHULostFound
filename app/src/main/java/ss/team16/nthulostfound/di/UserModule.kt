@@ -9,6 +9,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ss.team16.nthulostfound.data.repository.UserRepositoryImpl
 import ss.team16.nthulostfound.domain.repository.UserRepository
+import ss.team16.nthulostfound.domain.usecase.ChangeAvatarUseCase
+import ss.team16.nthulostfound.domain.usecase.GetAvatarUseCase
 import ss.team16.nthulostfound.domain.usecase.SaveUserUseCase
 import javax.inject.Singleton
 
@@ -27,4 +29,23 @@ object UserModule {
     fun provideSaveUserUseCase(userRepository: UserRepository, apolloClient: ApolloClient): SaveUserUseCase {
         return SaveUserUseCase(userRepository, apolloClient)
     }
+
+    @Provides
+    @Singleton
+    fun provideChangeAvatarUseCase(
+        @ApplicationContext context: Context,
+        userRepository: UserRepository
+    ): ChangeAvatarUseCase {
+        return ChangeAvatarUseCase(context, userRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAvatarUseCase(
+        @ApplicationContext context: Context,
+        userRepository: UserRepository
+    ): GetAvatarUseCase {
+        return GetAvatarUseCase(context, userRepository)
+    }
+
 }

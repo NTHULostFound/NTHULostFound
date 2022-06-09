@@ -1,6 +1,13 @@
 package ss.team16.nthulostfound.ui.profile
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,19 +24,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.domain.model.UserData
+import ss.team16.nthulostfound.domain.usecase.ChangeAvatarUseCase
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.InfoBox
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import ss.team16.nthulostfound.utils.assistedViewModel
+import java.io.File
 
 val padding = 24.dp
 
@@ -60,16 +73,25 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(padding)
         ) {
+
+            val launcher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent(),
+                onResult = { uri -> viewModel.onChangeAvatar(uri) }
+            )
+
             val avatarModifier = Modifier
                 .fillMaxWidth(.75F)
+                .aspectRatio(1f)
                 .clip(CircleShape)
                 .clickable {
-                    Log.i("Profile", "avatar clicked")
+                    launcher.launch("image/*")
                 }
 
-            if (viewModel.user.avatar != null) {
+            val avatar = viewModel.avatarBitmap.collectAsState(initial = null)
+
+            if (avatar.value != null) {
                 Image(
-                    bitmap = viewModel.user.avatar!!.asImageBitmap(),
+                    bitmap = avatar.value!!.asImageBitmap(),
                     contentDescription = "Avatar",
                     contentScale = ContentScale.Crop,
                     modifier = avatarModifier

@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -57,6 +58,7 @@ fun HomeAppBar(
                 val avatarModifier = Modifier
                     .padding(all = 8.dp)
                     .size(40.dp)
+                    .aspectRatio(1f)
                     .clip(CircleShape)
                     .clickable {
                         navigateToRoute("profile")
@@ -66,14 +68,16 @@ fun HomeAppBar(
                     Image(
                         bitmap = avatar.asImageBitmap(),
                         contentDescription = "Avatar",
-                        modifier = avatarModifier
+                        modifier = avatarModifier,
+                        contentScale = ContentScale.Crop
                     )
                 } else {
                     // fallback avatar
                     Image(
                         painter = painterResource(id = R.drawable.ic_appbar_avatar),
                         contentDescription = "Avatar",
-                        modifier = avatarModifier
+                        modifier = avatarModifier,
+                        contentScale = ContentScale.Crop
                     )
                 }
             } else {

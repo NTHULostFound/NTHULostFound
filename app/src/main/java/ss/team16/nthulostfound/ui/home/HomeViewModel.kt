@@ -15,18 +15,22 @@ import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.model.UploadedImage
 import ss.team16.nthulostfound.domain.repository.ItemRepository
+import ss.team16.nthulostfound.domain.usecase.GetAvatarUseCase
 import java.util.*
 import javax.inject.Inject
 
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val itemsRepository: ItemRepository
+    private val itemsRepository: ItemRepository,
+    private val getAvatarUseCase: GetAvatarUseCase
 ) : ViewModel() {
 
     val showTypeFlow = MutableStateFlow(ShowType.FOUND)
     val searchFlow = MutableStateFlow<String?>(null)
     val myItemsFlow = MutableStateFlow<Boolean>(false)
+
+    val avatarBitmap = getAvatarUseCase()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var items =

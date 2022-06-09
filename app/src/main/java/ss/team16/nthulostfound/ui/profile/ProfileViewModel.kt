@@ -1,5 +1,11 @@
 package ss.team16.nthulostfound.ui.profile
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,19 +16,25 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.UserData
 import ss.team16.nthulostfound.domain.repository.UserRepository
+import ss.team16.nthulostfound.domain.usecase.ChangeAvatarUseCase
+import ss.team16.nthulostfound.domain.usecase.GetAvatarUseCase
 import ss.team16.nthulostfound.domain.usecase.SaveUserUseCase
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val saveUserUseCase: SaveUserUseCase
+    private val saveUserUseCase: SaveUserUseCase,
+    private val changeAvatarUseCase: ChangeAvatarUseCase,
+    getAvatarUseCase: GetAvatarUseCase
 ): ViewModel() {
     private var _user by mutableStateOf(UserData())
     val user: UserData
         get() = _user
 
     val isNotificationEnable = userRepository.getIsNotificationEnable()
+    val avatarBitmap = getAvatarUseCase()
 
     private var _hasChangedTextFieldValue by mutableStateOf(false)
     val hasChangedTextFieldValue: Boolean
@@ -74,6 +86,15 @@ class ProfileViewModel @Inject constructor(
 
         viewModelScope.launch {
             _user = userRepository.getUser()
+        }
+    }
+
+    fun onChangeAvatar(uri: Uri?) {
+        if (uri == null)
+            return
+
+        viewModelScope.launch {
+            changeAvatarUseCase(uri)
         }
     }
 

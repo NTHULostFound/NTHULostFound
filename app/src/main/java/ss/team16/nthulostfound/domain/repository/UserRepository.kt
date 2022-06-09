@@ -15,4 +15,9 @@ interface UserRepository {
     suspend fun getAccessToken(): String
 
     suspend fun saveAccessToken(token: String)
+
+    fun getAvatarFilename(): Flow<String?>
+
+    suspend fun setAvatarFilename(filename: String)
+
 }
