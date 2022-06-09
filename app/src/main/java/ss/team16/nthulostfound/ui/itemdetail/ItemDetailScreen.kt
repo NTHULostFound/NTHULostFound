@@ -61,7 +61,12 @@ fun ItemDetailScreen(
             }
 
             ImageCarousel(
-                images = emptyList(),
+                modifier =
+                    if (viewModel.item.images.isEmpty())
+                        Modifier.aspectRatio(4/3f)
+                    else
+                        Modifier,
+                networkImages = viewModel.item.images,
                 shape = RectangleShape,
                 borderWidth = 0.dp
             )
