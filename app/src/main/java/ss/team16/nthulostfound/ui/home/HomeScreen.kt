@@ -91,8 +91,8 @@ fun HomeScreen(
             modifier = modifier
                 .padding(paddingValues)
         ) {
-            // default: show both
-            val showPinMessage = viewModel.showPinMessageFlow.collectAsState(initial = 0b11)
+            // default: hide both before flow updated
+            val showPinMessage = viewModel.showPinMessageFlow.collectAsState(initial = 0b00)
 
             if (showType == ShowType.FOUND) {
                 AnimatedVisibility(
