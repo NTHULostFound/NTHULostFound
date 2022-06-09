@@ -1,9 +1,10 @@
 package ss.team16.nthulostfound.ui.home
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,12 +15,9 @@ import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -29,8 +27,6 @@ import androidx.paging.compose.itemsIndexed
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.valentinilk.shimmer.shimmer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.ui.components.*
@@ -97,7 +93,7 @@ fun HomeScreen(
         ) {
             // default: hide both before flow updated
             val showPinMessage = viewModel.showPinMessageFlow.collectAsState(initial = 0b00)
-
+            val canShowPopUp = viewModel.canShowPopUpFlow.collectAsState(initial = false)
             if (showType == ShowType.FOUND) {
                 AnimatedVisibility(
                     // check FOUND bit
@@ -222,6 +218,23 @@ fun HomeScreen(
                             }
                             SnackbarResult.Dismissed -> {}
                         }
+                    }
+                }
+            }
+            else if(canShowPopUp.value) {
+                LaunchedEffect(Unit) {
+                    launch {
+                        val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
+                            message = "您似乎尚未填寫個人資料，立即填寫以便在遺失物品時收到通知！",
+                            actionLabel = "前往填寫"
+                        )
+                        when (snackbarResult) {
+                            SnackbarResult.ActionPerformed -> {
+                                navController.navigate("profile")
+                            }
+                            SnackbarResult.Dismissed -> {}
+                        }
+                        viewModel.onSetUserDataPopUp()
                     }
                 }
             }

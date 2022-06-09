@@ -34,7 +34,14 @@ class HomeViewModel @Inject constructor(
     val myItemsFlow = MutableStateFlow<Boolean>(false)
 
     val showPinMessageFlow = userRepository.getShowPinMessage()
-
+    val isUserDataSetFlow = userRepository.getIsUserDataSet()
+    val setUserDataPoppedUp = MutableStateFlow(false)
+    val canShowPopUpFlow = combine(
+            isUserDataSetFlow,
+            setUserDataPoppedUp
+        ) { isUserDataSet, setUserDataPoppedUp ->
+            !(isUserDataSet || setUserDataPoppedUp)
+    }
     val avatarBitmap = getAvatarUseCase()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -98,6 +105,11 @@ class HomeViewModel @Inject constructor(
             FabState.EXTENDED -> FabState.WITH_TEXT
             FabState.WITH_TEXT -> FabState.EXTENDED
         }
+    }
+
+    fun onSetUserDataPopUp() {
+        setUserDataPoppedUp.value = true
+        // use this to ensure the pop up only shows once during the app running
     }
 }
 

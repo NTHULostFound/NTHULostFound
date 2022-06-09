@@ -10,6 +10,8 @@ interface UserRepository {
 
     fun getIsNotificationEnable(): Flow<Boolean>
 
+    fun getIsUserDataSet(): Flow<Boolean>
+
     suspend fun setIsNotificationEnable(status: Boolean)
 
     suspend fun getAccessToken(): String
