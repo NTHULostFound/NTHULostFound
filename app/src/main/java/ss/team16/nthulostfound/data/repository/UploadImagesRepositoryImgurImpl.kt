@@ -2,6 +2,7 @@ package ss.team16.nthulostfound.data.repository
 
 import android.content.ContentResolver
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import okhttp3.MultipartBody
@@ -14,15 +15,15 @@ import java.io.File
 import java.io.FileOutputStream
 
 class UploadImagesRepositoryImgurImpl(
-    private val imgurApi: ImgurApi
+    private val imgurApi: ImgurApi,
+    private val context: Context
 ): UploadImagesRepository{
     override suspend fun uploadImage(
         uri: Uri,
-        contentResolver: ContentResolver,
         title: String?
     ): Result<UploadedImage> {
         return try {
-            val file = copyStreamToFile(uri, contentResolver)
+            val file = copyStreamToFile(uri, context.contentResolver)
 
             val filePart = MultipartBody.Part.createFormData(
                 "image",
@@ -52,7 +53,7 @@ class UploadImagesRepositoryImgurImpl(
      * Creates a temporary file from a Uri, preparing it for upload.
      */
     private fun copyStreamToFile(uri: Uri, contentResolver: ContentResolver): File {
-        val outputFile = File.createTempFile("temp", null)
+        val outputFile = File.createTempFile("upload-image-temp", null)
 
         contentResolver.openInputStream(uri)?.use { input ->
             val outputStream = FileOutputStream(outputFile)

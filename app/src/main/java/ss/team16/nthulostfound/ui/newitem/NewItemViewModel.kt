@@ -59,7 +59,7 @@ class NewItemViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scrollToPage: (Int) -> Unit, popScreen: () -> Unit, contentResolver: ContentResolver) {
+    fun goToNextPage(scrollToPage: (Int) -> Unit, popScreen: () -> Unit) {
         val curPage = pagerState.currentPage
         val nextPage = curPage + 1
         if (pagerState.isScrollInProgress)
@@ -72,7 +72,7 @@ class NewItemViewModel @AssistedInject constructor(
                     return
             }
             NewItemPageInfo.CONFIRM -> {
-                submitForm(contentResolver)
+                submitForm()
             }
             NewItemPageInfo.RESULT -> {
                 popScreen()
@@ -92,7 +92,7 @@ class NewItemViewModel @AssistedInject constructor(
         scrollToPage(pagePrev)
     }
 
-    fun submitForm(contentResolver: ContentResolver) {
+    fun submitForm() {
 
         val cal = Calendar.getInstance()
         cal.set(year, month, day, hour, minute)
@@ -116,7 +116,7 @@ class NewItemViewModel @AssistedInject constructor(
         uploadStatus = NewItemUploadStatus.UPLOADING_IMAGE
         statusInfo = "圖片上傳中... (0/${imageUris.size})"
         viewModelScope.launch {
-            newItemUseCase(newItemData, imageUris, contentResolver,
+            newItemUseCase(newItemData, imageUris,
                 onImageUploaded = { index, imageUrl ->
                     Log.d(TAG, "Image uploaded ($index): $imageUrl")
                     statusInfo = "圖片上傳中... (${index + 1}/${imageUris.size})"

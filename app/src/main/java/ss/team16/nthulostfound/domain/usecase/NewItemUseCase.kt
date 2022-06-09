@@ -16,7 +16,6 @@ class NewItemUseCase(
     suspend operator fun invoke(
         newItemData: NewItemData,
         imageUris: List<Uri>,
-        contentResolver: ContentResolver,
         onImageUploaded: (Int, String) -> Unit = {_, _ -> },
         onImageUploadError: (Int, Throwable) -> Unit = {_, _ -> },
         onImageUploadFinished: () -> Unit = {},
@@ -28,7 +27,6 @@ class NewItemUseCase(
         try {
             uploadedImages = uploadImagesUseCase(
                 imageUris,
-                contentResolver,
                 onImageUploaded,
                 onImageUploadError
             )
