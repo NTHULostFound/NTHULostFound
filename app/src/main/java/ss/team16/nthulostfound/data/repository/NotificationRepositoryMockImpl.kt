@@ -44,7 +44,8 @@ class NotificationRepositoryMockImpl(
         )
     }
 
-    override suspend fun addNotification(notif: NotificationData) {
+    override suspend fun addNotification(notif: NotificationData): Long {
+        return 0L
 //        return dao.addNotification(notif)
     }
 

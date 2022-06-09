@@ -10,7 +10,7 @@ interface NotificationDao {
     fun getNotifications() : Flow<List<NotificationData>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addNotification(notif: NotificationData)
+    suspend fun addNotification(notif: NotificationData): Long
 
     @Update
     suspend fun updateNotification(notif: NotificationData)

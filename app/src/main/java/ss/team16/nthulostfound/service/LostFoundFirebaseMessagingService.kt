@@ -71,9 +71,10 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
                 timestamp = message.sentTime
             )
             CoroutineScope(Dispatchers.IO).launch {
-                addNotificationUseCase(notificationData)
+                val id = addNotificationUseCase(notificationData)
+                sendNotification(notifTitle, notifMessage, message.data["item_uuid"]!!, id)
+
             }
-            sendNotification(notifTitle, notifMessage, message.data["item_uuid"]!!)
         }
 
     }
@@ -84,7 +85,7 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
         registerToken(token)
     }
 
-    private fun sendNotification(title: String, message: String, itemId: String) {
+    private fun sendNotification(title: String, message: String, itemId: String, id: Long) {
         // TODO: send notification
 //        val intent = Intent(this, MainActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -123,7 +124,7 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
         Log.d("FCM", "$id")
-        notificationManager.notify(id++ /* ID of notification */, notificationBuilder.build())
+        notificationManager.notify(id.toInt() /* ID of notification */, notificationBuilder.build())
     }
 
     private fun registerToken(fcmToken: String) {
@@ -143,7 +144,6 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "NTHU_LOST_FOUND_NOTIFICATION"
         const val NOTIFICATION_CHANNEL_NAME = "Lost & Found Notification"
-        var id = 0
     }
 
 }
