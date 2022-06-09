@@ -1,6 +1,7 @@
 package ss.team16.nthulostfound.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
@@ -56,6 +57,19 @@ class UserRepositoryImpl(
         }
     }
 
+    override fun getAvatarFilename(): Flow<String?> {
+        return appContext.dataStore.data.map { preferences ->
+            preferences[AVATAR_FILENAME]
+        }
+    }
+
+    override suspend fun setAvatarFilename(filename: String) {
+        appContext.dataStore.edit { preferences ->
+            preferences[AVATAR_FILENAME] = filename
+            Log.d("Avatar", "Set finish: $filename")
+        }
+    }
+
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("user_access_token")
 
@@ -64,5 +78,7 @@ class UserRepositoryImpl(
         val EMAIL = stringPreferencesKey("user_email")
 
         val IS_NOTIFICATION_ENABLE = booleanPreferencesKey("user_is_notification_enable")
+
+        val AVATAR_FILENAME = stringPreferencesKey("user_avatar_filename")
     }
 }
