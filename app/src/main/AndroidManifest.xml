@@ -26,6 +26,15 @@
             <intent-filter>
                 <data android:scheme="nthulostfound" android:host="item" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="nthulostfound.page.link"
+                    android:pathPrefix="/item"
+                    android:scheme="https"/>
+            </intent-filter>
         </activity>
 
         <service
