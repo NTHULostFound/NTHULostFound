@@ -39,7 +39,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-    val isNotificationEnable = viewModel.isNotificationEnable.collectAsState(initial = false)
+    val isNotificationEnable = viewModel.isNotificationEnable.collectAsState(initial = true)
 
     Scaffold(
         topBar = {
