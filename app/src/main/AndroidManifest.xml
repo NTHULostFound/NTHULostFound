@@ -31,7 +31,8 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
-                    android:host="nthu-lost-found.link"
+                    android:host="nthulostfound.page.link"
+                    android:pathPrefix="/item"
                     android:scheme="https"/>
             </intent-filter>
         </activity>

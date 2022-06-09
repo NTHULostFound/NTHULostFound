@@ -149,7 +149,7 @@ private fun handleFirebaseDynamicLinks(intent: Intent, navController: NavControl
         .getDynamicLink(intent)
         .addOnSuccessListener { linkData ->
             linkData?.link?.let { uri ->
-                val itemId = uri.getQueryParameter("item")
+                val itemId = uri.getQueryParameter("id")
                 itemId?.let { id ->
                     navController.navigate("item/$id")
                 }
