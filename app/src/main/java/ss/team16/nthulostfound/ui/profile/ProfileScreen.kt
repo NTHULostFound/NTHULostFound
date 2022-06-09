@@ -8,6 +8,10 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -134,7 +138,11 @@ fun ProfileScreen(
                     label = "E-mail"
                 )
 
-                if (viewModel.hasChangedTextFieldValue) {
+                AnimatedVisibility(
+                    visible = viewModel.hasChangedTextFieldValue,
+                    enter = fadeIn(animationSpec = tween(durationMillis = 250)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 250))
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(padding / 2, Alignment.End),
                         verticalAlignment = Alignment.CenterVertically,
