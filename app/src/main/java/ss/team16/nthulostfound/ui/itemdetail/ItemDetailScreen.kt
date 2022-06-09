@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.ContactPage
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
@@ -77,13 +78,15 @@ fun ItemDetailScreen(
                     .padding(padding)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     IconLabel(
                         icon = Icons.Filled.Place,
-                        labelText = viewModel.item.place
+                        labelText = viewModel.item.place,
+                        modifier = Modifier.weight(1f)
                     )
 
                     val formatter = SimpleDateFormat("yyyy/M/d   h:mm a", Locale.getDefault())
