@@ -20,8 +20,10 @@
             android:theme="@style/Theme.NTHULostFound">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="nthulostfound" android:host="item" />
             </intent-filter>
         </activity>
 

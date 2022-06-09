@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,6 +70,10 @@ class MainActivity : ComponentActivity() {
                         arguments = listOf(navArgument("itemId") {
                             type = NavType.StringType
                             defaultValue = "bd5234b5-35b5-4faf-9c01-684819077461"
+                        }),
+                        deepLinks = listOf(
+                            navDeepLink {
+                                uriPattern = "nthulostfound://item/{itemId}"
                         })
                     ) {
                         val itemId = it.arguments?.getString("itemId")!!
