@@ -80,7 +80,11 @@ class MainActivity : ComponentActivity() {
                         ItemDetailScreen(
                             uuid = itemId,
                             onBack = { navController.popBackStack() },
-                            navigateToRoute = { route -> navController.navigate(route) }
+                            navigateToRoute = { route -> navController.navigate(route) {
+                                // we pop up to home before navigate to closed item screen
+                                // so we can just call onBack in closed item screen for "done" button
+                                popUpTo("home")
+                            } }
                         )
                     }
                     composable("item/{itemId}/contact") {
@@ -101,8 +105,7 @@ class MainActivity : ComponentActivity() {
                         )
                     ) {
                         ClosedItemScreen(
-                            onBack = { navController.popBackStack() },
-                            navigateToRoute = { route -> navController.navigate(route) }
+                            onBack = { navController.popBackStack() }
                         )
                     }
 
