@@ -26,7 +26,6 @@ import ss.team16.nthulostfound.ui.newitem.padding
 @Composable
 fun ClosedItemScreen(
     onBack: () -> Unit = { },
-    navigateToRoute: (String) -> Unit = {},
     viewModel: ClosedItemViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -105,9 +104,7 @@ fun ClosedItemScreen(
                 OutlinedButton(
                     border = BorderStroke(0.dp, Color.Transparent),
                     elevation = null,
-                    onClick = {
-                        navigateToRoute("item/lost")
-                    }
+                    onClick = onBack
                 ) {
                     Text(text = "完成")
                 }
