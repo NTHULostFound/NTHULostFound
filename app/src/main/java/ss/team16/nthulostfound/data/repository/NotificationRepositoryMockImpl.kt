@@ -18,7 +18,7 @@ class NotificationRepositoryMockImpl(
             listOf(
                 NotificationData(
                     id = 1,
-                    type = NotificationType.INSERTED,
+                    type = NotificationType.LOST_INSERTED,
                     content = "已成功新增協尋物品「NervGear」。",
                     itemUUID = "C8763",
                     timestamp = formatter.parse("2022/11/06 00:00:00").time,

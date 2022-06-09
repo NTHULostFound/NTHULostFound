@@ -5,9 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 enum class NotificationType {
-    INSERTED,
+    LOST_INSERTED,
+    FOUND_INSERTED,
     CONTACT_CHECKED,
-    LOST_NOTIFICATION
+    LOST_NOTIFICATION,
+    UNSPECIFIED
 }
 
 @Entity(tableName = "notification")
