@@ -5,7 +5,7 @@ import ss.team16.nthulostfound.domain.model.NotificationData
 
 interface NotificationRepository {
     fun getNotifications() : Flow<List<NotificationData>>
-    suspend fun addNotification(notif: NotificationData)
+    suspend fun addNotification(notif: NotificationData): Long
     suspend fun updateNotification(notif: NotificationData)
     suspend fun deleteNotification(notif: NotificationData)
 }
