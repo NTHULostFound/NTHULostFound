@@ -96,8 +96,8 @@ fun HomeScreen(
                 AnimatedVisibility(
                     visible = showFoundPinMessage,
                     exit = slideOutVertically(
-                        targetOffsetY = { -it }
-                    )
+                        targetOffsetY = { -it },
+                    ) + shrinkVertically()
                 ) {
                     PinMessage(
                         message = "其他人撿到的遺失物將會刊登在這裡\n" +
@@ -110,7 +110,7 @@ fun HomeScreen(
                     visible = showLostPinMessage,
                     exit = slideOutVertically(
                         targetOffsetY = { -it }
-                    )
+                    ) + shrinkVertically()
                 ) {
                     PinMessage(
                         message = "這裡是失主刊登遺失物的地方\n" +
