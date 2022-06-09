@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -16,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -135,41 +139,63 @@ fun HomeScreen(
                 onRefresh = { lazyPagingItems.refresh() },
                 modifier = Modifier.fillMaxSize()
             ) {
-                LazyColumn(
-                    modifier = modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    state = lazyState
-                ) {
-
-                    if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
-                        items(10) {
-                            ItemCard(
-                                item = ItemData(
-                                    name = "...",
-                                    place = "...",
-                                ),
-                                modifier = Modifier.shimmer(),
-                                onClick = {}
-                            )
-                        }
+                if (lazyPagingItems.loadState.refresh is LoadState.Error) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CloudOff,
+                            contentDescription = "No Internet Connection",
+                            modifier = Modifier
+                                    .size(150.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "無網際網路連線，請連接 Wi-Fi 或是開啟行動數據。",
+                            style = MaterialTheme.typography.body2
+                        )
                     }
+                } else {
+                    LazyColumn(
+                        modifier = modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        state = lazyState
+                    ) {
 
-                    itemsIndexed(lazyPagingItems) { _, item ->
-                        if (item != null) {
-                            ItemCard(item = item, onClick = {
-                                navController.navigate("item/${item.uuid}")
-                            })
+                        if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+                            items(10) {
+                                ItemCard(
+                                    item = ItemData(
+                                        name = "...",
+                                        place = "...",
+                                    ),
+                                    modifier = Modifier.shimmer(),
+                                    onClick = {}
+                                )
+                            }
                         }
-                    }
 
-                    if (lazyPagingItems.loadState.append == LoadState.Loading) {
-                        item {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentWidth(Alignment.CenterHorizontally)
-                            )
+                        itemsIndexed(lazyPagingItems) { _, item ->
+                            if (item != null) {
+                                ItemCard(item = item, onClick = {
+                                    navController.navigate("item/${item.uuid}")
+                                })
+                            }
+                        }
+
+                        if (lazyPagingItems.loadState.append == LoadState.Loading) {
+                            item {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                )
+                            }
                         }
                     }
                 }
