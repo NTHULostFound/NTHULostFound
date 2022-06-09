@@ -1,16 +1,25 @@
 package ss.team16.nthulostfound.ui
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,6 +50,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             NTHULostFoundTheme {
                 val navController = rememberNavController()
+
+                LaunchedEffect(true) {
+                    handleFirebaseDynamicLinks(this@MainActivity.intent, navController)
+                }
 
                 NavHost(
                     navController = navController,
@@ -129,4 +142,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
+}
+
+private fun handleFirebaseDynamicLinks(intent: Intent, navController: NavController) {
+    Firebase.dynamicLinks
+        .getDynamicLink(intent)
+        .addOnSuccessListener { linkData ->
+            linkData?.link?.let { uri ->
+                val itemId = uri.getQueryParameter("item")
+                itemId?.let { id ->
+                    navController.navigate("item/$id")
+                }
+            }
+        }
+        .addOnFailureListener { e -> Log.w("DynamicLink", "getDynamicLink:onFailure", e) }
 }
