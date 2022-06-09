@@ -86,7 +86,7 @@ fun MultiFloatingActionButton(
                     .padding(
                         bottom = shrinkListAnim[index].dp,
                         top = 5.dp,
-                        end = 30.dp
+                        end = 5.dp
                     )
                     .alpha(animateFloatAsState(alphaAnim).value)
             ) {
@@ -126,7 +126,6 @@ fun MultiFloatingActionButton(
             }
         }
         FloatingActionButton(
-            modifier = Modifier.padding(0.dp, end = 25.dp),
             backgroundColor = if(fabBackgroundColor == Color.Unspecified) MaterialTheme.colors.secondary else fabBackgroundColor,
             onClick = {
                 currentState.value =
