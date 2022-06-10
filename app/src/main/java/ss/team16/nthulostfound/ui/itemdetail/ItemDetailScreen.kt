@@ -157,7 +157,7 @@ fun ItemDetailScreen(
                         }
                     } else if (viewModel.viewMode == ViewMode.Guest) {
                         InfoBox(
-                            info = "為避免騷擾或是濫用情形發生，如果按下「顯示聯絡資訊」，將傳送通知給對方。"
+                            info = "為避免騷擾或是濫用情形發生，如果按下「取得聯絡資訊」，將傳送通知給對方。"
                         )
 
                         Button(
