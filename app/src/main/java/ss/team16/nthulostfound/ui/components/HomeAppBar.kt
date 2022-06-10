@@ -56,6 +56,7 @@ fun HomeAppBar(
     val focusManager = LocalFocusManager.current
 
     TopAppBar(
+        backgroundColor = MaterialTheme.colors.primary,
         navigationIcon = {
             if (!showSearchBar) {
                 val avatarModifier = Modifier
@@ -158,8 +159,7 @@ fun HomeAppBar(
                   }
               }
         },
-        modifier = modifier,
-
+        modifier = modifier
     )
 }
 
