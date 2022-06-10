@@ -1,6 +1,7 @@
 package ss.team16.nthulostfound.ui.components
 
 import android.graphics.Bitmap
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,6 +56,15 @@ fun HomeAppBar(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
+    fun onBack() {
+        showSearchBar = false
+        onSearch("")
+    }
+
+    BackHandler(enabled = showSearchBar) {
+        onBack()
+    }
+
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primary,
         navigationIcon = {
@@ -86,8 +96,7 @@ fun HomeAppBar(
                 }
             } else {
                 IconButton(onClick = {
-                    showSearchBar = false
-                    onSearch("")
+                    onBack()
                 }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
@@ -178,7 +187,6 @@ fun RoundedTextField(
     }
     val visualTransformation = VisualTransformation.None
 
-    // TODO: apply NTHULostFoundTheme
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
