@@ -38,7 +38,7 @@ fun ItemCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.LightGray, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colors.surface, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .clickable {
                 onClick()
@@ -86,7 +86,8 @@ fun ItemCard(
                 modifier = Modifier.aspectRatio(4/3f),
                 networkImages = item.images,
                 shape = RectangleShape,
-                borderWidth = 0.dp
+                borderWidth = 0.dp,
+                borderColor = Color.Transparent
             )
         }
     }
