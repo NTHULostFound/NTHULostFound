@@ -36,6 +36,24 @@ fun HomeScreen(
 ) {
     val scaffoldState = rememberScaffoldState()
     val showType = viewModel.showTypeFlow.collectAsState().value
+    val lazyState = rememberLazyListState()
+    var fabExtended by remember { mutableStateOf(true) }
+
+    LaunchedEffect(lazyState) {
+        var prevOffset = 0
+        var prevIndex = 0
+        snapshotFlow { lazyState.firstVisibleItemScrollOffset }
+            .collect {
+                fabExtended =
+                    (lazyState.firstVisibleItemIndex == prevIndex &&
+                    lazyState.firstVisibleItemScrollOffset <= prevOffset) ||
+                    lazyState.firstVisibleItemIndex < prevIndex
+
+                prevOffset = lazyState.firstVisibleItemScrollOffset
+                prevIndex = lazyState.firstVisibleItemIndex
+            }
+    }
+
 
     Scaffold(
         topBar = {
@@ -75,7 +93,10 @@ fun HomeScreen(
             )
             MultiFloatingActionButton(
                 srcIcon = Icons.Filled.Add,
-                items = expandFabItemList)
+                items = expandFabItemList,
+                wideButton = fabExtended,
+                wideButtonLabel = "新增"
+            )
         },
         bottomBar = {
             BottomNav(
@@ -138,7 +159,6 @@ fun HomeScreen(
                 }
             }
 
-            val lazyState = rememberLazyListState()
             val lazyPagingItems = viewModel.items.collectAsLazyPagingItems()
 
             val isRefreshing = lazyPagingItems.loadState.refresh == LoadState.Loading

@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -39,9 +40,11 @@ class MultiFabItem(
 fun MultiFloatingActionButton(
     modifier: Modifier = Modifier,
     srcIcon: ImageVector,
-    srcIconColor: Color = Color.White,
-    fabBackgroundColor: Color = Color.Unspecified,
+    srcIconColor: Color = MaterialTheme.colors.onPrimary,
+    fabBackgroundColor: Color = MaterialTheme.colors.primary,
     showLabels: Boolean = true,
+    wideButton: Boolean,
+    wideButtonLabel: String,
     items: List<MultiFabItem>
 ) {
     val currentState = remember { mutableStateOf(MultiFabState.Collapsed) }
@@ -131,12 +134,28 @@ fun MultiFloatingActionButton(
                 currentState.value =
                     if (currentState.value == MultiFabState.Collapsed) MultiFabState.Expanded else MultiFabState.Collapsed
             }) {
-            Icon(
-                imageVector = srcIcon,
-                modifier = Modifier.rotate(rotateAnim),
-                tint = srcIconColor,
-                contentDescription = null
-            )
+            Row(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    end = 16.dp
+                )
+            ) {
+                Icon(
+                    imageVector = srcIcon,
+                    modifier = Modifier.rotate(rotateAnim),
+                    tint = srcIconColor,
+                    contentDescription = null
+                )
+
+                AnimatedVisibility(
+                    visible = wideButton && currentState.value == MultiFabState.Collapsed
+                ) {
+                    Row {
+                        Spacer(Modifier.width(12.dp))
+                        Text(wideButtonLabel, color = srcIconColor)
+                    }
+                }
+            }
         }
     }
 }
