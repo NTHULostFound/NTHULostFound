@@ -194,7 +194,10 @@ fun WhoCheckBox(
         Text("您知道失主的資訊嗎？")
         Checkbox(
             checked = checked,
-            onCheckedChange = { onCheckedChange(it) }
+            onCheckedChange = { onCheckedChange(it) },
+            colors = CheckboxDefaults.colors(
+                checkmarkColor = MaterialTheme.colors.onSecondary
+            )
         )
     }
 }
