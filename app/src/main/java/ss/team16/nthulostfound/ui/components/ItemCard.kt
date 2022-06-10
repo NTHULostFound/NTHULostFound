@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -29,66 +31,68 @@ import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 import java.text.SimpleDateFormat
 import java.util.*
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ItemCard(
     modifier: Modifier = Modifier,
     item: ItemData,
     onClick: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.surface, RoundedCornerShape(16.dp))
-            .clip(RoundedCornerShape(16.dp))
-            .clickable {
-                onClick()
-            }
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        backgroundColor = MaterialTheme.colors.surface,
+        elevation = 8.dp
     ) {
-        Row() {
-            Column(
-                modifier = modifier
-                    .weight(3F)
-                    .padding(12.dp)
-            ) {
-                Text(
-                    text = item.name,
-                    style = MaterialTheme.typography.h5,
-                    modifier = modifier.padding(4.dp)
-                )
+        Column(
+            modifier = modifier.fillMaxSize()
+        ) {
+            Row() {
+                Column(
+                    modifier = modifier
+                        .weight(3F)
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = item.name,
+                        style = MaterialTheme.typography.h5,
+                        modifier = modifier.padding(4.dp)
+                    )
 
-                Text(
-                    text = item.description ?: "",
-                    style = MaterialTheme.typography.body1,
-                    modifier = modifier.padding(4.dp)
+                    Text(
+                        text = item.description ?: "",
+                        style = MaterialTheme.typography.body1,
+                        modifier = modifier.padding(4.dp)
+                    )
+                }
+                Column(
+                    modifier = modifier
+                        .weight(2F)
+                        .padding(12.dp)
+                ) {
+                    val formatter = SimpleDateFormat("yyyy/MM/dd\nh:mm a", Locale.TAIWAN)
+                    IconLabel(
+                        icon = Icons.Outlined.AccessTime,
+                        labelText = formatter.format(item.date),
+                        modifier = modifier.padding(4.dp)
+                    )
+                    IconLabel(
+                        icon = Icons.Outlined.Place,
+                        labelText = item.place,
+                        modifier = modifier.padding(4.dp)
+                    )
+                }
+            }
+
+            if(item.images.isNotEmpty()) {
+                ImageCarousel(
+                    modifier = Modifier.aspectRatio(4/3f),
+                    networkImages = item.images,
+                    shape = RectangleShape,
+                    borderWidth = 0.dp,
+                    borderColor = Color.Transparent
                 )
             }
-            Column(
-                modifier = modifier
-                    .weight(2F)
-                    .padding(12.dp)
-            ) {
-                val formatter = SimpleDateFormat("yyyy/MM/dd\nh:mm a", Locale.TAIWAN)
-                IconLabel(
-                    icon = Icons.Outlined.AccessTime,
-                    labelText = formatter.format(item.date),
-                    modifier = modifier.padding(4.dp)
-                )
-                IconLabel(
-                    icon = Icons.Outlined.Place,
-                    labelText = item.place,
-                    modifier = modifier.padding(4.dp)
-                )
-            }
-        }
-
-        if(item.images.isNotEmpty()) {
-            ImageCarousel(
-                modifier = Modifier.aspectRatio(4/3f),
-                networkImages = item.images,
-                shape = RectangleShape,
-                borderWidth = 0.dp,
-                borderColor = Color.Transparent
-            )
         }
     }
 }
