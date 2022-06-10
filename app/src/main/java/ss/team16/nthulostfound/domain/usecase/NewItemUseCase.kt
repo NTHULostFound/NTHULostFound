@@ -19,7 +19,7 @@ class NewItemUseCase(
         onImageUploaded: (Int, String) -> Unit = {_, _ -> },
         onImageUploadError: (Int, Throwable) -> Unit = {_, _ -> },
         onImageUploadFinished: () -> Unit = {},
-        onDataUploaded: () -> Unit = {},
+        onDataUploaded: (ItemData) -> Unit = {},
         onDataUploadError: (Throwable) -> Unit = {}
     ) {
         lateinit var uploadedImages: List<UploadedImage>
@@ -41,7 +41,7 @@ class NewItemUseCase(
         )
 
         itemRepository.newItem(uploadNewItemData).fold(
-            onSuccess = { onDataUploaded() },
+            onSuccess = { item -> onDataUploaded(item) },
             onFailure = { onDataUploadError(it) }
         )
     }

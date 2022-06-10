@@ -21,6 +21,7 @@ val padding = 24.dp
 fun NewItemScreen(
     type: NewItemType,
     popScreen: () -> Unit,
+    navigateToItem: (String) -> Unit,
     viewModel: NewItemViewModel = assistedViewModel {
         NewItemViewModel.provideFactory(
             newItemViewModelFactory(),
@@ -60,7 +61,7 @@ fun NewItemScreen(
                 pagerState = viewModel.pagerState,
                 nextButtonInfo = viewModel.getPagerNextButtonInfo(),
                 prevButtonInfo = viewModel.getPagerPrevButtonInfo(),
-                onNextPage = { viewModel.goToNextPage(scrollToPage, popScreen) },
+                onNextPage = { viewModel.goToNextPage(scrollToPage, navigateToItem) },
                 onPrevPage = { viewModel.goToPrevPage(scrollToPage) }
             )
         }

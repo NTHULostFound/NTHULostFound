@@ -39,6 +39,8 @@ class NewItemViewModel @AssistedInject constructor(
     var statusInfo by mutableStateOf("")
         private set
 
+    lateinit var uploadedItemId: String
+
     @OptIn(ExperimentalPagerApi::class)
     fun getPagerPrevButtonInfo(): PagerButtonInfo? {
         return when (NewItemPageInfo.fromInt(pagerState.currentPage)) {
@@ -59,7 +61,7 @@ class NewItemViewModel @AssistedInject constructor(
     }
 
     @OptIn(ExperimentalPagerApi::class)
-    fun goToNextPage(scrollToPage: (Int) -> Unit, popScreen: () -> Unit) {
+    fun goToNextPage(scrollToPage: (Int) -> Unit, navigateToItem: (String) -> Unit) {
         val curPage = pagerState.currentPage
         val nextPage = curPage + 1
         if (pagerState.isScrollInProgress)
@@ -75,7 +77,7 @@ class NewItemViewModel @AssistedInject constructor(
                 submitForm()
             }
             NewItemPageInfo.RESULT -> {
-                popScreen()
+                navigateToItem(uploadedItemId)
                 return
             }
         }
@@ -130,8 +132,9 @@ class NewItemViewModel @AssistedInject constructor(
                     uploadStatus = NewItemUploadStatus.UPLOADING_DATA
                     statusInfo = "資料上傳中..."
                 },
-                onDataUploaded = {
+                onDataUploaded = { item ->
                     uploadStatus = NewItemUploadStatus.DONE
+                    uploadedItemId = item.uuid
                 },
                 onDataUploadError = {
                     uploadStatus = NewItemUploadStatus.ERROR

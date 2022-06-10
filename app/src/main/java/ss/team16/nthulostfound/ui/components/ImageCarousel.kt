@@ -105,6 +105,7 @@ fun ImageCarousel(
                                 modifier = Modifier
                                     .fillMaxWidth(0.5f)
                                     .wrapContentWidth(Alignment.CenterHorizontally)
+                                    .padding(vertical = 32.dp)
                             )
                         },
                     )
