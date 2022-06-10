@@ -2,7 +2,13 @@ package ss.team16.nthulostfound.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val NTHU400 = Color(0xFFB149B4)
+val NTHU700 = Color(0xFF7F1084)
+val NTHU900 = Color(0xFF4F0057)
+
+val NTHUBlack800 = Color(0xFF4B3E3B)
+val NTHUBlack900 = Color(0xFF231815)
+
+val TocasGray100 = Color(0xFFF2F2F2)
+val TocasGray700 = Color(0xFF464646)
+val TocasGray900 = Color(0xFF1E1E1E)

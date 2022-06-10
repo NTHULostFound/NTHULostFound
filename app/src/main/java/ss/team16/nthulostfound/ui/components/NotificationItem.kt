@@ -10,6 +10,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CircleNotifications
@@ -56,7 +57,7 @@ fun NotificationItem(
     val color = if(data.read) {
         MaterialTheme.colors.surface
     } else {
-        MaterialTheme.colors.secondary
+        MaterialTheme.colors.primary.copy(alpha = 0.55f)
     }
     Column(
         modifier = modifier

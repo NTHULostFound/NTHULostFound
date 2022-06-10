@@ -81,18 +81,23 @@ fun HomeScreen(
                 MultiFabItem(
                     icon = Icons.Filled.Search,
                     label = "我撿到東西了",
-                    fabBackgroundColor = Color.Black,
+                    labelTextColor = MaterialTheme.colors.onSecondary,
+                    labelBackgroundColor = MaterialTheme.colors.secondary,
+                    fabBackgroundColor = MaterialTheme.colors.secondary,
                     onClick = { navController.navigate("new_item/found") }
                 ),
                 MultiFabItem(
                     icon = Icons.Filled.Help,
                     label = "我東西掉了",
-                    fabBackgroundColor = Color.Black,
+                    labelTextColor = MaterialTheme.colors.onSecondary,
+                    labelBackgroundColor = MaterialTheme.colors.secondary,
+                    fabBackgroundColor = MaterialTheme.colors.secondary,
                     onClick = { navController.navigate("new_item/lost") }
                 )
             )
             MultiFloatingActionButton(
                 srcIcon = Icons.Filled.Add,
+                fabBackgroundColor = MaterialTheme.colors.secondary,
                 items = expandFabItemList,
                 wideButton = fabExtended,
                 wideButtonLabel = "新增"

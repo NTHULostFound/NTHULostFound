@@ -1,9 +1,6 @@
 package ss.team16.nthulostfound.ui.components
 
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
@@ -21,6 +18,7 @@ fun BackArrowAppBar(
     onShare: (() -> Unit)? = null
 ) {
     TopAppBar(
+        backgroundColor = MaterialTheme.colors.primary,
         navigationIcon = {
             IconButton(onClick = onBack, enabled = backEnabled) {
                 Icon(

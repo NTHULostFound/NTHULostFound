@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -80,7 +81,8 @@ fun ImageCarousel(
                 )
 
                 Surface(
-                    color = MaterialTheme.colors.secondaryVariant,
+                    color = if (!isSystemInDarkTheme()) MaterialTheme.colors.secondaryVariant
+                            else MaterialTheme.colors.secondary,
                     modifier = Modifier.fillMaxSize(),
                     onClick = {
                         launcher.launch("image/*")
@@ -144,7 +146,8 @@ fun ImageCarousel(
                 )
         } else  { // No image
             Surface(
-                color = MaterialTheme.colors.secondaryVariant,
+                color = if (!isSystemInDarkTheme()) MaterialTheme.colors.secondaryVariant
+                        else MaterialTheme.colors.secondary,
                 modifier = Modifier.fillMaxSize(),
             ) {
                 Icon(

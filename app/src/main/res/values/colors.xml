@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="NTHU_400">#FFB149B4</color>
+    <color name="NTHU_700">#FF7F1084</color>
+    <color name="NTHU_900">#FF4F0057</color>
+
+    <color name="NTHU_black_800">#FF4B3E3B</color>
+    <color name="NTHU_black_900">#FF231815</color>
+
+    <color name="tocas_gray_100">#FFF2F2F2</color>
+    <color name="tocas_gray_700">#FF444444</color>
+    <color name="tocas_gray_900">#FF1E1E1E</color>
 </resources>
