@@ -99,10 +99,17 @@ fun HomeScreen(
             )
         },
         bottomBar = {
+            val coroutineScope = rememberCoroutineScope()
             BottomNav(
                 currentShowType = showType,
                 modifier = modifier,
-                onChangePage = { viewModel.onPageChanged(it) }
+                onChangePage = {
+                    viewModel.onPageChanged(it)
+
+                    coroutineScope.launch {
+                        lazyState.scrollToItem(0)
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -117,22 +124,10 @@ fun HomeScreen(
             val isMyItems = viewModel.myItemsFlow.collectAsState().value
             val search = viewModel.searchFlow.collectAsState().value
 
-            if (isMyItems) {
-                AnimatedVisibility(
-                    visible = isMyItems,
-                    exit = slideOutVertically(
-                        targetOffsetY = { -it },
-                    ) + shrinkVertically()
-                ) {
-                    PinMessage(
-                        message = "您正在瀏覽您的發佈記錄",
-                        onClose = { viewModel.myItemsFlow.value = false }
-                    )
-                }
-            } else if (showType == ShowType.FOUND) {
+            if (showType == ShowType.FOUND) {
                 AnimatedVisibility(
                     // check FOUND bit
-                    visible = (showPinMessage.value and 0b10 != 0),
+                    visible = (showPinMessage.value and 0b10 != 0) && !isMyItems,
                     exit = slideOutVertically(
                         targetOffsetY = { -it },
                     ) + shrinkVertically()
@@ -146,7 +141,7 @@ fun HomeScreen(
             } else if (showType == ShowType.LOST) {
                 AnimatedVisibility(
                     // check LOST bit
-                    visible = (showPinMessage.value and 0b01 != 0),
+                    visible = (showPinMessage.value and 0b01 != 0) && !isMyItems,
                     exit = slideOutVertically(
                         targetOffsetY = { -it }
                     ) + shrinkVertically()
@@ -157,6 +152,17 @@ fun HomeScreen(
                         onClose = { viewModel.onPinMessageClose() }
                     )
                 }
+            }
+            AnimatedVisibility(
+                visible = isMyItems,
+                exit = slideOutVertically(
+                    targetOffsetY = { -it },
+                ) + shrinkVertically()
+            ) {
+                PinMessage(
+                    message = "您正在瀏覽您的發佈記錄",
+                    onClose = { viewModel.myItemsFlow.value = false }
+                )
             }
 
             val lazyPagingItems = viewModel.items.collectAsLazyPagingItems()
