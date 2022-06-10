@@ -21,7 +21,8 @@ data class ItemData(
     val how: String = "",
     val images: List<String> = emptyList(),
     val isOwner: Boolean = false,
-    val resolved: Boolean = false
+    val resolved: Boolean = false,
+    val dynamicLink: String = "https://nthulostfound.page.link/item"
 )
 
 object DateConverter {

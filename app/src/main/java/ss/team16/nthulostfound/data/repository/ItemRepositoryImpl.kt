@@ -139,7 +139,8 @@ class ItemRepositoryImpl(
                         how = how,
                         images = images,
                         isOwner = isMine,
-                        resolved = resolved
+                        resolved = resolved,
+                        dynamicLink = dynamicLink
                     )
                 }
 

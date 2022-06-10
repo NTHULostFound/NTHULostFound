@@ -12,7 +12,7 @@ import ss.team16.nthulostfound.domain.model.ItemRemoteKeys
 
 @Database(
     entities = [ItemData::class, ItemRemoteKeys::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(DateConverter::class, ImagesConverter::class)
