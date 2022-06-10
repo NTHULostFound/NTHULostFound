@@ -11,7 +11,6 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -52,7 +51,7 @@ fun BottomNav(
                             // apply indicator
                             modifier = Modifier
                                 .background(
-                                    color = Color.Black, // TODO: change this temporary color
+                                    color = MaterialTheme.colors.primaryVariant,
                                     shape = RoundedCornerShape(50)
                                 )
                                 .padding(vertical = 2.dp, horizontal = 12.dp)
