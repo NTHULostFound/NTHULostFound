@@ -197,13 +197,13 @@ class NewItemViewModel @AssistedInject constructor(
     var name by mutableStateOf("")
         private set
     fun onNameChange(value: String) {
-        name = value
+        if (!value.contains("\n")) name = value
     }
 
     var place by mutableStateOf("")
         private set
     fun onPlaceChange(value: String) {
-        place = value
+        if (!value.contains("\n")) place = value
     }
 
     var description by mutableStateOf("")
