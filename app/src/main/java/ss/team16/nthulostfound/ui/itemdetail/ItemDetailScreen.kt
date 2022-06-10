@@ -123,53 +123,59 @@ fun ItemDetailScreen(
 
                 Spacer(modifier = Modifier.weight(1F))
 
-                if (viewModel.viewMode == ViewMode.Owner) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(padding / 2),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        // Button(
-                        //     onClick = { },
-                        //     colors = ButtonDefaults.buttonColors(
-                        //         contentColor = Color.White,
-                        //         backgroundColor = Color.Black
-                        //     ),
-                        //     modifier = Modifier
-                        //         .fillMaxWidth()
-                        // ) {
-                        //     Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
-                        //     Spacer(modifier = Modifier.width(4.dp))
-                        //     Text(text = "刪除")
-                        // }
+                if (!viewModel.item.resolved) {
+                    if (viewModel.viewMode == ViewMode.Owner) {
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(padding / 2),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            // Button(
+                            //     onClick = { },
+                            //     colors = ButtonDefaults.buttonColors(
+                            //         contentColor = Color.White,
+                            //         backgroundColor = Color.Black
+                            //     ),
+                            //     modifier = Modifier
+                            //         .fillMaxWidth()
+                            // ) {
+                            //     Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
+                            //     Spacer(modifier = Modifier.width(4.dp))
+                            //     Text(text = "刪除")
+                            // }
+
+                            Button(
+                                onClick = {
+                                    viewModel.askEndItem()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Icon(imageVector = Icons.Filled.CheckCircle, contentDescription = "finish")
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(text = "結案")
+                            }
+                        }
+                    } else if (viewModel.viewMode == ViewMode.Guest) {
+                        InfoBox(
+                            info = "為避免騷擾或是濫用情形發生，如果按下「取得聯絡資訊」，將傳送通知給對方。"
+                        )
 
                         Button(
                             onClick = {
-                                viewModel.askEndItem()
+                                viewModel.getContact()
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            Icon(imageVector = Icons.Filled.CheckCircle, contentDescription = "finish")
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(text = "結案")
+                            Icon(imageVector = Icons.Filled.ContactPage, contentDescription = "get contact info")
+                            Spacer(modifier = Modifier.width(2.dp))
+                            Text(text = "取得聯絡資訊")
                         }
                     }
-                } else if (viewModel.viewMode == ViewMode.Guest) {
+                } else {
                     InfoBox(
-                        info = "為避免騷擾或是濫用情形發生，如果按下「顯示聯絡資訊」，將傳送通知給對方。"
+                        info = "此物品已經成功結案！"
                     )
-
-                    Button(
-                        onClick = {
-                            viewModel.getContact()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Icon(imageVector = Icons.Filled.ContactPage, contentDescription = "get contact info")
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Text(text = "取得聯絡資訊")
-                    }
                 }
             }
         }
