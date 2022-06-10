@@ -73,13 +73,15 @@ fun ConfirmPage(
                 .padding(padding)
         ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 IconLabel(
                     icon = Icons.Filled.Place,
-                    labelText = viewModel.place
+                    labelText = viewModel.place,
+                    modifier = Modifier.weight(1f)
                 )
 
                 val cal = Calendar.getInstance()
