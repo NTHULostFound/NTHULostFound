@@ -27,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -156,6 +157,9 @@ fun ProfileScreen(
                                 focusManager.clearFocus(true)
                                 viewModel.resetUser()
                             },
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                backgroundColor = Color.Transparent
+                            ),
                             enabled = !viewModel.submitDisabled
                         ) {
                             Text("取消變更")
@@ -212,6 +216,9 @@ fun ProfileScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    backgroundColor = Color.Transparent
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
