@@ -135,6 +135,7 @@ fun MultiFloatingActionButton(
                     if (currentState.value == MultiFabState.Collapsed) MultiFabState.Expanded else MultiFabState.Collapsed
             }) {
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(
                     start = 16.dp,
                     end = 16.dp
