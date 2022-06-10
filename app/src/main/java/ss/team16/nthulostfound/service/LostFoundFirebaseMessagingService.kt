@@ -65,6 +65,19 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
                 NotificationType.UNSPECIFIED -> message.data["content"]!!
             }
 
+            val notifChannel = when(notificationType) {
+                NotificationType.LOST_NOTIFICATION -> "物品拾獲通知"
+                NotificationType.CONTACT_CHECKED -> "查看聯絡資訊通知"
+                NotificationType.LOST_INSERTED, NotificationType.FOUND_INSERTED -> "新增物品通知"
+                NotificationType.UNSPECIFIED -> "其他通知"
+            }
+            val notifChannelId = when(notificationType) {
+                NotificationType.LOST_NOTIFICATION -> "LOST_NOTIFICATION"
+                NotificationType.CONTACT_CHECKED -> "CONTACT_CHECKED_NOTIFICATION"
+                NotificationType.LOST_INSERTED, NotificationType.FOUND_INSERTED -> "NEW_ITEM_NOTIFICATION"
+                NotificationType.UNSPECIFIED -> "OTHER_NOTIFICATION"
+            }
+
             val notificationData = NotificationData(
                 type = notificationType,
                 content = message.data["content"]!!,
@@ -74,7 +87,14 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
             CoroutineScope(Dispatchers.IO).launch {
                 val id = addNotificationUseCase(notificationData)
                 if(userRepository.getIsNotificationEnable().first())
-                    sendNotification(notifTitle, notifMessage, message.data["item_uuid"]!!, id)
+                    sendNotification(
+                        notifTitle,
+                        notifMessage,
+                        notifChannel,
+                        notifChannelId,
+                        message.data["item_uuid"]!!,
+                        id
+                    )
             }
         }
 
@@ -86,11 +106,15 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
         registerToken(token)
     }
 
-    private fun sendNotification(title: String, message: String, itemId: String, id: Long) {
-        // TODO: send notification
-//        val intent = Intent(this, MainActivity::class.java)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        Log.d("FCM", "send notification")
+    private fun sendNotification(
+        title: String,
+        message: String,
+        channel: String,
+        channelId: String,
+        itemId: String,
+        id: Long
+    ) {
+        Log.d("FCM", "Send notification")
         val deepLinkIntent = Intent(
             Intent.ACTION_VIEW,
             "nthulostfound://item/$itemId".toUri(),
@@ -107,7 +131,7 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
 //            PendingIntent.FLAG_IMMUTABLE)
 //
 //        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
@@ -119,8 +143,8 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_NAME,
+                channelId,
+                channel,
                 NotificationManager.IMPORTANCE_LOW)
             notificationManager.createNotificationChannel(channel)
         }
@@ -140,11 +164,6 @@ class LostFoundFirebaseMessagingService : FirebaseMessagingService() {
                 Log.e("FCM-Apollo", "Error while registering token", e)
             }
         }
-    }
-
-    companion object {
-        const val NOTIFICATION_CHANNEL_ID = "NTHU_LOST_FOUND_NOTIFICATION"
-        const val NOTIFICATION_CHANNEL_NAME = "Lost & Found Notification"
     }
 
 }
