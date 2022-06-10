@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="Theme.NTHULostFound" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:colorPrimary">@color/NTHU_700</item>
+        <item name="android:colorPrimaryDark">@color/NTHU_900</item>
+        <item name="android:datePickerDialogTheme">@style/DialogWindowTheme</item>
+        <item name="android:timePickerDialogTheme">@style/DialogWindowTheme</item>
+    </style>
+
+    <style name="DialogWindowTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">@color/NTHU_700</item>
     </style>
 </resources>
