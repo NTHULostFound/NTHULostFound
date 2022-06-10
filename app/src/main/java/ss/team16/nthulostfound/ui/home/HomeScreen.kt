@@ -10,10 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CloudOff
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,6 +94,7 @@ fun HomeScreen(
             val showPinMessage = viewModel.showPinMessageFlow.collectAsState(initial = 0b00)
             val canShowPopUp = viewModel.canShowPopUpFlow.collectAsState(initial = false)
             val isMyItems = viewModel.myItemsFlow.collectAsState().value
+            val search = viewModel.searchFlow.collectAsState().value
 
             if (isMyItems) {
                 AnimatedVisibility(
@@ -171,6 +169,32 @@ fun HomeScreen(
                             style = MaterialTheme.typography.body2
                         )
                     }
+                } else if (lazyPagingItems.itemCount == 0 &&
+                    lazyPagingItems.loadState.append.endOfPaginationReached) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.SearchOff,
+                            contentDescription = "No Result",
+                            modifier = Modifier
+                                .size(150.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text =
+                                if (search != null)
+                                    "沒有找到結果！請試試以其他關鍵字搜尋"
+                                else
+                                    "沒有任何發佈記錄！"
+                            ,
+                            style = MaterialTheme.typography.body2
+                        )
+                    }
                 } else {
                     LazyColumn(
                         modifier = modifier.fillMaxSize(),
@@ -221,6 +245,7 @@ fun HomeScreen(
             if (isScrolledToEnd.value
                 && lazyPagingItems.loadState.append.endOfPaginationReached
                 && lazyPagingItems.loadState.append != LoadState.Loading
+                && !isMyItems
                 && showType == ShowType.FOUND) {
                 LaunchedEffect(Unit) {
                     launch {
