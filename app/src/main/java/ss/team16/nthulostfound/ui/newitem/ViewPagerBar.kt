@@ -24,7 +24,7 @@ fun ViewPagerBar(
     onPrevPage: () -> Unit
 ) {
     Surface(
-        color = MaterialTheme.colors.primarySurface
+        color = MaterialTheme.colors.primary
     ) {
         Column(
             modifier = Modifier
@@ -53,8 +53,8 @@ fun ViewPagerBar(
                         onClick = onPrevPage,
                         enabled = prevButtonInfo.enabled,
                         colors = ButtonDefaults.textButtonColors(
-                            backgroundColor = MaterialTheme.colors.primarySurface,
-                            contentColor = contentColorFor(MaterialTheme.colors.primarySurface)
+                            backgroundColor = MaterialTheme.colors.primary,
+                            contentColor = contentColorFor(MaterialTheme.colors.primary)
                         )
                     ) {
                         Icon(
@@ -71,8 +71,8 @@ fun ViewPagerBar(
                         onClick = onNextPage,
                         enabled = nextButtonInfo.enabled,
                         colors = ButtonDefaults.textButtonColors(
-                            backgroundColor = MaterialTheme.colors.primarySurface,
-                            contentColor = contentColorFor(MaterialTheme.colors.primarySurface)
+                            backgroundColor = MaterialTheme.colors.primary,
+                            contentColor = contentColorFor(MaterialTheme.colors.primary)
                         )
                     ) {
                         Text(nextButtonInfo.label)
