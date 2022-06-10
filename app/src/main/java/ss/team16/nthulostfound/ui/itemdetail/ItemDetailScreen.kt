@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,8 @@ fun ItemDetailScreen(
                         Modifier,
                 networkImages = viewModel.item.images,
                 shape = RectangleShape,
-                borderWidth = 0.dp
+                borderWidth = 0.dp,
+                borderColor = Color.Transparent
             )
 
             Column(
