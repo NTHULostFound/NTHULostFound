@@ -68,13 +68,23 @@ class MainActivity : ComponentActivity() {
                     composable("new_item/found") {
                         NewItemScreen(
                             type = NewItemType.NEW_FOUND,
-                            popScreen = { navController.popBackStack() }
+                            popScreen = { navController.popBackStack() },
+                            navigateToItem = { uuid ->
+                                navController.navigate("item/$uuid") {
+                                    popUpTo("home")
+                                }
+                            }
                         )
                     }
                     composable("new_item/lost") {
                         NewItemScreen(
                             type = NewItemType.NEW_LOST,
-                            popScreen = { navController.popBackStack() }
+                            popScreen = { navController.popBackStack() },
+                            navigateToItem = { uuid ->
+                                navController.navigate("item/$uuid") {
+                                    popUpTo("home")
+                                }
+                            }
                         )
                     }
 
