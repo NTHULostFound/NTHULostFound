@@ -47,7 +47,9 @@ fun HomeScreen(
             HomeAppBar(
                 navigateToRoute = { navController.navigate(it) },
                 onSearch = { viewModel.onSearch(it) },
-                avatar = avatar
+                avatar = avatar,
+                isMyItems = viewModel.myItemsFlow.collectAsState().value,
+                onMyItemsChanged = { viewModel.myItemsFlow.value = it }
             )
         },
         scaffoldState = scaffoldState,
@@ -94,7 +96,21 @@ fun HomeScreen(
             // default: hide both before flow updated
             val showPinMessage = viewModel.showPinMessageFlow.collectAsState(initial = 0b00)
             val canShowPopUp = viewModel.canShowPopUpFlow.collectAsState(initial = false)
-            if (showType == ShowType.FOUND) {
+            val isMyItems = viewModel.myItemsFlow.collectAsState().value
+
+            if (isMyItems) {
+                AnimatedVisibility(
+                    visible = isMyItems,
+                    exit = slideOutVertically(
+                        targetOffsetY = { -it },
+                    ) + shrinkVertically()
+                ) {
+                    PinMessage(
+                        message = "您正在瀏覽您的發佈記錄",
+                        onClose = { viewModel.myItemsFlow.value = false }
+                    )
+                }
+            } else if (showType == ShowType.FOUND) {
                 AnimatedVisibility(
                     // check FOUND bit
                     visible = (showPinMessage.value and 0b10 != 0),
