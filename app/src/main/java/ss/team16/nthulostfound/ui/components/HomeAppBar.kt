@@ -1,6 +1,7 @@
 package ss.team16.nthulostfound.ui.components
 
 import android.graphics.Bitmap
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,7 +45,9 @@ fun HomeAppBar(
     modifier: Modifier = Modifier,
     title: String = "",
     navigateToRoute: (String) -> Unit,
+    isMyItems: Boolean,
     onSearch: (String) -> Unit,
+    onMyItemsChanged: (Boolean) -> Unit,
     avatar: Bitmap? = null
 ) {
     var showSearchBar by rememberSaveable { mutableStateOf(false) }
@@ -129,12 +132,20 @@ fun HomeAppBar(
                   )
               }
               if (!showSearchBar) {
-                  IconButton(onClick = {
-                      // TODO: list self items, maybe done with search
-                  }) {
+                  IconToggleButton(
+                      checked = isMyItems,
+                      onCheckedChange = { onMyItemsChanged(it) }
+                  ) {
+                      val tint by animateColorAsState(
+                          if (isMyItems)
+                              Color(0xfffea900)
+                          else
+                              LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                      )
                       Icon(
-                          imageVector = Icons.Filled.History,
-                          contentDescription = "history"
+                          Icons.Filled.History,
+                          contentDescription = "History",
+                          tint = tint,
                       )
                   }
                   IconButton(onClick = {
@@ -216,11 +227,15 @@ fun RoundedTextField(
 @Preview
 @Composable
 fun HomeAppBarPreview() {
+    var isMine by remember{ mutableStateOf(false) }
+
     NTHULostFoundTheme {
         HomeAppBar(
             title = "Home",
             navigateToRoute = { },
-            onSearch = { }
+            onSearch = { },
+            isMyItems = isMine,
+            onMyItemsChanged = { isMine = it }
         )
     }
 }

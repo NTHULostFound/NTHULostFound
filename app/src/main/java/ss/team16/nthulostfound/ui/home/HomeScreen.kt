@@ -47,7 +47,9 @@ fun HomeScreen(
             HomeAppBar(
                 navigateToRoute = { navController.navigate(it) },
                 onSearch = { viewModel.onSearch(it) },
-                avatar = avatar
+                avatar = avatar,
+                isMyItems = viewModel.myItemsFlow.collectAsState().value,
+                onMyItemsChanged = { viewModel.myItemsFlow.value = it }
             )
         },
         scaffoldState = scaffoldState,
