@@ -2,67 +2,49 @@ scalar Date
 
 type Query {
   version: String!
-
   items(first: Int, last: Int, after: String, before: String, type: ItemType!, search: String, mine: Boolean): ItemsConnection!
-
   item(itemId: String!): Item!
-
   itemContact(itemId: String!): ItemContact!
 }
 
 type Mutation {
   newItem(type: ItemType!, name: String!, description: String, date: String!, place: String!, how: String!, images: [String!]!, contact: String!, who: String): Item!
-
   endItem(itemId: String!): Item!
-
   registerFCMToken(token: String!): AccessToken!
-
   updateUserData(name: String, studentId: String, email: String): UserInfo!
 }
 
 enum ItemType {
   FOUND
-
   LOST
 }
 
 type Item {
   uuid: String!
-
   type: ItemType!
-
   name: String!
-
   description: String
-
   date: Date!
-
   place: String!
-
   how: String!
-
   images: [String!]!
-
   isMine: Boolean!
-
+  dynamicLink: String!
   resolved: Boolean!
 }
 
 type ItemsConnection {
   edges: [ItemEdge!]!
-
   pageInfo: PageInfo!
 }
 
 type ItemEdge {
   node: Item!
-
   cursor: String!
 }
 
 type PageInfo {
   hasNextPage: Boolean!
-
   hasPreviousPage: Boolean!
 }
 
@@ -72,19 +54,11 @@ type ItemContact {
 
 type UserInfo {
   fcmToken: String!
-
   name: String
-
   studentId: String
-
   email: String
 }
 
 type AccessToken {
   accessToken: String!
-}
-
-schema {
-  query: Query
-  mutation: Mutation
 }

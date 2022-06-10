@@ -31,43 +31,17 @@ class ShareItemUseCase(
                 "我在${item.place}撿到了${item.name}！有人遺失了${item.name}嗎？\n" +
                 "立刻下載「清大遺失物平台」來查看更多資訊吧！"
 
-        val dynamicLink = Firebase.dynamicLinks.dynamicLink {
-            link = Uri.parse("$DYNAMIC_LINK_BASE_URI/?id=${item.uuid}")
-            domainUriPrefix = DYNAMIC_LINK_DOMAIN_PREFIX
-            androidParameters {
-                minimumVersion = 2
-            }
-            // Fake iOS link
-            iosParameters("ss.team16.nthulostfound") {
-                setFallbackUrl(FALLBACK_LINK.toUri())
-                ipadFallbackUrl = FALLBACK_LINK.toUri()
-            }
-            socialMetaTagParameters {
-                title = item.name
-                description = message
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
 
-                if (item.images.isNotEmpty())
-                    imageUrl = item.images.first().toUri()
-            }
-        }.uri.toString()
-
-        val linkWithFallback = "$dynamicLink&ofl=$FALLBACK_LINK"
-
-        Firebase.dynamicLinks.shortLinkAsync(ShortDynamicLink.Suffix.SHORT) {
-            longLink = linkWithFallback.toUri()
-        }.addOnSuccessListener { (shortLink, flowchartLink) ->
-            val intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-
-                putExtra(Intent.EXTRA_TEXT, "$message\n連結: $shortLink")
-            }
-
-            ContextCompat.startActivity(
-                context,
-                Intent.createChooser(intent, "分享物品資訊...").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                null
-            )
+            putExtra(Intent.EXTRA_TEXT, "$message\n連結: ${item.dynamicLink}")
         }
+
+        ContextCompat.startActivity(
+            context,
+            Intent.createChooser(intent, "分享物品資訊...").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            null
+        )
     }
 }
