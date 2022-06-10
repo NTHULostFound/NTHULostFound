@@ -172,6 +172,7 @@ class NewItemViewModel @AssistedInject constructor(
 
     fun onDeleteImage(index: Int) {
         _imageBitmaps.removeAt(index)
+        imageUris.removeAt(index)
     }
 
     private val calendar = Calendar.getInstance()
