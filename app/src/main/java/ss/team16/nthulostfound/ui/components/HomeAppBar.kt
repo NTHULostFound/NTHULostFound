@@ -186,8 +186,8 @@ fun RoundedTextField(
         singleLine = singleLine,
         visualTransformation = visualTransformation,
         interactionSource = interactionSource,
-        textStyle = TextStyle(color = Color.White),
-        cursorBrush = SolidColor(MaterialTheme.colors.primary),
+        textStyle = TextStyle(color = MaterialTheme.colors.onPrimary),
+        cursorBrush = SolidColor(MaterialTheme.colors.secondary),
         decorationBox = { innerTextField ->
           Row(
               verticalAlignment = Alignment.CenterVertically,
@@ -218,7 +218,7 @@ fun RoundedTextField(
             .padding(vertical = 4.dp)
             .fillMaxSize()
             .background(
-                MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.BackgroundOpacity),
+                MaterialTheme.colors.background.copy(alpha = TextFieldDefaults.BackgroundOpacity),
                 RoundedCornerShape(50)
             )
     )
