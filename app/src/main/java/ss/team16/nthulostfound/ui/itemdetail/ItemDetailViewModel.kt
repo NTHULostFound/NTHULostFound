@@ -53,6 +53,9 @@ class ItemDetailViewModel @AssistedInject constructor(
     val item: ItemData
         get() = _item
 
+    // prevent someone crazily clicking get contact, which would bombard the item owner by notification
+    private var _contactInfoCache by mutableStateOf("")
+
     init {
         viewModelScope.launch {
             _item = getItemUseCase(uuid).getOrDefault(ItemData())
@@ -83,7 +86,16 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     fun getContact() {
         viewModelScope.launch {
-            val contactInfo = getContactUseCase(item.uuid).getOrDefault("無法取得")
+            var contactInfo = _contactInfoCache
+
+            // if contactInfo is never fetched, fetch it and save it in cache
+            // otherwise, it would show contact info from cache, and won't send request to server
+            // therefore, it won't cause new notification before user leaves this screen
+            if (_contactInfoCache.isNullOrBlank()) {
+                 contactInfo = getContactUseCase(item.uuid).getOrDefault("無法取得")
+                _contactInfoCache = contactInfo
+            }
+
             _dialogState = DialogState.ShowContact(text = contactInfo)
         }
     }
