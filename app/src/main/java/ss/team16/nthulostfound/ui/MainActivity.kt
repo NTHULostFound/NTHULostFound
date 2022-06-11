@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
                         "item/{itemId}",
                         arguments = listOf(navArgument("itemId") {
                             type = NavType.StringType
-                            defaultValue = "bd5234b5-35b5-4faf-9c01-684819077461"
+                            defaultValue = ""
                         }),
                         deepLinks = listOf(
                             navDeepLink {
@@ -106,7 +106,10 @@ class MainActivity : ComponentActivity() {
                             navigateToRoute = { route -> navController.navigate(route) {
                                 // we pop up to home before navigate to closed item screen
                                 // so we can just call onBack in closed item screen for "done" button
-                                popUpTo("home")
+                                popUpTo("home") {
+                                    if (route == "home")
+                                        inclusive = true
+                                }
                             } }
                         )
                     }

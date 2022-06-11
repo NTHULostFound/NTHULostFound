@@ -31,5 +31,7 @@ interface ItemRepository {
 
     suspend fun endItem(item: ItemData): Result<ItemData>
 
+    suspend fun deleteItem(item: ItemData): Result<ItemData>
+
     suspend fun getContact(uuid: String): Result<String>
 }

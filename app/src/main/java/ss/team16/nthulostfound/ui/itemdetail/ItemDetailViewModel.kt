@@ -1,6 +1,7 @@
 package ss.team16.nthulostfound.ui.itemdetail
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,13 +11,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
-import ss.team16.nthulostfound.domain.usecase.EndItemUseCase
-import ss.team16.nthulostfound.domain.usecase.GetContactUseCase
-import ss.team16.nthulostfound.domain.usecase.GetItemUseCase
-import ss.team16.nthulostfound.domain.usecase.ShareItemUseCase
+import ss.team16.nthulostfound.domain.usecase.*
 
 enum class ViewMode {
     Owner,
@@ -29,16 +28,19 @@ sealed class DialogState(
 ) {
     object Disabled: DialogState()
     object AskEnd: DialogState(title = "您確定要結案嗎？", text = "結案後將無法復原！")
+    object AskDelete: DialogState(title = "您確定要刪除嗎？", text = "刪除後將無法復原！")
     data class ShowContact(override val text: String): DialogState(title = "聯絡資訊")
 }
 
 class ItemDetailViewModel @AssistedInject constructor(
     @Assisted val uuid: String,
     @Assisted val navigateToRoute: (String) -> Unit,
+    @ApplicationContext private val context: Context,
     private val getItemUseCase: GetItemUseCase,
     private val endItemUseCase: EndItemUseCase,
     private val shareItemUseCase: ShareItemUseCase,
-    private val getContactUseCase: GetContactUseCase
+    private val getContactUseCase: GetContactUseCase,
+    private val deleteItemUseCase: DeleteItemUseCase
 ): ViewModel() {
     private var _viewMode by mutableStateOf(ViewMode.Guest)
     val viewMode: ViewMode
@@ -58,7 +60,19 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            _item = getItemUseCase(uuid).getOrDefault(ItemData())
+            getItemUseCase(uuid).fold(
+                onSuccess = { item ->
+                    _item = item
+                },
+                onFailure = {
+                    Toast.makeText(
+                        context,
+                        "找不到此物品！",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    navigateToRoute("home")
+                }
+            )
             _viewMode = if (item.isOwner) ViewMode.Owner else ViewMode.Guest
         }
     }
@@ -73,6 +87,10 @@ class ItemDetailViewModel @AssistedInject constructor(
         _dialogState = DialogState.AskEnd
     }
 
+    fun askDeleteItem() {
+        _dialogState = DialogState.AskDelete
+    }
+
     private fun endItem() {
         viewModelScope.launch {
             val itemTypeString = when (item.type) {
@@ -81,6 +99,19 @@ class ItemDetailViewModel @AssistedInject constructor(
             }
             endItemUseCase(item)
             navigateToRoute("closed_item?itemType=$itemTypeString&itemName=${item.name}")
+        }
+    }
+
+    private fun deleteItem() {
+        viewModelScope.launch {
+            deleteItemUseCase(item)
+
+            Toast.makeText(
+                context,
+                "刪除成功！",
+                Toast.LENGTH_SHORT
+            ).show()
+            navigateToRoute("home")
         }
     }
 
@@ -105,7 +136,10 @@ class ItemDetailViewModel @AssistedInject constructor(
     }
 
     fun onDialogConfirm() {
-        if (dialogState is DialogState.AskEnd) endItem()
+        if (dialogState is DialogState.AskEnd)
+            endItem()
+        else if (dialogState is DialogState.AskDelete)
+            deleteItem()
         _dialogState = DialogState.Disabled
     }
 

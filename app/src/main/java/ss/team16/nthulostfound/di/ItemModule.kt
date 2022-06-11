@@ -57,6 +57,12 @@ object ItemModule {
 
     @Provides
     @Singleton
+    fun provideDeleteItemUseCase(itemRepository: ItemRepository): DeleteItemUseCase {
+        return DeleteItemUseCase(itemRepository)
+    }
+
+    @Provides
+    @Singleton
     fun provideNewItemUseCase(
         uploadImagesUseCase: UploadImagesUseCase,
         itemRepository: ItemRepository,

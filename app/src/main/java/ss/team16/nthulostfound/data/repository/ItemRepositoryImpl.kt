@@ -245,6 +245,40 @@ class ItemRepositoryImpl(
         }
     }
 
+    override suspend fun deleteItem(item: ItemData): Result<ItemData> {
+        return try {
+            val response = apolloClient.mutation(DeleteItemMutation(item.uuid)).execute().dataAssertNoErrors
+
+            val itemData =
+                with (response.deleteItem) {
+                    val itemType =
+                        if (type == ss.team16.nthulostfound.type.ItemType.FOUND)
+                            ItemType.FOUND
+                        else
+                            ItemType.LOST
+
+                    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    val dateString = date.toString()
+
+                    ItemData(
+                        type = itemType,
+                        uuid = uuid,
+                        name = name,
+                        description = description,
+                        date = format.parse(dateString),
+                        place = place,
+                        how = how,
+                        images = images,
+                        isOwner = isMine,
+                        resolved = resolved
+                    )
+                }
+            Result.success(itemData)
+        } catch (e: Exception) {
+            Result.failure(Exception(e))
+        }
+    }
+
     override suspend fun getContact(uuid: String): Result<String> {
         return try {
             val response = apolloClient.query(ItemContactQuery(uuid)).execute().dataAssertNoErrors
