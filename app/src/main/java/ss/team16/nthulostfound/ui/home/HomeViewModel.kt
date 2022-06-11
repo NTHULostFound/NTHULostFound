@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.home
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +33,8 @@ class HomeViewModel @Inject constructor(
     val showTypeFlow = MutableStateFlow(ShowType.FOUND)
     val searchFlow = MutableStateFlow<String?>(null)
     val myItemsFlow = MutableStateFlow<Boolean>(false)
+
+    val lazyListState = LazyListState()
 
     val showPinMessageFlow = userRepository.getShowPinMessage()
     val isUserDataSetFlow = userRepository.getIsUserDataSet()
@@ -66,7 +69,9 @@ class HomeViewModel @Inject constructor(
                 type = args.itemType,
                 search = args.search,
                 myItems = args.myItems
-            ).cachedIn(viewModelScope)
+            ).cachedIn(viewModelScope).onCompletion {
+                lazyListState.scrollToItem(0)
+            }
         }
 
     var fabState: FabState by mutableStateOf(FabState.WITH_TEXT)
