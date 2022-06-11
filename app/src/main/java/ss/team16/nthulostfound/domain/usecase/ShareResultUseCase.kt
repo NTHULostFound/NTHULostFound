@@ -8,7 +8,7 @@ import ss.team16.nthulostfound.domain.model.ItemType
 class ShareResultUseCase(
     val context: Context
 ) {
-    val LINK = "http://example.com" // TODO: add dynamic link
+    val LINK = "https://nthulostfound.page.link/app"
 
     operator fun invoke(itemType: ItemType, itemName: String) {
         val intent = Intent().apply {

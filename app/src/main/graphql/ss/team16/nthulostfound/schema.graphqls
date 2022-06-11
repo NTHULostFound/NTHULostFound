@@ -10,6 +10,7 @@ type Query {
 type Mutation {
   newItem(type: ItemType!, name: String!, description: String, date: String!, place: String!, how: String!, images: [String!]!, contact: String!, who: String): Item!
   endItem(itemId: String!): Item!
+  deleteItem(itemId: String!): Item!
   registerFCMToken(token: String!): AccessToken!
   updateUserData(name: String, studentId: String, email: String): UserInfo!
 }

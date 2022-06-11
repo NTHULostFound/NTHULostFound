@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContactPage
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.runtime.Composable
@@ -157,6 +158,22 @@ fun ItemDetailScreen(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(text = "結案")
                             }
+
+                             Button(
+                                 onClick = {
+                                   viewModel.askDeleteItem()
+                                 },
+                                 colors = ButtonDefaults.buttonColors(
+                                     contentColor = Color.White,
+                                     backgroundColor = Color.Black
+                                 ),
+                                 modifier = Modifier
+                                     .fillMaxWidth()
+                             ) {
+                                 Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
+                                 Spacer(modifier = Modifier.width(4.dp))
+                                 Text(text = "刪除")
+                             }
                         }
                     } else if (viewModel.viewMode == ViewMode.Guest) {
                         InfoBox(
@@ -176,9 +193,32 @@ fun ItemDetailScreen(
                         }
                     }
                 } else {
-                    InfoBox(
-                        info = "此物品已經成功結案！"
-                    )
+                    if (viewModel.viewMode == ViewMode.Guest) {
+                        InfoBox(
+                            info = "此物品已經成功結案！"
+                        )
+                    } else if (viewModel.viewMode == ViewMode.Owner) {
+                        InfoBox(
+                            info = "此物品已經成功結案！\n如果您需要，可以將其刪除"
+                        )
+
+                        Button(
+                            onClick = {
+                                viewModel.askDeleteItem()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                contentColor = Color.White,
+                                backgroundColor = Color.Black
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(text = "刪除")
+                        }
+                    }
+
                 }
             }
         }

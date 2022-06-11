@@ -51,6 +51,10 @@ class ItemRepositoryMockImpl: ItemRepository {
         TODO("Not yet implemented")
     }
 
+    override suspend fun deleteItem(item: ItemData): Result<ItemData> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getContact(uuid: String): Result<String> {
         return Result.success(
             "FB: NTHULostFound" + "\n" +
