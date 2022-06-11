@@ -60,7 +60,19 @@ class ItemDetailViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            _item = getItemUseCase(uuid).getOrDefault(ItemData())
+            getItemUseCase(uuid).fold(
+                onSuccess = { item ->
+                    _item = item
+                },
+                onFailure = {
+                    Toast.makeText(
+                        context,
+                        "找不到此物品！",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    navigateToRoute("home")
+                }
+            )
             _viewMode = if (item.isOwner) ViewMode.Owner else ViewMode.Guest
         }
     }
