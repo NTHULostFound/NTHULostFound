@@ -1,6 +1,7 @@
 package ss.team16.nthulostfound.ui.itemdetail
 
 import android.icu.text.SimpleDateFormat
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -159,21 +160,22 @@ fun ItemDetailScreen(
                                 Text(text = "結案")
                             }
 
-                             Button(
-                                 onClick = {
-                                   viewModel.askDeleteItem()
-                                 },
-                                 colors = ButtonDefaults.buttonColors(
-                                     contentColor = Color.White,
-                                     backgroundColor = Color.Black
-                                 ),
-                                 modifier = Modifier
-                                     .fillMaxWidth()
-                             ) {
-                                 Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
-                                 Spacer(modifier = Modifier.width(4.dp))
-                                 Text(text = "刪除")
-                             }
+                            val deleteButtonBackgroundColor = if (!isSystemInDarkTheme()) Color.Black else MaterialTheme.colors.surface
+                            Button(
+                                onClick = {
+                                  viewModel.askDeleteItem()
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    contentColor = Color.White,
+                                    backgroundColor = deleteButtonBackgroundColor
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(text = "刪除")
+                            }
                         }
                     } else if (viewModel.viewMode == ViewMode.Guest) {
                         InfoBox(

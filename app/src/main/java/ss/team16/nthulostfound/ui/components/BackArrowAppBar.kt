@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -18,7 +19,8 @@ fun BackArrowAppBar(
     onShare: (() -> Unit)? = null
 ) {
     TopAppBar(
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = if (!isSystemInDarkTheme()) MaterialTheme.colors.primary
+                          else MaterialTheme.colors.secondary,
         navigationIcon = {
             IconButton(onClick = onBack, enabled = backEnabled) {
                 Icon(
