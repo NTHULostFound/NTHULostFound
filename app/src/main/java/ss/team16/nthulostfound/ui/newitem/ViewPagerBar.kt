@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.newitem
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -23,8 +24,11 @@ fun ViewPagerBar(
     onNextPage: () -> Unit,
     onPrevPage: () -> Unit
 ) {
+    val backgroundColor = if (!isSystemInDarkTheme()) MaterialTheme.colors.primary
+                          else MaterialTheme.colors.secondary
+
     Surface(
-        color = MaterialTheme.colors.primary
+        color = backgroundColor
     ) {
         Column(
             modifier = Modifier
@@ -53,8 +57,8 @@ fun ViewPagerBar(
                         onClick = onPrevPage,
                         enabled = prevButtonInfo.enabled,
                         colors = ButtonDefaults.textButtonColors(
-                            backgroundColor = MaterialTheme.colors.primary,
-                            contentColor = contentColorFor(MaterialTheme.colors.primary)
+                            backgroundColor = backgroundColor,
+                            contentColor = contentColorFor(backgroundColor)
                         )
                     ) {
                         Icon(
@@ -71,8 +75,8 @@ fun ViewPagerBar(
                         onClick = onNextPage,
                         enabled = nextButtonInfo.enabled,
                         colors = ButtonDefaults.textButtonColors(
-                            backgroundColor = MaterialTheme.colors.primary,
-                            contentColor = contentColorFor(MaterialTheme.colors.primary)
+                            backgroundColor = backgroundColor,
+                            contentColor = contentColorFor(backgroundColor)
                         )
                     ) {
                         Text(nextButtonInfo.label)

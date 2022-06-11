@@ -2,6 +2,7 @@ package ss.team16.nthulostfound.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -36,7 +37,8 @@ fun BottomNav(
     modifier: Modifier = Modifier
 ) {
     BottomNavigation(
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = if (!isSystemInDarkTheme()) MaterialTheme.colors.primary
+                          else MaterialTheme.colors.secondary,
         modifier = modifier
     ) {
         IndexTabs.values().forEach {
