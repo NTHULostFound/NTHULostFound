@@ -42,8 +42,11 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideGetItemUseCase(itemRepository: ItemRepository): GetItemUseCase {
-        return GetItemUseCase(itemRepository)
+    fun provideGetItemUseCase(
+        itemRepository: ItemRepository,
+        itemsDatabase: ItemsDatabase
+    ): GetItemUseCase {
+        return GetItemUseCase(itemRepository, itemsDatabase)
     }
 
     @Provides
