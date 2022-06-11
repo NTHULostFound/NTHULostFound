@@ -230,14 +230,7 @@ fun HomeScreen(
 
                         if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
                             items(10) {
-                                ItemCard(
-                                    item = ItemData(
-                                        name = "...",
-                                        place = "...",
-                                    ),
-                                    modifier = Modifier.shimmer(),
-                                    onClick = {}
-                                )
+                                ItemCardShimmer()
                             }
                         }
 
