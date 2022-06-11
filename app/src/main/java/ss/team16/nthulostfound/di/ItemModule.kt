@@ -90,4 +90,10 @@ object ItemModule {
     fun provideShareResultUseCase(@ApplicationContext context: Context): ShareResultUseCase {
         return ShareResultUseCase(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideGetFeedbackUseCase(@ApplicationContext context: Context): GetFeedbackUseCase {
+        return GetFeedbackUseCase(context)
+    }
 }

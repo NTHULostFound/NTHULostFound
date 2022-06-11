@@ -1,15 +1,20 @@
 package ss.team16.nthulostfound.ui.closeditem
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,16 +23,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.newitem.NewItemUploadStatus
 import ss.team16.nthulostfound.ui.newitem.padding
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ClosedItemScreen(
     onBack: () -> Unit = { },
+    onAskReview: () -> Unit = {},
     viewModel: ClosedItemViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    val bottomState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+
     Scaffold(
         topBar = {
             BackArrowAppBar(
@@ -37,6 +49,17 @@ fun ClosedItemScreen(
             )
         }
     ) { contentPadding ->
+
+        LaunchedEffect(null) {
+            launch {
+                if(!viewModel.isReviewAsked.first()) {
+                    bottomState.show()
+                    viewModel.setReviewAsked()
+                }
+            }
+        }
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -111,4 +134,68 @@ fun ClosedItemScreen(
             }
         }
     }
+    ModalBottomSheetLayout(
+        sheetState = bottomState,
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetContent = {
+            Column(
+                modifier = Modifier
+                    .padding(20.dp)
+            ) {
+                Text(
+                    text = viewModel.askReviewTitle,
+                    style = MaterialTheme.typography.h6
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = viewModel.askReviewMessage)
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = {
+                        when(viewModel.askReviewState) {
+                            AskReviewState.FEEL -> {
+                                viewModel.setReviewState(AskReviewState.BAD)
+                            }
+                            else -> {
+                                scope.launch {
+                                    bottomState.hide()
+                                }
+                            }
+                        }
+                    }) {
+                        Text(viewModel.askReviewDismiss)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = {
+                        when(viewModel.askReviewState) {
+                            AskReviewState.FEEL -> {
+                                viewModel.setReviewState(AskReviewState.GOOD)
+                            }
+                            AskReviewState.GOOD -> {
+                                // review
+                                onAskReview()
+                                scope.launch {
+                                    bottomState.hide()
+                                }
+                            }
+                            AskReviewState.BAD -> {
+                                // google form
+                                viewModel.getFeedbackUseCase()
+                                scope.launch {
+                                    bottomState.hide()
+                                }
+                            }
+                        }
+                    }) {
+                        Text(viewModel.askReviewConfirm)
+                    }
+                }
+            }
+        },
+        content = {}
+    )
 }

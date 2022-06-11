@@ -25,4 +25,8 @@ interface UserRepository {
     fun getShowPinMessage(): Flow<Int>
 
     suspend fun setShowPinMessage(code: Int)
+
+    fun getIsReviewAsked(): Flow<Boolean>
+
+    suspend fun setIsReviewAsked(value: Boolean)
 }

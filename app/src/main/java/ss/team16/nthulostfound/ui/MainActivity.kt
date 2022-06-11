@@ -8,8 +8,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -18,6 +17,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.model.ReviewErrorCode
+import com.google.android.play.core.review.testing.FakeReviewManager
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.EntryPoint
@@ -50,6 +54,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             NTHULostFoundTheme {
                 val navController = rememberNavController()
+                val localContext = LocalContext.current
+                val reviewManager = ReviewManagerFactory.create(localContext)
+                var reviewInfo: ReviewInfo? = rememberReviewTask(reviewManager = reviewManager)
+                reviewManager.requestReviewFlow().addOnCompleteListener { task ->
+                    if(task.isSuccessful) {
+                        reviewInfo = task.result
+                    }
+                }
 
                 LaunchedEffect(true) {
                     handleFirebaseDynamicLinks(this@MainActivity.intent, navController)
@@ -63,6 +75,9 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(
                             navController = navController
                         )
+//                        LaunchedEffect(key1 = true) {
+//                            navController.navigate("closed_item?itemType=found&itemName=SAD")
+//                        }
                     }
 
                     composable("new_item/found") {
@@ -131,7 +146,15 @@ class MainActivity : ComponentActivity() {
                         )
                     ) {
                         ClosedItemScreen(
-                            onBack = { navController.popBackStack() }
+                            onBack = {
+                                navController.popBackStack()
+                            },
+                            onAskReview = {
+                                reviewInfo?.let {
+                                    Log.d("Review", "launch review")
+                                    reviewManager.launchReviewFlow(localContext as Activity, it)
+                                }
+                            }
                         )
                     }
 
@@ -169,4 +192,18 @@ private fun handleFirebaseDynamicLinks(intent: Intent, navController: NavControl
             }
         }
         .addOnFailureListener { e -> Log.w("DynamicLink", "getDynamicLink:onFailure", e) }
+}
+
+@Composable
+fun rememberReviewTask(reviewManager: ReviewManager): ReviewInfo? {
+    var reviewInfo: ReviewInfo? by remember {
+        mutableStateOf(null)
+    }
+    reviewManager.requestReviewFlow().addOnCompleteListener {
+        if (it.isSuccessful) {
+            reviewInfo = it.result
+        }
+    }
+
+    return reviewInfo
 }

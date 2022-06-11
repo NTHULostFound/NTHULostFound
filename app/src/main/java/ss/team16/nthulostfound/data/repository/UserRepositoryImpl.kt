@@ -89,6 +89,18 @@ class UserRepositoryImpl(
         }
     }
 
+    override fun getIsReviewAsked(): Flow<Boolean> {
+        return appContext.dataStore.data.map { preferences ->
+            preferences[IS_REVIEW_ASKED] ?: false
+        }
+    }
+
+    override suspend fun setIsReviewAsked(value: Boolean) {
+        appContext.dataStore.edit { preferences ->
+            preferences[IS_REVIEW_ASKED] = value
+        }
+    }
+
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("user_access_token")
 
@@ -101,5 +113,6 @@ class UserRepositoryImpl(
         val AVATAR_FILENAME = stringPreferencesKey("user_avatar_filename")
 
         val SHOW_PIN_MESSAGE = intPreferencesKey("user_show_pin_message")
+        val IS_REVIEW_ASKED = booleanPreferencesKey("is_review_asked")
     }
 }
