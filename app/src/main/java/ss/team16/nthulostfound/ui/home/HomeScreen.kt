@@ -36,21 +36,20 @@ fun HomeScreen(
 ) {
     val scaffoldState = rememberScaffoldState()
     val showType = viewModel.showTypeFlow.collectAsState().value
-    val lazyState = rememberLazyListState()
     var fabExtended by remember { mutableStateOf(true) }
 
-    LaunchedEffect(lazyState) {
+    LaunchedEffect(viewModel.lazyListState) {
         var prevOffset = 0
         var prevIndex = 0
-        snapshotFlow { lazyState.firstVisibleItemScrollOffset }
+        snapshotFlow { viewModel.lazyListState.firstVisibleItemScrollOffset }
             .collect {
                 fabExtended =
-                    (lazyState.firstVisibleItemIndex == prevIndex &&
-                    lazyState.firstVisibleItemScrollOffset <= prevOffset) ||
-                    lazyState.firstVisibleItemIndex < prevIndex
+                    (viewModel.lazyListState.firstVisibleItemIndex == prevIndex &&
+                            viewModel.lazyListState.firstVisibleItemScrollOffset <= prevOffset) ||
+                            viewModel.lazyListState.firstVisibleItemIndex < prevIndex
 
-                prevOffset = lazyState.firstVisibleItemScrollOffset
-                prevIndex = lazyState.firstVisibleItemIndex
+                prevOffset = viewModel.lazyListState.firstVisibleItemScrollOffset
+                prevIndex = viewModel.lazyListState.firstVisibleItemIndex
             }
     }
 
@@ -104,16 +103,11 @@ fun HomeScreen(
             )
         },
         bottomBar = {
-            val coroutineScope = rememberCoroutineScope()
             BottomNav(
                 currentShowType = showType,
                 modifier = modifier,
                 onChangePage = {
                     viewModel.onPageChanged(it)
-
-                    coroutineScope.launch {
-                        lazyState.scrollToItem(0)
-                    }
                 }
             )
         }
@@ -231,19 +225,12 @@ fun HomeScreen(
                         modifier = modifier.fillMaxSize(),
                         contentPadding = PaddingValues(12.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
-                        state = lazyState
+                        state = viewModel.lazyListState
                     ) {
 
                         if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
                             items(10) {
-                                ItemCard(
-                                    item = ItemData(
-                                        name = "...",
-                                        place = "...",
-                                    ),
-                                    modifier = Modifier.shimmer(),
-                                    onClick = {}
-                                )
+                                ItemCardShimmer()
                             }
                         }
 
@@ -268,9 +255,10 @@ fun HomeScreen(
                 }
             }
 
-            val isScrolledToEnd = remember(lazyState) {
+            val isScrolledToEnd = remember(viewModel.lazyListState) {
                 derivedStateOf {
-                    lazyState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyState.layoutInfo.totalItemsCount - 1
+                    viewModel.lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ==
+                            viewModel.lazyListState.layoutInfo.totalItemsCount - 1
                 }
             }
             if (isScrolledToEnd.value

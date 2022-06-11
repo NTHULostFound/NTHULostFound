@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.IconLabel
 import ss.team16.nthulostfound.ui.components.ImageCarousel
@@ -112,7 +113,11 @@ fun ItemDetailScreen(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "如何取回",
+                        text =
+                        if (viewModel.item.type == ItemType.FOUND)
+                            "如何取回"
+                        else
+                            "如何處理物品",
                         style = MaterialTheme.typography.h5
                     )
 
@@ -131,19 +136,15 @@ fun ItemDetailScreen(
                             verticalArrangement = Arrangement.spacedBy(padding / 2),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            // Button(
-                            //     onClick = { },
-                            //     colors = ButtonDefaults.buttonColors(
-                            //         contentColor = Color.White,
-                            //         backgroundColor = Color.Black
-                            //     ),
-                            //     modifier = Modifier
-                            //         .fillMaxWidth()
-                            // ) {
-                            //     Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
-                            //     Spacer(modifier = Modifier.width(4.dp))
-                            //     Text(text = "刪除")
-                            // }
+                            InfoBox(
+                                info = "這是您新增的物品！\n"
+                                        + "如果您已經成功${
+                                            if (viewModel.item.type == ItemType.FOUND)
+                                                "將失物交還給失主"
+                                            else
+                                                "尋回物品"
+                                        }，您可以將其結案"
+                            )
 
                             Button(
                                 onClick = {

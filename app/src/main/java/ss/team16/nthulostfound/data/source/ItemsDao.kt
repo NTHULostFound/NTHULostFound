@@ -13,6 +13,9 @@ interface ItemsDao {
     @Query("SELECT * FROM items")
     fun getItems(): PagingSource<Int, ItemData>
 
+    @Query("SELECT * FROM items WHERE uuid = :uuid")
+    suspend fun getItem(uuid: String): ItemData?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(items: List<ItemData>)
 

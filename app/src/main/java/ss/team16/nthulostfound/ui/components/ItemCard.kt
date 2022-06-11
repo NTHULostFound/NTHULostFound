@@ -5,10 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Place
@@ -38,10 +35,18 @@ fun ItemCard(
     item: ItemData,
     onClick: () -> Unit
 ) {
+    val color =
+        if (item.resolved)
+            Color(0xff0097a7)
+        else if (item.isOwner)
+            Color(0xff388e3c)
+        else
+            MaterialTheme.colors.surface
+
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = MaterialTheme.colors.surface,
+        backgroundColor = color,
         elevation = 8.dp
     ) {
         Column(
@@ -70,7 +75,7 @@ fun ItemCard(
                         .weight(2F)
                         .padding(12.dp)
                 ) {
-                    val formatter = SimpleDateFormat("yyyy/MM/dd\nh:mm a", Locale.TAIWAN)
+                    val formatter = SimpleDateFormat("MM/dd\nh:mm a", Locale.TAIWAN)
                     IconLabel(
                         icon = Icons.Outlined.AccessTime,
                         labelText = formatter.format(item.date),

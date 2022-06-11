@@ -12,6 +12,7 @@ query Items($type: ItemType!, $before: String, $first: Int, $last: Int, $after: 
         images
         isMine
         resolved
+        dynamicLink
       }
       cursor
     }
