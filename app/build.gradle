@@ -14,8 +14,8 @@ android {
         applicationId "ss.team16.nthulostfound"
         minSdk 24
         targetSdk 31
-        versionCode 5
-        versionName "0.0.5"
+        versionCode 6
+        versionName "0.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
