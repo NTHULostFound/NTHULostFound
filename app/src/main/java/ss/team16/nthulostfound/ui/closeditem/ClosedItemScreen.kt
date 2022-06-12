@@ -137,6 +137,7 @@ fun ClosedItemScreen(
     ModalBottomSheetLayout(
         sheetState = bottomState,
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetBackgroundColor = MaterialTheme.colors.background,
         sheetContent = {
             Column(
                 modifier = Modifier
