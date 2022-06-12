@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.home
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
@@ -45,7 +46,15 @@ class HomeViewModel @Inject constructor(
         ) { isUserDataSet, setUserDataPoppedUp ->
             !(isUserDataSet || setUserDataPoppedUp)
     }
-    val avatarBitmap = getAvatarUseCase()
+
+    var avatarBitmap : StateFlow<Bitmap?>? = null
+        private set
+
+    init {
+        viewModelScope.launch {
+            avatarBitmap = getAvatarUseCase().stateIn(viewModelScope)
+        }
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     var items =
