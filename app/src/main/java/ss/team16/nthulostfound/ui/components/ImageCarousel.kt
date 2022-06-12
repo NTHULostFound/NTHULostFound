@@ -3,6 +3,7 @@ package ss.team16.nthulostfound.ui.components
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import coil.compose.SubcomposeAsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -83,6 +85,11 @@ fun ImageCarousel(
         Popup(
             onDismissRequest = { showLightBox = false }
         ) {
+            // seems that the back button is hijacked by ComposeNavigation,
+            // so we must use another BackHandler to take it back
+            BackHandler {
+                showLightBox = false
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -195,16 +202,19 @@ fun ImageCarousel(
                     )
                 }
             } else {
+                var imageModifier = Modifier
+                    .fillMaxWidth()
+                if (enableLightBox)
+                    imageModifier = imageModifier.clickable {
+                        showLightBox = true
+                    }
+
                 if (networkImages != null) {
                     SubcomposeAsyncImage(
                         model = networkImages[page],
                         contentDescription = null,
                         contentScale = contextScale,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                if (enableLightBox) showLightBox = true
-                            },
+                        modifier = imageModifier,
                         loading = {
                             CircularProgressIndicator(
                                 modifier = Modifier
@@ -219,11 +229,7 @@ fun ImageCarousel(
                         bitmap = bitmapImages[page].asImageBitmap(),
                         contentDescription = null,
                         contentScale = contextScale,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                if (enableLightBox) showLightBox = true
-                            }
+                        modifier = imageModifier
                     )
                 }
 

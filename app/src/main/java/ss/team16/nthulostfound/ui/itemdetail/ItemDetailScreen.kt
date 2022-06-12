@@ -66,11 +66,7 @@ fun ItemDetailScreen(
             }
 
             ImageCarousel(
-                modifier =
-                    if (viewModel.item.images.isEmpty())
-                        Modifier.aspectRatio(4/3f)
-                    else
-                        Modifier,
+                modifier = Modifier.aspectRatio(4/3f),
                 networkImages = viewModel.item.images,
                 shape = RectangleShape,
                 borderWidth = 0.dp,
@@ -202,7 +198,7 @@ fun ItemDetailScreen(
                         )
                     } else if (viewModel.viewMode == ViewMode.Owner) {
                         InfoBox(
-                            info = "此物品已經成功結案！\n如果您需要，可以將其刪除"
+                            info = "此物品已經成功結案！\n如果您想要，可以將其刪除"
                         )
 
                         Button(
