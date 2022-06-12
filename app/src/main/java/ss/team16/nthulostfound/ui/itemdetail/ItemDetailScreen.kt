@@ -233,16 +233,19 @@ fun ItemDetailScreenDialog(
         confirmButton = {
             TextButton(onClick = { viewModel.onDialogConfirm() }) {
                 Text(text = when(viewModel.dialogState) {
-                    is DialogState.AskEnd -> "是"
+                    is DialogState.AskEnd, is DialogState.AskDelete -> "是"
                     else -> "確定"
                 })
             }
         },
         dismissButton = {
-            if (viewModel.dialogState is DialogState.AskEnd) {
+            if (
+                viewModel.dialogState is DialogState.AskEnd ||
+                viewModel.dialogState is DialogState.AskDelete
+            ) {
                 TextButton(onClick = { viewModel.onDialogDismiss() }) {
                     Text(text = when(viewModel.dialogState) {
-                        is DialogState.AskEnd -> "否"
+                        is DialogState.AskEnd, is DialogState.AskDelete -> "否"
                         else -> "取消"
                     })
                 }
