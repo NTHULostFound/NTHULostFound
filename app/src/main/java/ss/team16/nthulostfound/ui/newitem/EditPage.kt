@@ -51,8 +51,7 @@ fun EditPage(
             deleteButton = true,
             onDeleteImage = { index ->
                 viewModel.onDeleteImage(index)
-            },
-            enableLightBox = false
+            }
         )
 
         FormTextField(

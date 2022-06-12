@@ -60,7 +60,8 @@ fun ConfirmPage(
             modifier = Modifier.aspectRatio(4/3f),
             bitmapImages = viewModel.imageBitmaps,
             shape = RectangleShape,
-            borderWidth = 0.dp
+            borderWidth = 0.dp,
+            enableLightBox = true
         )
 
         Column(
