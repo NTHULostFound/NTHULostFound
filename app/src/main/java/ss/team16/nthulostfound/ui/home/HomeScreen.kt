@@ -56,7 +56,7 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            val avatar = viewModel.avatarBitmap.collectAsState(initial = null).value
+            val avatar = viewModel.avatarBitmap?.collectAsState()?.value
 
             HomeAppBar(
                 navigateToRoute = { navController.navigate(it) },
