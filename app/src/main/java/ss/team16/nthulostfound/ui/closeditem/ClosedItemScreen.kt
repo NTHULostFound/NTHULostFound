@@ -53,7 +53,6 @@ fun ClosedItemScreen(
                 delay(1000)
                 if (!viewModel.isReviewAsked.first()) {
                     bottomState.show()
-                    viewModel.setReviewAsked()
                 }
             }
         }
@@ -163,6 +162,7 @@ fun ClosedItemScreen(
                             else -> {
                                 scope.launch {
                                     bottomState.hide()
+                                    viewModel.setReviewAsked()
                                 }
                             }
                         }
@@ -180,6 +180,7 @@ fun ClosedItemScreen(
                                 onAskReview()
                                 scope.launch {
                                     bottomState.hide()
+                                    viewModel.setReviewAsked()
                                 }
                             }
                             AskReviewState.BAD -> {
@@ -187,6 +188,7 @@ fun ClosedItemScreen(
                                 viewModel.getFeedbackUseCase()
                                 scope.launch {
                                     bottomState.hide()
+                                    viewModel.setReviewAsked()
                                 }
                             }
                         }
