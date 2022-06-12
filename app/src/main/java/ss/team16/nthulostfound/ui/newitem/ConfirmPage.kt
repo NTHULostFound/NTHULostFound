@@ -57,11 +57,7 @@ fun ConfirmPage(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ImageCarousel(
-            modifier =
-                if (viewModel.imageBitmaps.isEmpty())
-                    Modifier.aspectRatio(4/3f)
-                else
-                    Modifier,
+            modifier = Modifier.aspectRatio(4/3f),
             bitmapImages = viewModel.imageBitmaps,
             shape = RectangleShape,
             borderWidth = 0.dp
