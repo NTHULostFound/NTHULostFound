@@ -195,16 +195,19 @@ fun ImageCarousel(
                     )
                 }
             } else {
+                var imageModifier = Modifier
+                    .fillMaxWidth()
+                if (enableLightBox)
+                    imageModifier = imageModifier.clickable {
+                        showLightBox = true
+                    }
+
                 if (networkImages != null) {
                     SubcomposeAsyncImage(
                         model = networkImages[page],
                         contentDescription = null,
                         contentScale = contextScale,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                if (enableLightBox) showLightBox = true
-                            },
+                        modifier = imageModifier,
                         loading = {
                             CircularProgressIndicator(
                                 modifier = Modifier
@@ -219,11 +222,7 @@ fun ImageCarousel(
                         bitmap = bitmapImages[page].asImageBitmap(),
                         contentDescription = null,
                         contentScale = contextScale,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                if (enableLightBox) showLightBox = true
-                            }
+                        modifier = imageModifier
                     )
                 }
 
