@@ -75,9 +75,6 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(
                             navController = navController
                         )
-//                        LaunchedEffect(key1 = true) {
-//                            navController.navigate("closed_item?itemType=found&itemName=SAD")
-//                        }
                     }
 
                     composable("new_item/found") {
