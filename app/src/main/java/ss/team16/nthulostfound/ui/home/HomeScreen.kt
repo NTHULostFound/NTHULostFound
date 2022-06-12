@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.home
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideOutVertically
@@ -57,13 +58,18 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             val avatar = viewModel.avatarBitmap?.collectAsState()?.value
-
+            
             HomeAppBar(
                 navigateToRoute = { navController.navigate(it) },
                 onSearch = { viewModel.onSearch(it) },
                 avatar = avatar,
                 isMyItems = viewModel.myItemsFlow.collectAsState().value,
-                onMyItemsChanged = { viewModel.myItemsFlow.value = it }
+                onMyItemsChanged = { viewModel.myItemsFlow.value = it },
+                title =
+                    if (showType == ShowType.FOUND)
+                        "拾獲物品"
+                    else
+                        "協尋物品"
             )
         },
         scaffoldState = scaffoldState,

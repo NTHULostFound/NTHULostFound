@@ -2,6 +2,8 @@ package ss.team16.nthulostfound.ui.components
 
 import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import ss.team16.nthulostfound.R
 import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeAppBar(
     modifier: Modifier = Modifier,
@@ -125,7 +128,9 @@ fun HomeAppBar(
                     focusRequester.requestFocus()
                 }
             } else {
-                Text(text = title)
+                AnimatedContent(targetState = title) { title ->
+                    Text(text = title)
+                }
             }
         },
         actions = {
