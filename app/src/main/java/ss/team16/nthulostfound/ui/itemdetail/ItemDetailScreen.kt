@@ -74,7 +74,8 @@ fun ItemDetailScreen(
                 networkImages = viewModel.item.images,
                 shape = RectangleShape,
                 borderWidth = 0.dp,
-                borderColor = Color.Transparent
+                borderColor = Color.Transparent,
+                enableLightBox = true
             )
 
             Column(
