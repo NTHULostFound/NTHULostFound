@@ -13,7 +13,7 @@ class AuthorizationInterceptor constructor(
         var builder = chain.request().newBuilder()
 
         if (token.isNotBlank()) {
-            builder = builder.addHeader("Authorization", "Bearer $token" ?: "")
+            builder = builder.addHeader("Authorization", "Bearer $token")
         }
 
         return chain.proceed(builder.build())

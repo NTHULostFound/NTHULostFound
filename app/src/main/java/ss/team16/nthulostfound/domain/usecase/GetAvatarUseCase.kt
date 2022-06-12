@@ -20,6 +20,7 @@ class GetAvatarUseCase(
     val context: Context,
     val userRepository: UserRepository
 ) {
+    @Suppress("DEPRECATION")
     operator fun invoke(): Flow<Bitmap?> {
         return userRepository.getAvatarFilename().map { filename ->
             if (filename == null)

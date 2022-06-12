@@ -51,13 +51,17 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideEndItemUseCase(itemRepository: ItemRepository): EndItemUseCase {
+    fun provideEndItemUseCase(
+        itemRepository: ItemRepository
+    ): EndItemUseCase {
         return EndItemUseCase(itemRepository)
     }
 
     @Provides
     @Singleton
-    fun provideDeleteItemUseCase(itemRepository: ItemRepository): DeleteItemUseCase {
+    fun provideDeleteItemUseCase(
+        itemRepository: ItemRepository
+    ): DeleteItemUseCase {
         return DeleteItemUseCase(itemRepository)
     }
 
@@ -75,25 +79,33 @@ object ItemModule {
 
     @Provides
     @Singleton
-    fun provideShareItemUseCase(@ApplicationContext context: Context): ShareItemUseCase {
+    fun provideShareItemUseCase(
+        @ApplicationContext context: Context
+    ): ShareItemUseCase {
         return ShareItemUseCase(context)
     }
 
     @Provides
     @Singleton
-    fun provideGetContactUseCase(itemRepository: ItemRepository): GetContactUseCase {
+    fun provideGetContactUseCase(
+        itemRepository: ItemRepository
+    ): GetContactUseCase {
         return GetContactUseCase(itemRepository)
     }
 
     @Provides
     @Singleton
-    fun provideShareResultUseCase(@ApplicationContext context: Context): ShareResultUseCase {
+    fun provideShareResultUseCase(
+        @ApplicationContext context: Context
+    ): ShareResultUseCase {
         return ShareResultUseCase(context)
     }
 
     @Provides
     @Singleton
-    fun provideGetFeedbackUseCase(@ApplicationContext context: Context): GetFeedbackUseCase {
+    fun provideGetFeedbackUseCase(
+        @ApplicationContext context: Context
+    ): GetFeedbackUseCase {
         return GetFeedbackUseCase(context)
     }
 }

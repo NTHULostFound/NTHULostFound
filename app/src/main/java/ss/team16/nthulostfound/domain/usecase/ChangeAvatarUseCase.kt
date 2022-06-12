@@ -19,6 +19,7 @@ class ChangeAvatarUseCase(
     val context: Context,
     val userRepository: UserRepository
 ) {
+    @Suppress("DEPRECATION")
     suspend operator fun invoke(uri: Uri) {
         val filename = "${UUID.randomUUID()}.png"
         val file = File(context.filesDir, filename)

@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ss.team16.nthulostfound.data.repository.UserRepositoryImpl
+import ss.team16.nthulostfound.domain.repository.RemoteUserRepository
 import ss.team16.nthulostfound.domain.repository.UserRepository
 import ss.team16.nthulostfound.domain.usecase.ChangeAvatarUseCase
 import ss.team16.nthulostfound.domain.usecase.GetAvatarUseCase
@@ -20,14 +21,19 @@ object UserModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(@ApplicationContext appContext: Context): UserRepository {
+    fun provideUserRepository(
+        @ApplicationContext appContext: Context
+    ): UserRepository {
         return UserRepositoryImpl(appContext)
     }
 
     @Provides
     @Singleton
-    fun provideSaveUserUseCase(userRepository: UserRepository, apolloClient: ApolloClient): SaveUserUseCase {
-        return SaveUserUseCase(userRepository, apolloClient)
+    fun provideSaveUserUseCase(
+        userRepository: UserRepository,
+        remoteUserRepository: RemoteUserRepository
+    ): SaveUserUseCase {
+        return SaveUserUseCase(userRepository, remoteUserRepository)
     }
 
     @Provides

@@ -150,6 +150,7 @@ class NewItemViewModel @AssistedInject constructor(
 
     private val imageUris = mutableListOf<Uri>()
 
+    @Suppress("DEPRECATION")
     fun onAddImage(uri: Uri?, context: Context) {
         if (uri == null)
             return
