@@ -54,7 +54,9 @@ object ImgurModule {
 
     @Provides
     @Singleton
-    fun provideUploadImagesUseCase(repository: UploadImagesRepository) : UploadImagesUseCase {
+    fun provideUploadImagesUseCase(
+        repository: UploadImagesRepository
+    ) : UploadImagesUseCase {
         return UploadImagesUseCase(repository)
     }
 

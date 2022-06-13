@@ -1,12 +1,6 @@
 package ss.team16.nthulostfound.ui.profile
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,7 +13,6 @@ import ss.team16.nthulostfound.domain.repository.UserRepository
 import ss.team16.nthulostfound.domain.usecase.ChangeAvatarUseCase
 import ss.team16.nthulostfound.domain.usecase.GetAvatarUseCase
 import ss.team16.nthulostfound.domain.usecase.SaveUserUseCase
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel

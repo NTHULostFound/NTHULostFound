@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun IconLabel(
     icon: ImageVector,
-    labelText: String = "",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    labelText: String = ""
 ){
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),

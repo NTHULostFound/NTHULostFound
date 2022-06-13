@@ -1,11 +1,5 @@
 package ss.team16.nthulostfound.ui.profile
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.os.Build
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,22 +27,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import ss.team16.nthulostfound.R
-import ss.team16.nthulostfound.domain.model.UserData
-import ss.team16.nthulostfound.domain.usecase.ChangeAvatarUseCase
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
 import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.InfoBox
-import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
-import ss.team16.nthulostfound.utils.assistedViewModel
-import java.io.File
 
 val padding = 24.dp
 

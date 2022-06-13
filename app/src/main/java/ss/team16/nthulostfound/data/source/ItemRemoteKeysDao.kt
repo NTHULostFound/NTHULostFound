@@ -1,11 +1,9 @@
 package ss.team16.nthulostfound.data.source
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemRemoteKeys
 
 @Dao

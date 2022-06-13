@@ -1,6 +1,5 @@
 package ss.team16.nthulostfound.data.paging
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -11,8 +10,6 @@ import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemRemoteKeys
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.domain.repository.ItemRepository
-import java.lang.Error
-import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class ItemsRemoteMediator(

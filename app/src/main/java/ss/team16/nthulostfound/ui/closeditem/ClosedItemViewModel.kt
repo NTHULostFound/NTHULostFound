@@ -1,7 +1,5 @@
 package ss.team16.nthulostfound.ui.closeditem
 
-import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -48,7 +46,7 @@ class ClosedItemViewModel @Inject constructor(
         setReviewText()
     }
 
-    fun setReviewText() {
+    private fun setReviewText() {
         when(askReviewState) {
             AskReviewState.FEEL -> {
                 askReviewTitle = "很高興您嘗試了我們的 App！"

@@ -6,8 +6,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
-import kotlinx.coroutines.flow.lastOrNull
 import ss.team16.nthulostfound.domain.repository.UserRepository
 import java.io.File
 import java.io.FileOutputStream
@@ -19,6 +17,7 @@ class ChangeAvatarUseCase(
     val context: Context,
     val userRepository: UserRepository
 ) {
+    @Suppress("DEPRECATION")
     suspend operator fun invoke(uri: Uri) {
         val filename = "${UUID.randomUUID()}.png"
         val file = File(context.filesDir, filename)

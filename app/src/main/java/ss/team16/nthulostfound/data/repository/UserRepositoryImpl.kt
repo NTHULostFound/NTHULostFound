@@ -3,7 +3,6 @@ package ss.team16.nthulostfound.data.repository
 import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +12,7 @@ import ss.team16.nthulostfound.domain.model.UserData
 import ss.team16.nthulostfound.domain.repository.UserRepository
 
 class UserRepositoryImpl(
-    val appContext: Context
+    private val appContext: Context
 ): UserRepository {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "User")
 

@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import ss.team16.nthulostfound.domain.model.ItemType
 import ss.team16.nthulostfound.ui.components.BackArrowAppBar
@@ -254,7 +253,7 @@ fun ItemDetailScreenDialog(
         title = { Text(viewModel.dialogState.title) },
         text = {
             if (viewModel.dialogState is DialogState.ShowContact) {
-                SelectionContainer() {
+                SelectionContainer {
                     Text(viewModel.dialogState.text)
                 }
             } else {

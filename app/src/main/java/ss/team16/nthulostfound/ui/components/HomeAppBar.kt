@@ -184,10 +184,10 @@ fun RoundedTextField(
     value: String,
     onValueChange: (String) -> Unit,
     focusManager: FocusManager,
+    modifier: Modifier = Modifier,
     onDone: () -> Unit,
     enabled: Boolean = true,
-    singleLine: Boolean = true,
-    modifier: Modifier = Modifier
+    singleLine: Boolean = true
 ) {
     val interactionSource = remember {
         MutableInteractionSource()

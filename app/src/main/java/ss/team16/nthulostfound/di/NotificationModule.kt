@@ -19,7 +19,9 @@ import javax.inject.Singleton
 object NotificationModule {
     @Provides
     @Singleton
-    fun provideDatabase(app: Application): NotificationDatabase {
+    fun provideDatabase(
+        app: Application
+    ): NotificationDatabase {
         return Room.databaseBuilder(
             app,
             NotificationDatabase::class.java,
@@ -29,26 +31,34 @@ object NotificationModule {
 
     @Provides
     @Singleton
-    fun provideNoteRepository(db: NotificationDatabase): NotificationRepository {
+    fun provideNotificationRepository(
+        db: NotificationDatabase
+    ): NotificationRepository {
         return NotificationRepositoryImpl(db.dao)
 //        return NotificationRepositoryMockImpl()
     }
 
     @Provides
     @Singleton
-    fun provideGetNotificationUseCase(repository: NotificationRepository): GetNotificationUseCase {
+    fun provideGetNotificationUseCase(
+        repository: NotificationRepository
+    ): GetNotificationUseCase {
         return GetNotificationUseCase(repository)
     }
 
     @Provides
     @Singleton
-    fun provideUpdateNotificationUseCase(repository: NotificationRepository): UpdateNotificationUseCase {
+    fun provideUpdateNotificationUseCase(
+        repository: NotificationRepository
+    ): UpdateNotificationUseCase {
         return UpdateNotificationUseCase(repository)
     }
 
     @Provides
     @Singleton
-    fun provideAddNotificationUseCase(repository: NotificationRepository): AddNotificationUseCase {
+    fun provideAddNotificationUseCase(
+        repository: NotificationRepository
+    ): AddNotificationUseCase {
         return AddNotificationUseCase(repository)
     }
 }

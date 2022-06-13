@@ -1,47 +1,22 @@
 package ss.team16.nthulostfound.ui.newitem
 
 import android.icu.text.SimpleDateFormat
-import android.view.KeyEvent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.ContactPage
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onPreviewKeyEvent
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.domain.model.NewItemType
-import ss.team16.nthulostfound.ui.components.FormTextField
 import ss.team16.nthulostfound.ui.components.IconLabel
 import ss.team16.nthulostfound.ui.components.ImageCarousel
-import ss.team16.nthulostfound.ui.components.InfoBox
-import ss.team16.nthulostfound.ui.itemdetail.ViewMode
 import java.util.*
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 @Composable
 fun ConfirmPage(
@@ -94,6 +69,11 @@ fun ConfirmPage(
                     labelText = timeString
                 )
             }
+
+            Text(
+                text = viewModel.name,
+                style = MaterialTheme.typography.h4
+            )
 
             Text(
                 text = viewModel.description,
@@ -155,93 +135,3 @@ fun ConfirmPage(
         }
     }
 }
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun NewItemConfirmText(
-    value: String,
-    label: String = "",
-    onValueChange: (String) -> Unit,
-    icon: ImageVector? = null,
-    iconDescription: String? = label,
-    singleLine: Boolean = true,
-    required: Boolean = false,
-    isLastField: Boolean = false,
-    onGloballyPositioned: (LayoutCoordinates) -> Unit = {}
-) {
-    var isFirst by rememberSaveable { mutableStateOf(true) }
-    val errorMessage =
-        if (required && !isFirst && value.isEmpty())
-            "請輸入${label}！"
-        else
-            null
-    val focusManager = LocalFocusManager.current
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned { onGloballyPositioned(it) },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {
-                isFirst = false
-                onValueChange(it)
-            },
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(bottom = 16.dp)
-                .onPreviewKeyEvent {
-                    if (it.key == Key.Tab && it.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
-                        focusManager.moveFocus(FocusDirection.Down)
-                        true
-                    } else
-                        false
-                },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction =
-                if (isLastField)
-                    ImeAction.Done
-                else
-                    ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = { focusManager.moveFocus(FocusDirection.Down) },
-                onDone = { focusManager.clearFocus() }
-            ),
-            singleLine = singleLine,
-            label = {
-                Text(label)
-            },
-            leadingIcon =
-            if (icon != null) {
-                {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = iconDescription,
-                        tint =
-                        if (errorMessage != null)
-                            MaterialTheme.colors.error
-                        else
-                            MaterialTheme.colors.onSurface
-                    )
-                }
-            } else
-                null,
-            isError = errorMessage != null,
-            trailingIcon =
-            if (errorMessage != null) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = errorMessage
-                    )
-                }
-            } else
-                null
-        )
-    }
-}
-

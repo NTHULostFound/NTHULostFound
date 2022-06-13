@@ -1,6 +1,5 @@
 package ss.team16.nthulostfound.ui.newitem
 
-import android.content.ContentResolver
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
@@ -39,7 +38,7 @@ class NewItemViewModel @AssistedInject constructor(
     var statusInfo by mutableStateOf("")
         private set
 
-    lateinit var uploadedItemId: String
+    private lateinit var uploadedItemId: String
 
     @OptIn(ExperimentalPagerApi::class)
     fun getPagerPrevButtonInfo(): PagerButtonInfo? {
@@ -150,6 +149,7 @@ class NewItemViewModel @AssistedInject constructor(
 
     private val imageUris = mutableListOf<Uri>()
 
+    @Suppress("DEPRECATION")
     fun onAddImage(uri: Uri?, context: Context) {
         if (uri == null)
             return
