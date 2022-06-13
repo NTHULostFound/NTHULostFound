@@ -71,6 +71,11 @@ fun ConfirmPage(
             }
 
             Text(
+                text = viewModel.name,
+                style = MaterialTheme.typography.h4
+            )
+
+            Text(
                 text = viewModel.description,
                 modifier = Modifier
                     .fillMaxWidth()
