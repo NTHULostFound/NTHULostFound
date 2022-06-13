@@ -1,7 +1,6 @@
 package ss.team16.nthulostfound.di
 
 import android.content.Context
-import com.apollographql.apollo3.ApolloClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

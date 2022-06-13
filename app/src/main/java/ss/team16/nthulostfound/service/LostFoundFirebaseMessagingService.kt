@@ -8,10 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import androidx.compose.ui.res.stringResource
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
-import com.apollographql.apollo3.ApolloClient
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ss.team16.nthulostfound.R
-import ss.team16.nthulostfound.RegisterFCMTokenMutation
 import ss.team16.nthulostfound.domain.model.NotificationData
 import ss.team16.nthulostfound.domain.model.NotificationType
 import ss.team16.nthulostfound.domain.repository.RemoteUserRepository

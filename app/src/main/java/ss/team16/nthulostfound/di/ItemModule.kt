@@ -9,7 +9,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import ss.team16.nthulostfound.data.repository.ItemRepositoryImpl
-import ss.team16.nthulostfound.data.repository.ItemRepositoryMockImpl
 import ss.team16.nthulostfound.data.source.ItemsDatabase
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import ss.team16.nthulostfound.domain.usecase.*

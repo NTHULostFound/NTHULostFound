@@ -1,6 +1,5 @@
 package ss.team16.nthulostfound.domain.repository
 
-import android.content.ContentResolver
 import android.net.Uri
 import ss.team16.nthulostfound.domain.model.UploadedImage
 
