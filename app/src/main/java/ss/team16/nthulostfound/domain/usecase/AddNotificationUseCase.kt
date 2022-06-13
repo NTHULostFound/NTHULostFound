@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.domain.usecase
 
+import kotlinx.coroutines.flow.Flow
 import ss.team16.nthulostfound.domain.model.NotificationData
 import ss.team16.nthulostfound.domain.repository.NotificationRepository
 

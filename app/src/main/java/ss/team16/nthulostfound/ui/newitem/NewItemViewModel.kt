@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.newitem
 
+import android.content.ContentResolver
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
@@ -38,7 +39,7 @@ class NewItemViewModel @AssistedInject constructor(
     var statusInfo by mutableStateOf("")
         private set
 
-    private lateinit var uploadedItemId: String
+    lateinit var uploadedItemId: String
 
     @OptIn(ExperimentalPagerApi::class)
     fun getPagerPrevButtonInfo(): PagerButtonInfo? {

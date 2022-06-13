@@ -1,6 +1,9 @@
 package ss.team16.nthulostfound.domain.usecase
 
 import android.util.Log
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
+import ss.team16.nthulostfound.UpdateUserDataMutation
 import ss.team16.nthulostfound.domain.model.UserData
 import ss.team16.nthulostfound.domain.repository.RemoteUserRepository
 import ss.team16.nthulostfound.domain.repository.UserRepository

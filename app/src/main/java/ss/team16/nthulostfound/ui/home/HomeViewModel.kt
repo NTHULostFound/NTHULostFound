@@ -2,17 +2,25 @@ package ss.team16.nthulostfound.ui.home
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
+import ss.team16.nthulostfound.domain.model.UploadedImage
 import ss.team16.nthulostfound.domain.repository.ItemRepository
 import ss.team16.nthulostfound.domain.repository.UserRepository
 import ss.team16.nthulostfound.domain.usecase.GetAvatarUseCase
+import java.util.*
 import javax.inject.Inject
 
 
@@ -25,13 +33,13 @@ class HomeViewModel @Inject constructor(
 
     val showTypeFlow = MutableStateFlow(ShowType.FOUND)
     val searchFlow = MutableStateFlow<String?>(null)
-    val myItemsFlow = MutableStateFlow(false)
+    val myItemsFlow = MutableStateFlow<Boolean>(false)
 
     val lazyListState = LazyListState()
 
     val showPinMessageFlow = userRepository.getShowPinMessage()
-    private val isUserDataSetFlow = userRepository.getIsUserDataSet()
-    private val setUserDataPoppedUp = MutableStateFlow(false)
+    val isUserDataSetFlow = userRepository.getIsUserDataSet()
+    val setUserDataPoppedUp = MutableStateFlow(false)
     val canShowPopUpFlow = combine(
             isUserDataSetFlow,
             setUserDataPoppedUp
@@ -75,6 +83,9 @@ class HomeViewModel @Inject constructor(
             }
         }
 
+    var fabState: FabState by mutableStateOf(FabState.WITH_TEXT)
+        private set
+
     fun onPageChanged(showType: ShowType) {
         showTypeFlow.value = showType
     }
@@ -102,6 +113,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onFabClicked() {
+        fabState = when(fabState) {
+            FabState.COLLAPSED -> FabState.EXTENDED
+            FabState.EXTENDED -> FabState.WITH_TEXT
+            FabState.WITH_TEXT -> FabState.EXTENDED
+        }
+    }
+
     fun onSetUserDataPopUp() {
         setUserDataPoppedUp.value = true
         // use this to ensure the pop up only shows once during the app running
@@ -111,6 +130,12 @@ class HomeViewModel @Inject constructor(
 enum class ShowType {
     FOUND,
     LOST
+}
+
+enum class FabState {
+    WITH_TEXT,
+    COLLAPSED,
+    EXTENDED
 }
 
 data class ItemsArgs(

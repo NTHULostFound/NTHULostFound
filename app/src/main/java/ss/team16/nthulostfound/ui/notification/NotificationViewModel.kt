@@ -1,5 +1,6 @@
 package ss.team16.nthulostfound.ui.notification
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

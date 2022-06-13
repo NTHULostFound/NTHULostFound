@@ -2,13 +2,24 @@ package ss.team16.nthulostfound.domain.usecase
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import com.google.firebase.dynamiclinks.ShortDynamicLink
+import com.google.firebase.dynamiclinks.ktx.*
+import com.google.firebase.ktx.Firebase
 import ss.team16.nthulostfound.domain.model.ItemData
 import ss.team16.nthulostfound.domain.model.ItemType
 
 class ShareItemUseCase(
     val context: Context
 ) {
+
+    companion object {
+        const val DYNAMIC_LINK_BASE_URI = "https://nthulostfound.page.link/item"
+        const val DYNAMIC_LINK_DOMAIN_PREFIX = "https://nthulostfound.page.link"
+        const val FALLBACK_LINK = "https://play.google.com/store/apps/details?id=ss.team16.nthulostfound"
+    }
 
     operator fun invoke(item: ItemData) {
 
