@@ -182,9 +182,12 @@ private fun handleFirebaseDynamicLinks(intent: Intent, navController: NavControl
         .getDynamicLink(intent)
         .addOnSuccessListener { linkData ->
             linkData?.link?.let { uri ->
-                val itemId = uri.getQueryParameter("id")
-                itemId?.let { id ->
-                    navController.navigate("item/$id")
+                Log.d("DynamicLink", "Got dynamic link: $uri")
+                if (uri.pathSegments.last() == "item") {
+                    val itemId = uri.getQueryParameter("id")
+                    itemId?.let { id ->
+                        navController.navigate("item/$id")
+                    }
                 }
             }
         }
