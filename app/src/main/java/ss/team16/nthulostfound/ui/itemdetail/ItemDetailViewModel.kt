@@ -122,7 +122,7 @@ class ItemDetailViewModel @AssistedInject constructor(
             // if contactInfo is never fetched, fetch it and save it in cache
             // otherwise, it would show contact info from cache, and won't send request to server
             // therefore, it won't cause new notification before user leaves this screen
-            if (_contactInfoCache.isBlank()) {
+            if (_contactInfoCache.isNullOrBlank()) {
                  contactInfo = getContactUseCase(item.uuid).getOrDefault("無法取得")
                 _contactInfoCache = contactInfo
             }

@@ -14,8 +14,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApolloModule {
-
-    private const val BASE_URL = "https://nthu-lost-found.yikuo.dev/graphql/"
+    private val BASE_URL = "https://nthu-lost-found.yikuo.dev/graphql/"
 
     @Provides
     fun provideAuthorizationInterceptor(userRepository: UserRepository): AuthorizationInterceptor {

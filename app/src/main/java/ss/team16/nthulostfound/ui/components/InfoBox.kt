@@ -16,8 +16,8 @@ import ss.team16.nthulostfound.ui.theme.NTHULostFoundTheme
 
 @Composable
 fun InfoBox(
-    modifier: Modifier = Modifier,
-    info: String = ""
+    info: String = "",
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
